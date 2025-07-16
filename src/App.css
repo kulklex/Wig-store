@@ -36,3 +36,125 @@
     transform: rotate(360deg);
   }
 }
+
+.mobile-menu-overlay {
+          z-index: 1050;
+        }
+        .mobile-menu-container {
+          z-index: 1051;
+          transform: translateX(0);
+          transition: transform 0.3s ease;
+        }
+        .mobile-menu-backdrop {
+          z-index: 1050;
+        }
+        .hover-text-dark:hover {
+          color: #212529 !important;
+        }
+
+/* Optional fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mega-dropdown {
+  animation: fadeIn 0.3s ease forwards;
+  z-index: 1000;
+}
+
+.hover-text-dark:hover {
+  color: #212529 !important;
+}
+
+.nav_font {
+  font-family: sans-serif;
+}
+
+.navbar {
+  transition: all 0.3s ease;
+}
+
+.dropdown-wrapper {
+  position: relative;
+}
+
+.card-title {
+  font-size: 1.1rem;
+}
+
+.btn-dark {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.model-img {
+  object-fit: cover;
+  height: 300px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.model-card:hover .model-img {
+  transform: scale(1.05);
+}
+
+/* Banner */
+.banner-container {
+  position: relative;
+  height: 75vh; 
+  overflow: hidden;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit:fill;
+  object-position: top
+}
+
+.banner-caption {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  z-index: 2;
+  max-width: 90%;
+}
+
+@media (max-width: 768px) {
+  .banner-container {
+    height: 40vh;
+  }
+
+  .banner-caption h1 {
+    font-size: 1.8rem;
+  }
+
+  .banner-caption h5 {
+    font-size: 1rem;
+  }
+}
+
+.thumbnail-scrollbox {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.thumbnail-scrollbox img {
+  width: 60px;
+  height: auto;
+  object-fit: contain;
+}
+.main-product-image {
+  max-height: 600px;
+  object-fit: contain;
+}
+

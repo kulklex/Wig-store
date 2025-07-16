@@ -1,0 +1,50 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+const CollectionCard = ({ data: { _id, image, name, description = "" } }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
+      data-aos="fade-up"
+      style={{ cursor: "pointer" }}
+    >
+      <div className="card h-100 border-0 shadow-sm hover-shadow transition-3">
+        <figure className="overflow-hidden rounded-top m-0">
+          <img
+            src={image[0]}
+            alt={name}
+            className="card-img-top img-fluid"
+            style={{
+              maxHeight: "300px",
+              objectFit: "cover",
+              transition: "transform 0.3s",
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          />
+        </figure>
+
+        <div className="card-body d-flex flex-column justify-content-between px-3 py-3">
+          <h5 className="card-title text-dark fw-semibold text-truncate" title={name}>
+            {name}
+          </h5>
+
+          <p className="card-text text-muted small mb-3">
+            {description.length > 60 ? `${description.slice(0, 60)}...` : description}
+          </p>
+
+          <button
+            className="btn btn-dark w-80 mt-auto text-uppercase fw-medium"
+            onClick={() => navigate(`/products/${_id}`)}
+          >
+            Shop Now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CollectionCard;

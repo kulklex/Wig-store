@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Navbar from './components/Navbar';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import "./App.css"
+import Home from './pages/Home';
+import Footer from './components/Footer';
+import Cart from './pages/Cart';
+import SearchResults from './pages/SearchResults';
+import ProductPage from './pages/ProductPage';
+import GoogleLogin from './pages/GoogleLogin';
+import ErrorPage from './pages/ErrorPage';
+import Checkout from './pages/Checkout';
 
-function App() {
+const App = () => {
+  const location = useLocation();
+  const hideFooterRoutes = ['/cart', '/sign-in',];
+  const hideNavbarRoutes = ['',];
+  const hideFooter = hideFooterRoutes.includes(location.pathname);
+  const hideNavbar = hideNavbarRoutes.includes(location.pathname);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <>
+      {!hideNavbar && <Navbar />}
+      <main className="flex-grow">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/shop/*" element={<h1>Shop</h1>} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/product/:id" element={<ProductPage /> } />
+        <Route path="/about" element={<h1>About</h1>} />
+        <Route path="/contact" element={<h1>Contact</h1>} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="*" element={<ErrorPage />} /> 
+        <Route path="/sign-in" element={<GoogleLogin />} />
+      </Routes>
+      </main>
+      {!hideFooter && <Footer />}
+      </>
   );
-}
+};
 
 export default App;
