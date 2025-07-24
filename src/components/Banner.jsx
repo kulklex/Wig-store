@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import slide_12_img from "../assets/slide-15.jpg";
@@ -16,8 +17,9 @@ const Banner = () => {
       textColor: "#fff",
       buttonBg: "#ffffff",
       buttonColor: "#000000",
-      buttonText: "Shop Natural"
-    },{
+      buttonText: "Shop Natural",
+    },
+    {
       id: 2,
       image: slide_13_img,
       title: "Luxury Wigs",
@@ -27,7 +29,7 @@ const Banner = () => {
       textColor: "#ffffff",
       buttonBg: "#ffffff",
       buttonColor: "#808080",
-      buttonText: "Shop Wigs"
+      buttonText: "Shop Wigs",
     },
     {
       id: 3,
@@ -39,7 +41,7 @@ const Banner = () => {
       textColor: "#000000",
       buttonBg: "#000000",
       buttonColor: "#ffffff",
-      buttonText: "Shop Now"
+      buttonText: "Shop Now",
     },
   ]);
 
@@ -94,7 +96,7 @@ const Banner = () => {
 
   return (
     <motion.section
-      className="banner py-4"
+      className="banner py-1"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
@@ -197,7 +199,7 @@ const Banner = () => {
             zIndex: 10,
           }}
         >
-          {slides.map((_, index) => (
+          {slides?.map((_, index) => (
             <motion.span
               key={index}
               onClick={() => setCurrentIndex(index)}
@@ -218,7 +220,7 @@ const Banner = () => {
       </motion.div>
 
       {/* RESPONSIVE HEIGHT STYLING */}
-      <style jsx>{`
+      <style>{`
         @media (max-width: 768px) {
           .slider-container,
           .slide {

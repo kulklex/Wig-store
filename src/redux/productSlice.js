@@ -1,8 +1,7 @@
-// src/redux/slices/productSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// 1️⃣ Fetch all products
+// Fetch all products
 export const fetchProducts = createAsyncThunk(
   "products/fetchAll",
   async (_, thunkAPI) => {
@@ -15,12 +14,12 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
-// 2️⃣ Fetch new arrivals
+// Fetch new arrivals
 export const fetchNewArrivals = createAsyncThunk(
   "products/fetchNewArrivals",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get("/api/products/new-arrivals?days=14");
+      const res = await axios.get("/api/products/new-arrivals?days=90");
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -28,7 +27,7 @@ export const fetchNewArrivals = createAsyncThunk(
   }
 );
 
-// 3️⃣ Fetch best sellers
+// Fetch best sellers
 export const fetchBestSellers = createAsyncThunk(
   "products/fetchBestSellers",
   async (_, thunkAPI) => {

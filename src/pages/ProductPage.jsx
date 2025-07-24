@@ -1,142 +1,188 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Button, Accordion, Dropdown, ButtonGroup, Carousel } from 'react-bootstrap';
-import p_img1 from '../assets/p_img1.png'
-import p_img2_1 from '../assets/p_img2_1.png'
-import p_img2_2 from '../assets/p_img2_2.png'
-import p_img2_3 from '../assets/p_img2_3.png'
-import p_img2_4 from '../assets/p_img2_4.png'
-import p_img3 from '../assets/p_img3.png'
-import p_img4 from '../assets/p_img4.png'
-import p_img5 from '../assets/p_img5.png'
-import p_img6 from '../assets/p_img6.png'
-import p_img7 from '../assets/p_img7.png'
-import p_img8 from '../assets/p_img8.png'
-import p_img9 from '../assets/p_img9.png'
-import p_img10 from '../assets/p_img10.png'
-import p_img11 from '../assets/p_img11.png'
-import p_img12 from '../assets/p_img12.png'
-import p_img13 from '../assets/p_img13.png'
-import p_img14 from '../assets/p_img14.png'
-import p_img15 from '../assets/p_img15.png'
-import p_img16 from '../assets/p_img16.png'
-import p_img17 from '../assets/p_img17.png'
-import p_img18 from '../assets/p_img18.png'
-import p_img19 from '../assets/p_img19.png'
-import p_img20 from '../assets/p_img20.png'
-import p_img21 from '../assets/p_img21.png'
-import p_img22 from '../assets/p_img22.png'
-import p_img23 from '../assets/p_img23.png'
-import p_img24 from '../assets/p_img24.png'
-import p_img25 from '../assets/p_img25.png'
-import p_img26 from '../assets/p_img26.png'
-import p_img27 from '../assets/p_img27.png'
-import p_img28 from '../assets/p_img28.png'
-import p_img29 from '../assets/p_img29.png'
-import p_img30 from '../assets/p_img30.png'
-import p_img31 from '../assets/p_img31.png'
-import p_img32 from '../assets/p_img32.png'
-import p_img33 from '../assets/p_img33.png'
-import p_img34 from '../assets/p_img34.png'
-import p_img35 from '../assets/p_img35.png'
-import p_img36 from '../assets/p_img36.png'
-import p_img37 from '../assets/p_img37.png'
-import p_img38 from '../assets/p_img38.png'
-import p_img39 from '../assets/p_img39.png'
-import p_img40 from '../assets/p_img40.png'
-import p_img41 from '../assets/p_img41.png'
-import p_img42 from '../assets/p_img42.png'
-import p_img43 from '../assets/p_img43.png'
-import p_img44 from '../assets/p_img44.png'
-import p_img45 from '../assets/p_img45.png'
-import p_img46 from '../assets/p_img46.png'
-import p_img47 from '../assets/p_img47.png'
-import p_img48 from '../assets/p_img48.png'
-import p_img49 from '../assets/p_img49.png'
-import p_img50 from '../assets/p_img50.png'
-import p_img51 from '../assets/p_img51.png'
-import p_img52 from '../assets/p_img52.png'
-
-
-const productImages = [
- p_img1, p_img2_1,
- p_img2_2,
- p_img2_3,
- p_img2_4,
- p_img3, p_img4, p_img5, p_img6, p_img7, p_img8, p_img9, p_img10,
-//  p_img11,
-//  p_img12,
-//  p_img13,
-//  p_img14,
-//  p_img15,
-//  p_img16,
-//  p_img17,
-//  p_img18,
-//  p_img19,
-//  p_img20,
-//  p_img21,
-//  p_img22,
-//  p_img23,
-//  p_img24,
-//  p_img25,
-//  p_img26,
-//  p_img27,
-//  p_img28,
-//  p_img29,
-//  p_img30,
-//  p_img31,
-//  p_img32,
-//  p_img33,
-//  p_img34,
-//  p_img35,
-//  p_img36,
-//  p_img37,
-//  p_img38,
-//  p_img39,
-//  p_img40,
-//  p_img41,
-//  p_img42,
-//  p_img43,
-//  p_img44,
-//  p_img45,
-//  p_img46,
-//  p_img47,
-//  p_img48,
-//  p_img49,
-//  p_img50,
-//  p_img51,
-//  p_img52,
-
-];
+import React, { useEffect, useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Accordion,
+  ButtonGroup,
+  Carousel,
+  Spinner,
+  Badge,
+} from "react-bootstrap";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, closeCartDrawer } from "../redux/cartSlice";
 
 const ProductPage = () => {
- const [mainImage, setMainImage] = useState(productImages[0]);
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+
+  const [product, setProduct] = useState(null);
+  const [selectedTexture, setSelectedTexture] = useState(null);
+  const [selectedLength, setSelectedLength] = useState("");
+  const [selectedOrigin, setSelectedOrigin] = useState("");
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [mainImage, setMainImage] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`/api/products/${id}`);
+        setProduct(res.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to load product:", err);
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  useEffect(() => {
+    dispatch(closeCartDrawer());
+  }, [dispatch]);
+
+  const textureVariantsMap = useMemo(() => {
+    const map = {};
+    product?.variants?.forEach((variant) => {
+      const key = variant.texture.toLowerCase().replace(/\s+/g, "_");
+      if (!map[key]) map[key] = [];
+      map[key].push(variant);
+    });
+    return map;
+  }, [product]);
+
+  useEffect(() => {
+    if (product?.variants?.length) {
+      const defaultVariant =
+        product.variants.find((v) => v.texture.toLowerCase() === "straight") ||
+        product.variants[0];
+      const normalized = defaultVariant.texture.toLowerCase().replace(/\s+/g, "_");
+      setSelectedTexture(normalized);
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (selectedTexture && textureVariantsMap[selectedTexture]) {
+      const textureVariants = textureVariantsMap[selectedTexture];
+      const defaultVariant = textureVariants[0];
+      setMainImage(defaultVariant.media);
+      setSelectedLength(defaultVariant.length);
+      setSelectedOrigin(defaultVariant.origin);
+      setSelectedVariant(defaultVariant);
+      setQuantity(1);
+    }
+  }, [selectedTexture, textureVariantsMap]);
+
+  const handleLengthClick = (len) => {
+    const matched = textureVariantsMap[selectedTexture]?.find(
+      (v) => v.length === len
+    );
+    if (matched) {
+      setSelectedLength(len);
+      setSelectedOrigin(matched.origin);
+      setSelectedVariant(matched);
+      setMainImage(matched.media);
+      setQuantity(1);
+    }
+  };
+
+  const cartItem = cartItems.find((item) => item.variantId === selectedVariant?._id);
+  const currentCartQty = cartItem?.cartQty || 0;
+  const maxAvailableQty = selectedVariant ? selectedVariant.stock - currentCartQty : 0;
+
+  const handleAddToCart = () => {
+    if (!selectedVariant) return;
+
+    if (quantity > maxAvailableQty) {
+      alert("Cannot add more than available stock.");
+      return;
+    }
+
+    const newCartItem = {
+      variantId: selectedVariant._id,
+      productId: product._id,
+      title: product.name,
+      price: selectedVariant.price,
+      media: selectedVariant.media,
+      stock: selectedVariant.stock,
+      texture: selectedVariant.texture,
+      length: selectedVariant.length,
+      origin: selectedVariant.origin,
+      cartQty: quantity,
+    };
+
+    dispatch(addToCart(newCartItem));
+    setQuantity(1);
+  };
+
+  if (loading || !product)
+    return <Spinner animation="border" className="d-block mx-auto my-5" />;
+
+  const uniqueTextures = [
+    ...new Set(
+      product.variants.map((v) => v.texture.toLowerCase().replace(/\s+/g, "_"))
+    ),
+  ];
+
+  const availableLengths =
+    textureVariantsMap[selectedTexture]?.map((v) => ({
+      length: v.length,
+      stock: v.stock,
+    })) || [];
+
+  const textureVariantImages = [
+    ...new Set((textureVariantsMap[selectedTexture] || []).map((v) => v.media)),
+  ];
+
+  const allVariantImages = [...new Set(product.variants.map((v) => v.media))];
 
   return (
     <Container className="my-4">
       <Row>
-        {/* Desktop View */}
         <Col lg={6} className="d-none d-lg-flex">
-          <div className="d-flex flex-column align-items-center me-3 overflow-auto" style={{ maxHeight: '600px' }}>
-            {productImages.map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`thumb-${idx}`}
-                className="img-thumbnail mb-2"
-                style={{ width: '80px', cursor: 'pointer' }}
-                onClick={() => setMainImage(img)}
-              />
-            ))}
-          </div>
-          <div className="flex-grow-1 d-flex justify-content-center align-items-center">
-            <img src={mainImage} alt="Main product" className="img-fluid" />
+          <div className="d-flex me-3">
+            <div
+              className="d-flex flex-column align-items-center overflow-auto"
+              style={{ maxHeight: "600px" }}
+            >
+              {textureVariantImages.map((img, idx) => (
+                <img
+                  key={`texture-img-${idx}`}
+                  src={img}
+                  alt={`texture-thumb-${idx}`}
+                  className="img-thumbnail mb-2"
+                  style={{ width: "80px", cursor: "pointer" }}
+                  onClick={() => setMainImage(img)}
+                />
+              ))}
+              {allVariantImages
+                .filter((img) => !textureVariantImages.includes(img))
+                .map((img, idx) => (
+                  <img
+                    key={`all-thumb-${idx}`}
+                    src={img}
+                    alt={`all-thumb-${idx}`}
+                    className="img-thumbnail mb-2"
+                    style={{ width: "80px", opacity: 0.5 }}
+                  />
+                ))}
+            </div>
+
+            <div className="flex-grow-1 d-flex justify-content-center align-items-center">
+              <img src={mainImage} alt="Main product" className="img-fluid" />
+            </div>
           </div>
         </Col>
 
-        {/* Mobile View */}
         <Col xs={12} className="d-lg-none mb-4">
           <Carousel indicators={true} controls={false}>
-            {productImages.map((img, idx) => (
+            {textureVariantImages.map((img, idx) => (
               <Carousel.Item key={idx}>
                 <img src={img} className="d-block w-100" alt={`slide-${idx}`} />
               </Carousel.Item>
@@ -144,65 +190,97 @@ const ProductPage = () => {
           </Carousel>
         </Col>
 
-        {/* Right Side: Product Details */}
-        <Col lg={6}>
-          <h2 className="fw-bold">1B RAW BUNDLES</h2>
-          <h4 className="my-3">£85.00</h4>
+        <Col lg={6} className="">
+          <h2 className="product-title">{product.name}</h2>
+          <p className="product-price">£{selectedVariant?.price}</p>
 
-          {/* Length Options */}
           <h6>LENGTH</h6>
-          <div className="d-flex flex-wrap mb-3">
-            {["10", "12", "14", "16", "18", "20", "22", "24", "26"].map((len) => (
-              <Button variant="outline-dark" className="me-2 mb-2" key={len}>{len}"</Button>
+          <div className="d-flex flex-wrap mb-4 gap-2">
+            {availableLengths.map(({ length, stock }) => (
+              <Button
+                variant={selectedLength === length ? "dark" : "outline-dark"}
+                className="me-1 mb-2 px-2 rounded-none position-relative option-button"
+                key={length}
+                onClick={() => handleLengthClick(length)}
+                disabled={stock === 0}
+              >
+                {length}
+                {stock === 0 && (
+                  <Badge
+                    bg="danger"
+                    pill
+                    className="position-absolute top-0 start-100 translate-middle"
+                  >
+                    Out
+                  </Badge>
+                )}
+              </Button>
             ))}
           </div>
 
-          {/* Texture */}
           <h6>TEXTURE <span className="text-warning">?</span></h6>
           <div className="d-flex flex-wrap mb-3">
-            {["(SD) Straight", "(SD) Body Wave", "(SD) Deep Wave", "(SD) Loose Wave", "(SD) Kinky Curly", "(DD) Cambodian Wavy"].map((texture) => (
-              <Button variant="outline-dark" className="me-2 mb-2" key={texture}>{texture}</Button>
+            {uniqueTextures.map((texture) => (
+              <Button
+                variant={selectedTexture === texture ? "dark" : "outline-dark"}
+                className="me-1 mb-2 option-button"
+                key={texture}
+                onClick={() => setSelectedTexture(texture)}
+              >
+                {texture.replace(/_/g, " ")}
+              </Button>
             ))}
           </div>
 
-          {/* Origin */}
-          <h6>ORIGIN <span className="text-warning">?</span></h6>
-          <div className="d-flex flex-wrap mb-3">
-            {["(SD) Peruvian", "(SD) Brazilian", "(SD) Indian"].map((origin) => (
-              <Button variant="outline-dark" className="me-2 mb-2" key={origin}>{origin}</Button>
-            ))}
-          </div>
+          <h6>ORIGIN</h6>
+          <p className="mb-3">{selectedOrigin}</p>
 
-          {/* Quantity */}
           <h6>QUANTITY</h6>
           <ButtonGroup className="mb-3">
-            <Button variant="outline-dark">−</Button>
-            <Button variant="light" disabled>1</Button>
-            <Button variant="outline-dark">+</Button>
+            <Button
+              variant="outline-dark"
+              onClick={() => setQuantity((q) => (q > 1 ? q - 1 : 1))}
+            >
+              −
+            </Button>
+            <Button variant="light" disabled>
+              {quantity}
+            </Button>
+            <Button
+              variant="outline-dark"
+              onClick={() =>
+                setQuantity((q) => (q < maxAvailableQty ? q + 1 : q))
+              }
+              disabled={quantity >= maxAvailableQty}
+            >
+              +
+            </Button>
           </ButtonGroup>
-
-          {/* Add to Cart */}
-          <Button variant="dark" size="lg" className="w-100 mb-3">ADD TO CART</Button>
-
-          {/* Delivery Note */}
-          <div className="text-center mb-4">
-            <small className="text-muted">
-              Order within <b>18 Hours 29 Minutes</b> to receive Next Day Delivery by <b>Fri, 11 Jul</b>
+          {selectedVariant?.stock > 0 && (
+            <small className="text-muted ms-2">
+               {maxAvailableQty} left in stock
             </small>
-          </div>
+          )}
 
-          {/* Accordion */}
+          <Button
+            variant="dark"
+            size="lg"
+            className="w-100 mb-3"
+            onClick={handleAddToCart}
+            disabled={selectedVariant?.stock === 0 || maxAvailableQty === 0}
+          >
+            {selectedVariant?.stock === 0 ? "OUT OF STOCK" : "ADD TO CART"}
+          </Button>
+
           <Accordion>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Description</Accordion.Header>
-              <Accordion.Body>
-                Full product details, care instructions, and styling info.
-              </Accordion.Body>
+              <Accordion.Body>{product.description}</Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1">
               <Accordion.Header>Hair Textures + Origins</Accordion.Header>
               <Accordion.Body>
-                Descriptions of hair texture types and sourcing locations.
+                Includes Peruvian, Brazilian, Indian textures in a variety of curls and waves.
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="2">

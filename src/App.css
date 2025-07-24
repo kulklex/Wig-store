@@ -9,7 +9,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: App-logo-spin infinite 10s linear;
   }
 }
 
@@ -156,5 +156,39 @@
 .main-product-image {
   max-height: 600px;
   object-fit: contain;
+}
+
+.cart {
+  text-decoration: none;
+  color: #000;
+}
+
+
+.product-title {
+  font-family: "Playfair Display", serif;
+  font-weight: 300;
+  font-size: 2rem;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #444;
+  margin-bottom: 2rem;
+}
+
+.option-title {
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #555;
+  margin-top: 1rem;
+}
+
+.option-button {
+  border-radius: 0 !important;
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import { getTotals } from "../redux/cartSlice";
+import { useNavigate, Link } from "react-router-dom";
+import { closeCartDrawer, getTotals, openCartDrawer } from "../redux/cartSlice";
 import {
   FiSearch,
   FiShoppingCart,
@@ -11,6 +11,7 @@ import {
   FiChevronDown,
   FiChevronUp,
 } from "react-icons/fi";
+import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
   const [showShopDropdown, setShowShopDropdown] = useState(false);
@@ -18,6 +19,7 @@ const Navbar = () => {
   const [expandedSections, setExpandedSections] = useState({});
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [hasMounted, setHasMounted] = useState(false);
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
@@ -29,9 +31,15 @@ const Navbar = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
 
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
+  const showCartDrawer = useSelector((state) => state.cart.showDrawer);
+
+  useEffect(() => {
+    dispatch(closeCartDrawer());
+    setHasMounted(true);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getTotals());
@@ -178,7 +186,7 @@ const Navbar = () => {
                               <Link
                                 key={item}
                                 to="/"
-                                className="text-decoration-none text-secondary hover-text-dark"
+                                className="text-decoration-none text-secondary fs-12 hover-text-dark"
                               >
                                 {item}
                               </Link>
@@ -202,18 +210,20 @@ const Navbar = () => {
 
           {/* Right Side - Icons */}
           <div className="d-flex align-items-center gap-4">
-            <Link to="/sign-in" className="text-dark">
+            {user!==null ? <Link to={"/my-orders"} className="text-dark">
               <FiUser size={20} />
-            </Link>
+            </Link> : <Link to={"/sign-in"} className="text-dark">
+              <FiUser size={20} />
+            </Link>}
             <button
-              onClick={() =>  navigate('/cart', { state: { from: location } })}
+              onClick={() => dispatch(openCartDrawer())}
               className="text-dark position-relative border-0 bg-transparent"
               aria-label="Cart"
             >
               <FiShoppingCart size={20} />
-              {cart.qty > 0 && (
+              {cart.totalQuantity > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {cart.qty}
+                  {cart.totalQuantity}
                 </span>
               )}
             </button>
@@ -221,26 +231,20 @@ const Navbar = () => {
         </div>
       </nav>
 
+    {hasMounted &&  <CartDrawer show={showCartDrawer} onClose={() => dispatch(closeCartDrawer())} /> }
+
       {/* Mobile Navbar */}
       <nav className="bg-white py-3 d-lg-none">
         <div className="container-fluid px-4">
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex justify-content-between align-items-center">
-            {/* Mobile Menu Button */}
-            <button
-              className="btn p-0 border-0 bg-transparent"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-            </button>
-
-            {/* Mobile Search */}
-            <button
-              className="btn p-0 border-0 bg-transparent px-4"
-              onClick={() => setSearchOpen(!searchOpen)}
-            >
-              <FiSearch size={20} />
-            </button>
+              {/* Mobile Menu Button */}
+              <button
+                className="btn p-0 border-0 bg-transparent"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+              </button>
             </div>
 
             {/* Mobile Home */}
@@ -248,19 +252,28 @@ const Navbar = () => {
               KarinaHair
             </Link>
 
-            {/* Mobile Cart */}
-            <button
-              onClick={() => navigate('/cart', { state: { from: location } })}
-              className="text-dark position-relative border-0 bg-transparent"
-              aria-label="Cart"
-            >
-              <FiShoppingCart size={20} />
-              {cart.qty > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {cart.qty}
-                </span>
-              )}
-            </button>
+            <div className="d-flex align-items-center justify-items-center">
+              {/* Mobile Search */}
+              <button
+                className="btn p-0 border-0 bg-transparent px-4"
+                onClick={() => setSearchOpen(!searchOpen)}
+              >
+                <FiSearch size={20} />
+              </button>
+              {/* Mobile Cart */}
+              <button
+                onClick={() => dispatch(openCartDrawer())}
+                className="text-dark position-relative border-0 bg-transparent"
+                aria-label="Cart"
+              >
+                <FiShoppingCart size={20} />
+                {cart.totalQuantity > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {cart.totalQuantity}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Mobile Search Bar */}
@@ -306,13 +319,23 @@ const Navbar = () => {
               </div>
 
               <div className="mb-4">
-                <Link
-                  to="/account"
-                  className="d-flex align-items-center py-2 text-dark text-decoration-none"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <FiUser className="me-2" /> My Account
-                </Link>
+                {user == null ? (
+                  <Link
+                    to="/sign-in"
+                    className="d-flex align-items-center py-2 text-dark text-decoration-none"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <FiUser className="me-2" /> Sign In
+                  </Link>
+                ) : (
+                  <Link
+                    to="/my-orders"
+                    className="d-flex align-items-center py-2 text-dark text-decoration-none"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <FiUser className="me-2" /> My Account
+                  </Link>
+                )}
               </div>
 
               <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-light text-dark">

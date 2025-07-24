@@ -9,15 +9,15 @@ html, body {
   width: 100%;
   max-width: 100%;
 }
-
+/* 
 body {
   font-family: "Poppins", "Manrope", sans-serif;
-}
+} */
 
 .font-sans {
   font-family: 'Montserrat', sans-serif;
 }
 
-.font-serif {
+.body {
   font-family: 'Playfair Display', serif;
 }

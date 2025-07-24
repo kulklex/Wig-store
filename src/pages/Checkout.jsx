@@ -1,32 +1,71 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { clearCart } from "../redux/cartSlice";
 
 const Checkout = () => {
-  const { items, totalAmount } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { items, totalAmount } = useSelector((state) => state.cart);
 
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    address: '',
-    city: '',
-    zip: '',
-    phone: '',
+    name: "",
+    email: "",
+    address: "",
+    city: "",
+    zip: "",
+    phone: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePlaceOrder = (e) => {
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-    // Submit logic here (e.g., dispatch checkout thunk, hit API)
-    console.log('Order placed:', form, items);
+    const orderItems = items.map((item) => ({
+      productId: item.productId,
+      variantId: item.variantId,
+      quantity: item.cartQty,
+    }));
 
-    // Navigate to confirmation or home
-    navigate('/');
+    const payload = {
+      email: form.email,
+      shippingInfo: {
+        name: form.name,
+        address: form.address,
+        city: form.city,
+        zip: form.zip,
+        phone: form.phone,
+      },
+      items: orderItems,
+      total: totalAmount,
+    };
+
+    try {
+      const res = await axios.post("/api/orders", payload);
+
+      if (res.status === 201) {
+        dispatch(clearCart());
+        navigate("/order-confirmation", {
+          state: { orderId: res.data.order._id },
+        });
+      } else {
+        throw new Error(res.data.message || "Unknown error");
+      }
+    } catch (err) {
+      console.error("Order error:", err);
+      setError(err.response?.data?.message || "Failed to place order");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,7 +74,17 @@ const Checkout = () => {
 
       {items.length === 0 ? (
         <div className="text-center">
-          <p>Your cart is empty. <span className="text-primary" role="button" onClick={() => navigate('/')}>Go shopping</span>.</p>
+          <p>
+            Your cart is empty.{" "}
+            <span
+              className="text-primary"
+              role="button"
+              onClick={() => navigate("/")}
+            >
+              Go shopping
+            </span>
+            .
+          </p>
         </div>
       ) : (
         <div className="row">
@@ -116,8 +165,14 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <button type="submit" className="btn btn-dark w-100 mt-3">
-                Place Order
+              {error && <div className="alert alert-danger">{error}</div>}
+
+              <button
+                type="submit"
+                className="btn btn-dark w-100 mt-3"
+                disabled={loading}
+              >
+                {loading ? "Placing Order..." : "Place Order"}
               </button>
             </form>
           </div>
@@ -129,14 +184,16 @@ const Checkout = () => {
               <ul className="list-group mb-3">
                 {items.map((item) => (
                   <li
-                    key={item._id}
+                    key={item._id + item.variantId}
                     className="list-group-item d-flex justify-content-between align-items-center"
                   >
                     <div>
                       <h6 className="my-0">{item.title}</h6>
                       <small className="text-muted">Qty: {item.cartQty}</small>
                     </div>
-                    <span className="text-muted">£{(item.price * item.cartQty).toFixed(2)}</span>
+                    <span className="text-muted">
+                      £{(item.price * item.cartQty).toFixed(2)}
+                    </span>
                   </li>
                 ))}
               </ul>

@@ -12,12 +12,11 @@ import cartReducer, { getTotals } from "./redux/cartSlice";
 import productReducer from "./redux/productSlice"
 import authReducer from "./redux/authSlice"
 
-export const baseUrl = 'https://m-store-server.onrender.com'
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
-    product: productReducer,
+    products: productReducer,
     user: authReducer
   },
 });
