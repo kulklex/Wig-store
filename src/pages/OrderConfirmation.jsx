@@ -1,10 +1,19 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const OrderConfirmation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const orderId = location.state?.orderId;
+
+  const [params] = useSearchParams();
+  const sessionId = params.get("session_id");
+
+
+  useEffect(() => {
+    console.log("Checkout session ID:", sessionId);
+  }, [sessionId]);
 
   return (
     <div className="container py-5 text-center">
@@ -17,13 +26,15 @@ const OrderConfirmation = () => {
             <p>
               <strong>Order ID:</strong> <code>{orderId}</code>
             </p>
-            <p className="text-muted">You’ll receive a confirmation email shortly.</p>
+            <p className="text-muted">
+              You’ll receive a confirmation email shortly.
+            </p>
           </>
         ) : (
           <p className="text-danger">No order information available.</p>
         )}
 
-        <button className="btn btn-dark mt-4" onClick={() => navigate('/')}>
+        <button className="btn btn-dark mt-4" onClick={() => navigate("/")}>
           Continue Shopping
         </button>
       </div>

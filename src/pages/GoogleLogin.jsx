@@ -1,15 +1,19 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import axios from 'axios';
-import { setUser } from '../redux/authSlice';
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import axios from "axios";
+import { setUser } from "../redux/authSlice";
+import AlertModal from "../components/AlertModal";
 
 const GoogleLogin = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const from = location.state?.from?.pathname || '/';
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     /* global google */
@@ -20,11 +24,12 @@ const GoogleLogin = () => {
       });
 
       google.accounts.id.renderButton(
-        document.getElementById('google-signin-btn'),
+        document.getElementById("google-signin-btn"),
         {
-          theme: 'outline',
-          size: 'large',
-          width: '100%',
+          theme: "outline",
+          size: "large",
+          // ✅ Avoid invalid width
+          width: 250,
         }
       );
     }
@@ -35,15 +40,25 @@ const GoogleLogin = () => {
 
     try {
       const res = await axios.post(
-        '/api/auth/google-login',
+        "/api/auth/google-login",
         { credential },
         { withCredentials: true }
       );
-      dispatch(setUser(res.data.user));
+
+      const user = res.data.user;
+
+      // Add token if available — store it in Redux + localStorage for client-side token validation
+      const token = res.data.token || null; // Add this in backend response if needed
+      const userWithToken = token ? { ...user, token } : user;
+
+      dispatch(setUser(userWithToken));
       navigate(from, { replace: true });
     } catch (err) {
-      console.error(err);
-      alert('Google login failed. Please try again.');
+      console.error("Google login failed:", err);
+      setModalMessage(
+        err?.response?.data?.message || "Google login failed. Please try again."
+      );
+      setShowModal(true);
     }
   };
 
@@ -52,7 +67,7 @@ const GoogleLogin = () => {
       <div className="row justify-content-center pt-5">
         <div className="col-12 col-sm-10 col-md-6 col-lg-4">
           <div className="card shadow-sm border-0 p-4 rounded-4">
-            <div className="text-center mb-4">
+           <div className="text-center mb-4">
               <h2 className="fw-bold text-dark mb-2"> <span className="text-primary">KarinaHair</span></h2>
               <p className="text-muted small">Sign in with your Google account to continue</p>
             </div>
@@ -63,11 +78,26 @@ const GoogleLogin = () => {
 
             <p className="text-center text-muted small mb-0">
               By continuing, you agree to our
-              <Link to="#" className="text-decoration-none mx-1">Terms</Link> and
-              <Link to="#" className="text-decoration-none mx-1">Privacy Policy</Link>.
+              <Link to="#" className="text-decoration-none mx-1">
+                Terms
+              </Link>
+              and
+              <Link to="#" className="text-decoration-none mx-1">
+                Privacy Policy
+              </Link>
+              .
             </p>
           </div>
         </div>
+        <AlertModal
+          isOpen={showModal}
+          title="Login Error"
+          message={modalMessage}
+          onClose={() => setShowModal(false)}
+          onConfirm={() => setShowModal(false)}
+          confirmText="OK"
+          cancelText=""
+        />
       </div>
     </div>
   );

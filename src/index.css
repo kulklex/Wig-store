@@ -9,13 +9,10 @@ html, body {
   width: 100%;
   max-width: 100%;
 }
-/* 
-body {
-  font-family: "Poppins", "Manrope", sans-serif;
-} */
-
-.font-sans {
-  font-family: 'Montserrat', sans-serif;
+@media (max-width: 768px) {
+  html, body{
+    overflow: auto;
+  }
 }
 
 .body {

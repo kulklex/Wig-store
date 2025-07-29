@@ -33,7 +33,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
 
   useEffect(() => {
@@ -120,6 +120,17 @@ const Navbar = () => {
         <div className="d-flex justify-content-between align-items-center position-relative px-4">
           {/* Left Side - Search */}
           <div className="d-flex justify-content-center align-items-center text-center gap-4">
+             <div className="d-flex justify-items-center align-items-center">
+                {user.role === "admin" && (
+                  <Link
+                    to="/admin/analytics"
+                    className="d-flex align-items-center py-2 text-dark text-decoration-none"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <FiUser className="me-2" /> Admin Area
+                  </Link>
+                )}
+              </div>
             <div className="position-relative d-flex align-items-center">
               {!searchOpen ? (
                 <button
@@ -161,7 +172,7 @@ const Navbar = () => {
               className="position-static"
               onMouseEnter={() => setShowShopDropdown(true)}
             >
-              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fs-6 fw-light text-dark font-sans">
+              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fs-6 fw-light">
                 SHOP HAIR EXTENSIONS{" "}
                 <span className="ms-2 fs-6">
                   <FiChevronDown />
@@ -210,9 +221,10 @@ const Navbar = () => {
 
           {/* Right Side - Icons */}
           <div className="d-flex align-items-center gap-4">
-            {user!==null ? <Link to={"/my-orders"} className="text-dark">
+            {user ==null ? <Link to={"/sign-in"} className="text-dark">
               <FiUser size={20} />
-            </Link> : <Link to={"/sign-in"} className="text-dark">
+            </Link>
+             : <Link to={"/my-orders"} className="text-dark">
               <FiUser size={20} />
             </Link>}
             <button
@@ -305,17 +317,29 @@ const Navbar = () => {
 
       {/* Mobile Side Menu */}
       {mobileMenuOpen && (
-        <div className="mobile-menu-overlay d-lg-none">
+        <div className="mobile-menu-overlay d-lg-none mobile-nav">
           <div className="mobile-menu-container bg-white vh-100 position-fixed start-0 top-0 w-75 shadow-lg overflow-auto">
             <div className="p-4">
               <div className="d-flex justify-content-between align-items-center mb-4">
-                <h3 className="fw-bold mb-0">Menu</h3>
+                <h3 className="mb-0">Menu</h3>
                 <button
                   className="btn p-0 border-0 bg-transparent"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <FiX size={24} />
                 </button>
+              </div>
+
+              <div className="mb-2">
+                {user.role === "admin" && (
+                  <Link
+                    to="/admin/analytics"
+                    className="d-flex align-items-center py-2 text-dark text-decoration-none"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <FiUser className="me-2" /> Admin Area
+                  </Link>
+                )}
               </div>
 
               <div className="mb-4">
@@ -338,7 +362,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-light text-dark">
+              <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-light">
                 SHOP HAIR EXTENSIONS
               </h6>
               {dropdownContent.map((section, index) => (

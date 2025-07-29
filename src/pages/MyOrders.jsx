@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { clearUser } from '../redux/authSlice';
 
 const MyOrders = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!user) return; // if not logged in, skip fetching
+    if (!user) return;
 
     const fetchOrders = async () => {
       try {
@@ -27,7 +31,16 @@ const MyOrders = () => {
     fetchOrders();
   }, [user]);
 
-  if (!user) {
+  const handleLogout = async () => {
+    try {
+      dispatch(clearUser());
+      navigate('/');
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
+  };
+
+  if (user === null) {
     return (
       <div className="container py-5">
         <h3>Please log in to view your orders.</h3>
@@ -36,7 +49,14 @@ const MyOrders = () => {
   }
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 position-relative">
+      {/* Top-right Logout Button */}
+      <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-dark btn-sm" onClick={handleLogout}>
+          Log Out
+        </button>
+      </div>
+
       <h2 className="mb-4">My Orders</h2>
 
       {loading && (
@@ -53,48 +73,44 @@ const MyOrders = () => {
       )}
 
       {!loading && !error && orders.length === 0 && (
-        <div className="alert alert-info">
-          You have no orders yet.
-        </div>
+        <div className="alert alert-info">You have no orders yet.</div>
       )}
 
       {!loading && !error && orders.length > 0 && (
-        <div className="table-responsive">
+        <div className="table-responsive px-2">
           <table className="table table-hover align-middle">
             <thead className="table-light">
               <tr>
                 <th>Order ID</th>
-                <th>Date</th>
                 <th>Status</th>
                 <th>Total</th>
-                <th>Details</th>
               </tr>
             </thead>
             <tbody>
-              {orders.map(order => (
-                <tr key={order._id}>
-                  <td className="text-truncate" style={{ maxWidth: '150px' }}>{order._id}</td>
-                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+              {orders.map((order) => (
+                <tr
+                  key={order._id}
+                  className="clickable-row"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => navigate(`/orders/${order._id}`)}
+                >
+                  <td className="text-truncate" style={{ maxWidth: '150px' }}>
+                    {order._id.slice(0, 5)}...
+                  </td>
                   <td>
                     <span
                       className={`badge ${
-                        order.status === 'Completed' ? 'bg-success' :
-                        order.status === 'Cancelled' ? 'bg-danger' :
-                        'bg-warning text-dark'
+                        order.status === 'Completed'
+                          ? 'bg-success'
+                          : order.status === 'Cancelled'
+                          ? 'bg-danger'
+                          : 'bg-warning text-dark'
                       }`}
                     >
                       {order.status}
                     </span>
                   </td>
-                  <td>${order.total.toFixed(2)}</td>
-                  <td>
-                    <button
-                      className="btn btn-outline-primary btn-sm"
-                      onClick={() => alert(`View details for order ${order._id}`)}
-                    >
-                      View
-                    </button>
-                  </td>
+                  <td>£{order.total.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

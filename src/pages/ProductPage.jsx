@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, closeCartDrawer } from "../redux/cartSlice";
+import AlertModal from "../components/AlertModal";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -25,9 +26,17 @@ const ProductPage = () => {
   const [selectedLength, setSelectedLength] = useState("");
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedLace, setSelectedLace] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState("");
+  const [selectedWeight, setSelectedWeight] = useState("");
+  const [selectedFullDescription, setSelectedFullDescription] = useState("");
+
   const [mainImage, setMainImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -62,22 +71,29 @@ const ProductPage = () => {
       const defaultVariant =
         product.variants.find((v) => v.texture.toLowerCase() === "straight") ||
         product.variants[0];
-      const normalized = defaultVariant.texture.toLowerCase().replace(/\s+/g, "_");
+      const normalized = defaultVariant.texture
+        .toLowerCase()
+        .replace(/\s+/g, "_");
       setSelectedTexture(normalized);
     }
   }, [product]);
 
-  useEffect(() => {
-    if (selectedTexture && textureVariantsMap[selectedTexture]) {
-      const textureVariants = textureVariantsMap[selectedTexture];
-      const defaultVariant = textureVariants[0];
-      setMainImage(defaultVariant.media);
-      setSelectedLength(defaultVariant.length);
-      setSelectedOrigin(defaultVariant.origin);
-      setSelectedVariant(defaultVariant);
-      setQuantity(1);
-    }
-  }, [selectedTexture, textureVariantsMap]);
+useEffect(() => {
+  if (selectedTexture && textureVariantsMap[selectedTexture]) {
+    const defaultVariant = textureVariantsMap[selectedTexture][0];
+    setMainImage(defaultVariant.media);
+    setSelectedLength(defaultVariant.length);
+    setSelectedOrigin(defaultVariant.origin);
+    setSelectedVariant(defaultVariant);
+    setQuantity(1);
+
+    setSelectedLace(defaultVariant.lace || "");
+    setSelectedStyle(defaultVariant.style || "");
+    setSelectedWeight(defaultVariant.weight || "");
+    setSelectedFullDescription(defaultVariant.fullDescription || "");
+  }
+}, [selectedTexture, textureVariantsMap]);
+
 
   const handleLengthClick = (len) => {
     const matched = textureVariantsMap[selectedTexture]?.find(
@@ -92,30 +108,38 @@ const ProductPage = () => {
     }
   };
 
-  const cartItem = cartItems.find((item) => item.variantId === selectedVariant?._id);
+  const cartItem = cartItems.find(
+    (item) => item.variantId === selectedVariant?._id
+  );
   const currentCartQty = cartItem?.cartQty || 0;
-  const maxAvailableQty = selectedVariant ? selectedVariant.stock - currentCartQty : 0;
+  const maxAvailableQty = selectedVariant
+    ? selectedVariant.stock - currentCartQty
+    : 0;
 
   const handleAddToCart = () => {
     if (!selectedVariant) return;
 
     if (quantity > maxAvailableQty) {
-      alert("Cannot add more than available stock.");
+      setModalMessage("Cannot add more than available stock.");
       return;
     }
 
-    const newCartItem = {
-      variantId: selectedVariant._id,
-      productId: product._id,
-      title: product.name,
-      price: selectedVariant.price,
-      media: selectedVariant.media,
-      stock: selectedVariant.stock,
-      texture: selectedVariant.texture,
-      length: selectedVariant.length,
-      origin: selectedVariant.origin,
-      cartQty: quantity,
-    };
+  const newCartItem = {
+  variantId: selectedVariant._id,
+  productId: product._id,
+  title: product.name,
+  price: selectedVariant.price,
+  media: selectedVariant.media,
+  stock: selectedVariant.stock,
+  texture: selectedVariant.texture,
+  length: selectedVariant.length || "",
+  origin: selectedVariant.origin || "",
+  lace: selectedVariant.lace || "",
+  style: selectedVariant.style || "",
+  weight: selectedVariant.weight || "",
+  fullDescription: selectedVariant.fullDescription || "",
+  cartQty: quantity,
+};
 
     dispatch(addToCart(newCartItem));
     setQuantity(1);
@@ -141,6 +165,25 @@ const ProductPage = () => {
   ];
 
   const allVariantImages = [...new Set(product.variants.map((v) => v.media))];
+
+  const getUniqueAttributeValues = (attribute) => {
+    const values = product.variants
+      .map((v) => v[attribute])
+      .filter((val) => val !== undefined && val !== null);
+    return [...new Set(values)];
+  };
+
+  const findMatchingVariant = () => {
+    return textureVariantsMap[selectedTexture]?.find(
+      (v) =>
+        v.length === selectedLength &&
+        (!selectedLace || v.lace === selectedLace) &&
+        (!selectedStyle || v.style === selectedStyle) &&
+        (!selectedWeight || v.weight === selectedWeight) &&
+        (!selectedFullDescription ||
+          v.fullDescription === selectedFullDescription)
+    );
+  };
 
   return (
     <Container className="my-4">
@@ -218,7 +261,9 @@ const ProductPage = () => {
             ))}
           </div>
 
-          <h6>TEXTURE <span className="text-warning">?</span></h6>
+          <h6>
+            TEXTURE <span className="text-warning">?</span>
+          </h6>
           <div className="d-flex flex-wrap mb-3">
             {uniqueTextures.map((texture) => (
               <Button
@@ -231,6 +276,63 @@ const ProductPage = () => {
               </Button>
             ))}
           </div>
+
+          {[
+            {
+              key: "lace",
+              label: "LACE",
+              state: selectedLace,
+              setter: setSelectedLace,
+            },
+            {
+              key: "style",
+              label: "STYLE",
+              state: selectedStyle,
+              setter: setSelectedStyle,
+            },
+            {
+              key: "weight",
+              label: "WEIGHT",
+              state: selectedWeight,
+              setter: setSelectedWeight,
+            },
+            {
+              key: "fullDescription",
+              label: "DESCRIPTION",
+              state: selectedFullDescription,
+              setter: setSelectedFullDescription,
+            },
+          ].map(({ key, label, state, setter }) => {
+            const values = getUniqueAttributeValues(key);
+            if (!values.length) return null;
+
+            return (
+              <div key={key} className="mb-3">
+                <h6 className="text-uppercase">{label}</h6>
+                <div className="d-flex flex-wrap gap-2">
+                  {values.map((val) => (
+                    <Button
+                      key={val}
+                      variant={state === val ? "dark" : "outline-dark"}
+                      className="option-button"
+                      onClick={() => {
+                        setter(val);
+                        const matched = findMatchingVariant();
+                        if (matched) {
+                          setSelectedOrigin(matched.origin);
+                          setSelectedVariant(matched);
+                          setMainImage(matched.media);
+                          setQuantity(1);
+                        }
+                      }}
+                    >
+                      {val}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
 
           <h6>ORIGIN</h6>
           <p className="mb-3">{selectedOrigin}</p>
@@ -258,7 +360,7 @@ const ProductPage = () => {
           </ButtonGroup>
           {selectedVariant?.stock > 0 && (
             <small className="text-muted ms-2">
-               {maxAvailableQty} left in stock
+              {maxAvailableQty} left in stock
             </small>
           )}
 
@@ -280,7 +382,8 @@ const ProductPage = () => {
             <Accordion.Item eventKey="1">
               <Accordion.Header>Hair Textures + Origins</Accordion.Header>
               <Accordion.Body>
-                Includes Peruvian, Brazilian, Indian textures in a variety of curls and waves.
+                Includes Peruvian, Brazilian, Indian textures in a variety of
+                curls and waves.
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="2">
@@ -292,6 +395,15 @@ const ProductPage = () => {
           </Accordion>
         </Col>
       </Row>
+      <AlertModal
+        isOpen={showModal}
+        title="Validation Error"
+        message={modalMessage}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => setShowModal(false)}
+        confirmText="OK"
+        cancelText=""
+      />
     </Container>
   );
 };

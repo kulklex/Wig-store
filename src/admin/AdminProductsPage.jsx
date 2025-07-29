@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import ConfirmModal from "../components/ConfirmModal";
 
-const AdminProductList = () => {
+const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
+
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [variantToRemove, setVariantToRemove] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,8 +21,7 @@ const AdminProductList = () => {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+  const handleRemoveVariant = async (id) => {
     try {
       await axios.delete(`/api/products/${id}`);
       setProducts(products.filter((p) => p._id !== id));
@@ -37,8 +40,6 @@ const AdminProductList = () => {
           <thead className="table-dark">
             <tr>
               <th>Name</th>
-              <th>Category</th>
-              <th>Brand</th>
               <th>Variants</th>
               <th>Actions</th>
             </tr>
@@ -47,8 +48,6 @@ const AdminProductList = () => {
             {products?.map((p) => (
               <tr key={p._id}>
                 <td>{p.name}</td>
-                <td>{p.category}</td>
-                <td>{p.brand || "-"}</td>
                 <td>{p.variants?.length || 0}</td>
                 <td>
                   <div className="d-flex flex-wrap gap-2">
@@ -59,7 +58,10 @@ const AdminProductList = () => {
                       Edit
                     </Link>
                     <button
-                      onClick={() => handleDelete(p._id)}
+                      onClick={() => {
+                        setVariantToRemove(p._id);
+                        setShowConfirm(true);
+                      }}
                       className="btn btn-sm btn-danger"
                     >
                       Delete
@@ -70,9 +72,26 @@ const AdminProductList = () => {
             ))}
           </tbody>
         </table>
+        <ConfirmModal
+          isOpen={showConfirm}
+          title="Delete Product?"
+          message="Are you sure you want to delete this product? This action cannot be undone."
+          onConfirm={() => {
+            handleRemoveVariant(variantToRemove);
+            setShowConfirm(false);
+            setVariantToRemove(null);
+          }}
+          onCancel={() => {
+            setShowConfirm(false);
+            setVariantToRemove(null);
+          }}
+          confirmText="Remove"
+          cancelText="Cancel"
+          confirmVariant="danger"
+        />
       </div>
     </div>
   );
 };
 
-export default AdminProductList;
+export default AdminProductsPage;

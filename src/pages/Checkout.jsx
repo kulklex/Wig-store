@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { clearCart } from "../redux/cartSlice";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("pk_test_51KVF4VDXLQnXLH3ZAEXYAaaGjmt9pokCaUleoc1msPk3v7dtjNjyH8EmIznpDf4WNoh2JoXcRhsHKuzjGIJZIfmq00DerQTkK5"); 
+
 
 const Checkout = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { items, totalAmount } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.user)
 
   const [form, setForm] = useState({
     name: "",
@@ -25,18 +28,13 @@ const Checkout = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePlaceOrder = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+const handlePlaceOrder = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    const orderItems = items.map((item) => ({
-      productId: item.productId,
-      variantId: item.variantId,
-      quantity: item.cartQty,
-    }));
-
-    const payload = {
+  try {
+    const res = await axios.post("/api/create-checkout-session", {
       email: form.email,
       shippingInfo: {
         name: form.name,
@@ -45,28 +43,24 @@ const Checkout = () => {
         zip: form.zip,
         phone: form.phone,
       },
-      items: orderItems,
+      items: items.map((item) => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.cartQty,
+      })),
       total: totalAmount,
-    };
+    });
 
-    try {
-      const res = await axios.post("/api/orders", payload);
+    const stripe = await stripePromise;
+    await stripe.redirectToCheckout({ sessionId: res.data.id });
+  } catch (err) {
+    console.error("Stripe redirect error:", err);
+    setError("Failed to redirect to payment.");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      if (res.status === 201) {
-        dispatch(clearCart());
-        navigate("/order-confirmation", {
-          state: { orderId: res.data.order._id },
-        });
-      } else {
-        throw new Error(res.data.message || "Unknown error");
-      }
-    } catch (err) {
-      console.error("Order error:", err);
-      setError(err.response?.data?.message || "Failed to place order");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="container py-5">
@@ -88,8 +82,33 @@ const Checkout = () => {
         </div>
       ) : (
         <div className="row">
-          {/* Billing Form */}
           <div className="col-md-7">
+            {!user && (
+  <div className="mb-4 p-3 border rounded bg-light">
+    <p className="mb-2 fw-semibold">You’re checking out as a guest.</p>
+    <p className="text-muted mb-3">
+      You can continue as guest or{" "}
+      <span
+        className="text-primary"
+        role="button"
+        onClick={() => navigate("/sign-in")}
+      >
+        login with Google
+      </span>{" "}
+      for faster checkout and order history.
+    </p>
+    <div className="d-flex gap-2">
+      <button
+        type="button"
+        className="btn btn-outline-primary"
+        onClick={() => navigate("/sign-in")}
+      >
+        Login with Google
+      </button>
+    </div>
+  </div>
+)}
+
             <form onSubmit={handlePlaceOrder}>
               <div className="mb-3">
                 <label className="form-label">Full Name</label>

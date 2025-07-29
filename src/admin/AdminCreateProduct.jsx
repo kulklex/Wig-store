@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
+import AlertModal from "../components/AlertModal";
+import { useNavigate } from "react-router-dom";
+import ConfirmModal from "../components/ConfirmModal";
 
 const predefinedTextures = [
   "Straight",
@@ -54,23 +57,39 @@ const AdminCreateProduct = () => {
   const [status, setStatus] = useState("");
   const [lockedTexture, setLockedTexture] = useState("");
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [variantToRemove, setVariantToRemove] = useState(null);
+
+  const navigate = useNavigate();
+
   const handleAddVariant = () => {
-    if (!variantInput.texture || !variantInput.length) {
-      return alert("Texture and length are required");
+    if (
+      !variantInput.texture ||
+      !variantInput.length ||
+      !variantInput.price ||
+      !variantInput.stock
+    ) {
+      setModalMessage("Texture and length are required");
+      setShowModal(true);
+      return;
+    } else {
+      setVariants([...variants, variantInput]);
+      setVariantInput({
+        texture: "",
+        length: "",
+        origin: "",
+        price: "",
+        stock: "",
+        style: "",
+        weight: "",
+        lace: "",
+        fullDescription: "",
+        promo: { isActive: false, discountPercent: "" },
+      });
     }
-    setVariants([...variants, variantInput]);
-    setVariantInput({
-      texture: "",
-      length: "",
-      origin: "",
-      price: "",
-      stock: "",
-      style: "",
-      weight: "",
-      lace: "",
-      fullDescription: "",
-      promo: { isActive: false, discountPercent: "" },
-    });
   };
 
   const handleRemoveVariant = (index) => {
@@ -88,29 +107,34 @@ const AdminCreateProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !description || !category || variants.length === 0) {
-      return alert("Fill all required fields and add at least one variant");
-    }
+      setModalMessage("Fill all required fields and add at least one variant");
+      setShowModal(true);
+    } else {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("brand", brand);
+      formData.append("variants", JSON.stringify(variants));
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("brand", brand);
-    formData.append("variants", JSON.stringify(variants));
-
-    Object.entries(textureMediaMap).forEach(([key, file]) => {
-      formData.append(`media_${key}`, file);
-    });
-
-    try {
-      setStatus("Uploading...");
-      const res = await axios.post("/api/products", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      Object.entries(textureMediaMap).forEach(([key, file]) => {
+        formData.append(`media_${key}`, file);
       });
-      setStatus("Product created!");
-    } catch (err) {
-      console.error(err);
-      setStatus("Failed to create product");
+
+      try {
+        setStatus("Uploading...");
+        const res = await axios.post("/api/products", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        console.log(res.status);
+        setStatus("Product created!");
+        setTimeout(() => {
+          navigate("/admin/manage");
+        }, 3000);
+      } catch (err) {
+        console.error(err);
+        setStatus("Failed to create product");
+      }
     }
   };
 
@@ -426,7 +450,10 @@ const AdminCreateProduct = () => {
                     <button
                       type="button"
                       className="btn btn-outline-danger btn-sm"
-                      onClick={() => handleRemoveVariant(i)}
+                      onClick={() => {
+                        setVariantToRemove(i);
+                        setShowConfirm(true);
+                      }}
                     >
                       <i className="bi bi-x-circle"></i> Remove
                     </button>
@@ -467,6 +494,15 @@ const AdminCreateProduct = () => {
             >
               <i className="bi bi-upload"></i> Create Product
             </button>
+            <AlertModal
+              isOpen={showModal}
+              title="Validation Error"
+              message={modalMessage}
+              onClose={() => setShowModal(false)}
+              onConfirm={() => setShowModal(false)}
+              confirmText="OK"
+              cancelText=""
+            />
 
             {status && (
               <div
@@ -477,6 +513,24 @@ const AdminCreateProduct = () => {
                 {status}
               </div>
             )}
+
+            <ConfirmModal
+              isOpen={showConfirm}
+              title="Remove Variant?"
+              message="Are you sure you want to remove this variant? This action cannot be undone."
+              onConfirm={() => {
+                handleRemoveVariant(variantToRemove);
+                setShowConfirm(false);
+                setVariantToRemove(null);
+              }}
+              onCancel={() => {
+                setShowConfirm(false);
+                setVariantToRemove(null);
+              }}
+              confirmText="Remove"
+              cancelText="Cancel"
+              confirmVariant="danger"
+            />
           </form>
         </div>
       </div>
