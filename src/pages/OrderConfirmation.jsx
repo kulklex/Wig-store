@@ -1,38 +1,34 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import { clearCart } from "../redux/cartSlice";
+import { useDispatch } from "react-redux";
 
 const OrderConfirmation = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const orderId = location.state?.orderId;
+  const dispatch = useDispatch();
 
   const [params] = useSearchParams();
   const sessionId = params.get("session_id");
 
-
   useEffect(() => {
-    console.log("Checkout session ID:", sessionId);
-  }, [sessionId]);
+    if (sessionId) {
+      dispatch(clearCart());
+      localStorage.removeItem("cartState");
+    }
+  }, [sessionId, dispatch]);
 
   return (
     <div className="container py-5 text-center">
       <div className="p-4 border rounded bg-light">
         <h2 className="fw-bold text-success mb-3">Thank You for Your Order!</h2>
 
-        {orderId ? (
-          <>
-            <p className="lead">Your order has been placed successfully.</p>
-            <p>
-              <strong>Order ID:</strong> <code>{orderId}</code>
-            </p>
-            <p className="text-muted">
-              You’ll receive a confirmation email shortly.
-            </p>
-          </>
-        ) : (
-          <p className="text-danger">No order information available.</p>
-        )}
+        <>
+          <p className="lead">Your order has been placed successfully.</p>
+          <p className="text-muted">
+            You’ll receive a confirmation email shortly.
+          </p>
+        </>
 
         <button className="btn btn-dark mt-4" onClick={() => navigate("/")}>
           Continue Shopping

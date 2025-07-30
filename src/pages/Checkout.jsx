@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("pk_test_51KVF4VDXLQnXLH3ZAEXYAaaGjmt9pokCaUleoc1msPk3v7dtjNjyH8EmIznpDf4WNoh2JoXcRhsHKuzjGIJZIfmq00DerQTkK5"); 
-
+const stripePromise = loadStripe(
+  "pk_test_51KVF4VDXLQnXLH3ZAEXYAaaGjmt9pokCaUleoc1msPk3v7dtjNjyH8EmIznpDf4WNoh2JoXcRhsHKuzjGIJZIfmq00DerQTkK5"
+);
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, totalAmount } = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.user)
+  const { user } = useSelector((state) => state.user);
 
   const [form, setForm] = useState({
     name: "",
@@ -28,39 +29,38 @@ const Checkout = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handlePlaceOrder = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  try {
-    const res = await axios.post("/api/create-checkout-session", {
-      email: form.email,
-      shippingInfo: {
-        name: form.name,
-        address: form.address,
-        city: form.city,
-        zip: form.zip,
-        phone: form.phone,
-      },
-      items: items.map((item) => ({
-        productId: item.productId,
-        variantId: item.variantId,
-        quantity: item.cartQty,
-      })),
-      total: totalAmount,
-    });
+    try {
+      const res = await axios.post("/api/create-checkout-session", {
+        email: user ? user.email : form.email,
+        shippingInfo: {
+          name: form.name,
+          address: form.address,
+          city: form.city,
+          zip: form.zip,
+          phone: form.phone,
+        },
+        items: items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.cartQty,
+        })),
+        total: totalAmount,
+      });
 
-    const stripe = await stripePromise;
-    await stripe.redirectToCheckout({ sessionId: res.data.id });
-  } catch (err) {
-    console.error("Stripe redirect error:", err);
-    setError("Failed to redirect to payment.");
-  } finally {
-    setLoading(false);
-  }
-};
-
+      const stripe = await stripePromise;
+      await stripe.redirectToCheckout({ sessionId: res.data.id });
+    } catch (err) {
+      console.error("Stripe redirect error:", err);
+      setError("Failed to redirect to payment.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container py-5">
@@ -84,30 +84,32 @@ const handlePlaceOrder = async (e) => {
         <div className="row">
           <div className="col-md-7">
             {!user && (
-  <div className="mb-4 p-3 border rounded bg-light">
-    <p className="mb-2 fw-semibold">You’re checking out as a guest.</p>
-    <p className="text-muted mb-3">
-      You can continue as guest or{" "}
-      <span
-        className="text-primary"
-        role="button"
-        onClick={() => navigate("/sign-in")}
-      >
-        login with Google
-      </span>{" "}
-      for faster checkout and order history.
-    </p>
-    <div className="d-flex gap-2">
-      <button
-        type="button"
-        className="btn btn-outline-primary"
-        onClick={() => navigate("/sign-in")}
-      >
-        Login with Google
-      </button>
-    </div>
-  </div>
-)}
+              <div className="mb-4 p-3 border rounded bg-light">
+                <p className="mb-2 fw-semibold">
+                  You’re checking out as a guest.
+                </p>
+                <p className="text-muted mb-3">
+                  You can continue as guest or{" "}
+                  <span
+                    className="text-primary"
+                    role="button"
+                    onClick={() => navigate("/sign-in")}
+                  >
+                    login with Google
+                  </span>{" "}
+                  for faster checkout and order history.
+                </p>
+                <div className="d-flex gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => navigate("/sign-in")}
+                  >
+                    Login with Google
+                  </button>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handlePlaceOrder}>
               <div className="mb-3">
@@ -122,17 +124,19 @@ const handlePlaceOrder = async (e) => {
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                />
-              </div>
+              {!user && (
+                <div className="mb-3">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    className="form-control"
+                    required
+                  />
+                </div>
+              )}
 
               <div className="mb-3">
                 <label className="form-label">Phone Number</label>

@@ -81,7 +81,7 @@ const AdminUpdateOrderStatus = () => {
   return (
     <div className="container my-5">
       <div className="mb-4">
-        <h3 className="mb-0">Order #{order._id.slice(-6)}</h3>
+        <h3 className="mb-0">Order #{order?._id ? order._id.slice(-6) : "N/A"}</h3>
         <p className="text-muted">
           Placed on {format(new Date(order.createdAt), "dd MMM yyyy")}
         </p>

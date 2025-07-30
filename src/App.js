@@ -24,6 +24,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import RequireAdmin from './RequireAdmin';
 import AdminAnalytics from './admin/AdminAnalytics';
 import OrderDetails from './pages/OrderDetails';
+import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -77,6 +78,7 @@ const hideFooter = isAdminRoute;
   return (
     <>
       {!hideNavbar && <Navbar />}
+      <ScrollToTop />
       <main className="flex-grow">
         <Routes>
           {/* User routes */}

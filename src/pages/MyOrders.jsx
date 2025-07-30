@@ -98,13 +98,15 @@ const MyOrders = () => {
                     {order._id.slice(0, 5)}...
                   </td>
                   <td>
-                    <span
-                      className={`badge ${
-                        order.status === 'Completed'
-                          ? 'bg-success'
-                          : order.status === 'Cancelled'
-                          ? 'bg-danger'
-                          : 'bg-warning text-dark'
+                     <span
+                      className={`badge text-bg-${
+                        order.status === "Delivered"
+                          ? "success"
+                          : order.status === "Processing"
+                          ? "secondary"
+                          : order.status === "Cancelled"
+                          ? "danger"
+                          : "primary"
                       }`}
                     >
                       {order.status}
