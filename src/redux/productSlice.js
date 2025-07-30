@@ -40,6 +40,19 @@ export const fetchBestSellers = createAsyncThunk(
   }
 );
 
+// 🔍 Search products
+export const searchProducts = createAsyncThunk(
+  "products/searchProducts",
+  async (searchTerm, thunkAPI) => {
+    try {
+      const res = await axios.get(`/api/products?search=${searchTerm}`);
+      return res.data.products || res.data; // based on your API shape
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Search failed");
+    }
+  }
+);
+
 const initialState = {
   // All Products
   productsData: [],
@@ -55,13 +68,18 @@ const initialState = {
   bestSellers: [],
   bestSellersLoading: false,
   bestSellersError: null,
+
+  // Search Results
+  searchResults: [],
+  searchLoading: false,
+  searchError: null,
 };
 
 const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    // For reducers if needed later
+    // Add non-async reducers here if needed
   },
   extraReducers: (builder) => {
     builder
@@ -105,6 +123,21 @@ const productSlice = createSlice({
       .addCase(fetchBestSellers.rejected, (state, action) => {
         state.bestSellersLoading = false;
         state.bestSellersError = action.payload || "Failed to fetch best sellers";
+      })
+
+      // Search Products
+      .addCase(searchProducts.pending, (state) => {
+        state.searchLoading = true;
+        state.searchError = null;
+        state.searchResults = [];
+      })
+      .addCase(searchProducts.fulfilled, (state, action) => {
+        state.searchLoading = false;
+        state.searchResults = action.payload;
+      })
+      .addCase(searchProducts.rejected, (state, action) => {
+        state.searchLoading = false;
+        state.searchError = action.payload || "Failed to search products";
       });
   },
 });

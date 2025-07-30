@@ -39,7 +39,7 @@ const AdminOrdersPage = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => {
+            {orders?.map((order) => {
               // const itemCount = order.items.reduce(
               //   (acc, item) => acc + item.quantity,
               //   0
@@ -55,6 +55,8 @@ const AdminOrdersPage = () => {
                           : order.status === "Processing"
                           ? "secondary"
                           : order.status === "Cancelled"
+                          ? "danger"
+                          : order.status === "Refunded"
                           ? "danger"
                           : "warning"
                       }`}

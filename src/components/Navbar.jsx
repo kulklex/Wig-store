@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { closeCartDrawer, getTotals, openCartDrawer } from "../redux/cartSlice";
@@ -35,6 +35,21 @@ const Navbar = () => {
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user.user);
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
+
+  const dropdownTimeoutRef = useRef(null);
+
+  const handleDropdownEnter = () => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setShowShopDropdown(true);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setShowShopDropdown(false);
+    }, 200); // delay so user can move mouse into dropdown
+  };
 
   useEffect(() => {
     dispatch(closeCartDrawer());
@@ -116,21 +131,21 @@ const Navbar = () => {
   return (
     <>
       {/* Desktop Navbar */}
-      <nav className="bg-white py-3 position-relative d-none d-lg-block">
-        <div className="d-flex justify-content-between align-items-center position-relative px-4">
+      <nav className="bg-white d-flex py-3 position-relative d-none d-lg-block">
+        <div className="d-flex align-items-center justify-content-between position-relative px-4">
           {/* Left Side - Search */}
-          <div className="d-flex justify-content-center align-items-center text-center gap-4">
-             <div className="d-flex justify-items-center align-items-center">
-                {user.role === "admin" && (
-                  <Link
-                    to="/admin/analytics"
-                    className="d-flex align-items-center py-2 text-dark text-decoration-none"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FiUser className="me-2" /> Admin Area
-                  </Link>
-                )}
-              </div>
+          <div className="d-flex flex-1 align-items-center justify-content-between flex-shrink-1 gap-4">
+            <div className="d-flex justify-items-center align-items-center">
+              {user.role === "admin" && (
+                <Link
+                  to="/admin/analytics"
+                  className="d-flex align-items-center py-2 text-dark text-decoration-none"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FiUser className="me-2" /> Admin Area
+                </Link>
+              )}
+            </div>
             <div className="position-relative d-flex align-items-center">
               {!searchOpen ? (
                 <button
@@ -170,9 +185,10 @@ const Navbar = () => {
             {/* Shop Dropdown */}
             <div
               className="position-static"
-              onMouseEnter={() => setShowShopDropdown(true)}
+              onMouseEnter={handleDropdownEnter}
+              onMouseLeave={handleDropdownLeave}
             >
-              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fs-6 fw-light">
+              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light extensions-dropdown">
                 SHOP HAIR EXTENSIONS{" "}
                 <span className="ms-2 fs-6">
                   <FiChevronDown />
@@ -181,9 +197,12 @@ const Navbar = () => {
 
               {showShopDropdown && (
                 <div
-                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-4 z-3"
-                  style={{ top: "100%", width: "100%" }}
-                  onMouseLeave={() => setShowShopDropdown(false)}
+                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown"
+                  style={{
+                    top: "100%",
+                    width: "100%",
+                    animation: "dropdownFadeSlide 0.2s ease-out",
+                  }}
                 >
                   <div className="container-fluid px-4">
                     <div className="row g-4">
@@ -196,8 +215,9 @@ const Navbar = () => {
                             {section.items.map((item) => (
                               <Link
                                 key={item}
-                                to="/"
+                                to={`/search?query=${item}`}
                                 className="text-decoration-none text-secondary fs-12 hover-text-dark"
+                                onClick={() => setShowShopDropdown(false)}
                               >
                                 {item}
                               </Link>
@@ -213,20 +233,23 @@ const Navbar = () => {
           </div>
 
           {/* Center - Home */}
-          <div className="gap-2">
-            <Link to="/" className="text-dark text-decoration-none fs-5 gap-2">
-              KARINAHAIR
+          <div className="position-absolute start-50 translate-middle-x text-center">
+            <Link to="/" className="text-dark text-decoration-none fs-5">
+              KarinaBeautyHub
             </Link>
           </div>
 
           {/* Right Side - Icons */}
-          <div className="d-flex align-items-center gap-4">
-            {user ==null ? <Link to={"/sign-in"} className="text-dark">
-              <FiUser size={20} />
-            </Link>
-             : <Link to={"/my-orders"} className="text-dark">
-              <FiUser size={20} />
-            </Link>}
+          <div className="d-flex align-items-center gap-4 flex-shrink-0">
+            {user == null ? (
+              <Link to={"/sign-in"} className="text-dark">
+                <FiUser size={20} />
+              </Link>
+            ) : (
+              <Link to={"/my-orders"} className="text-dark">
+                <FiUser size={20} />
+              </Link>
+            )}
             <button
               onClick={() => dispatch(openCartDrawer())}
               className="text-dark position-relative border-0 bg-transparent"
@@ -243,7 +266,12 @@ const Navbar = () => {
         </div>
       </nav>
 
-    {hasMounted &&  <CartDrawer show={showCartDrawer} onClose={() => dispatch(closeCartDrawer())} /> }
+      {hasMounted && (
+        <CartDrawer
+          show={showCartDrawer}
+          onClose={() => dispatch(closeCartDrawer())}
+        />
+      )}
 
       {/* Mobile Navbar */}
       <nav className="bg-white py-3 d-lg-none">
@@ -261,7 +289,7 @@ const Navbar = () => {
 
             {/* Mobile Home */}
             <Link to="/" className="text-dark text-decoration-none fs-5">
-              KarinaHair
+              KarinaBeautyHub
             </Link>
 
             <div className="d-flex align-items-center justify-items-center">

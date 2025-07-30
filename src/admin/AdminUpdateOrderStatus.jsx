@@ -75,13 +75,16 @@ const AdminUpdateOrderStatus = () => {
   };
 
   if (loading) return <div className="text-center my-5">Loading...</div>;
-  if (!order)
-    return <div className="text-center my-5 text-danger">Order not found</div>;
+if (!order || !order._id) {
+  return (
+    <div className="text-center my-5 text-danger">Order not found or data incomplete</div>
+  );
+}
 
   return (
     <div className="container my-5">
       <div className="mb-4">
-        <h3 className="mb-0">Order #{order?._id ? order._id.slice(-6) : "N/A"}</h3>
+        <h3 className="mb-0">Order #{order?._id}</h3>
         <p className="text-muted">
           Placed on {format(new Date(order.createdAt), "dd MMM yyyy")}
         </p>

@@ -69,6 +69,36 @@
   z-index: 1000;
 }
 
+
+
+@keyframes dropdownFadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animated-dropdown {
+  animation: dropdownFadeSlide 0.3s ease forwards;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.extensions-dropdown {
+  font-style:normal
+}
+
+
+
+
+
+
+
+
 .hover-text-dark:hover {
   color: #212529 !important;
 }

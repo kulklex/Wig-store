@@ -150,7 +150,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center py-4 small text-muted mt-4 border-top">
-          &copy; 2025 KarinaHair
+          &copy; 2025 KarinaBeautyHub
         </div>
       </div>
     </footer>

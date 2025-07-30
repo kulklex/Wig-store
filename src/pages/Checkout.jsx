@@ -105,7 +105,7 @@ const Checkout = () => {
                     className="btn btn-outline-primary"
                     onClick={() => navigate("/sign-in")}
                   >
-                    Login with Google
+                    Continue with Google
                   </button>
                 </div>
               </div>
