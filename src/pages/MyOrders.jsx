@@ -50,12 +50,11 @@ const MyOrders = () => {
 
   return (
     <div className="container py-5 position-relative">
-      {/* Top-right Logout Button */}
-      <div className="d-flex justify-content-end mb-3">
+      {user?.role === "admin" && <div className="d-flex justify-content-end mb-3">
         <button className="btn btn-dark btn-sm" onClick={handleLogout}>
           Log Out
         </button>
-      </div>
+      </div>}
 
       <h2 className="mb-4">My Orders</h2>
 

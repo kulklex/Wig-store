@@ -48,8 +48,9 @@
         .mobile-menu-backdrop {
           z-index: 1050;
         }
-        .hover-text-dark:hover {
+        .hover-text-dark {
           color: #212529 !important;
+          font-family: 'Playfair Display', serif; 
         }
 
 /* Optional fade-in animation */
@@ -89,23 +90,15 @@
 }
 
 .extensions-dropdown {
-  font-style:normal
+  font-family: 'Playfair Display', serif; 
 }
 
 
-
-
-
-
-
-
-.hover-text-dark:hover {
+.hover-text-dark {
   color: #212529 !important;
+  font-family: 'Playfair Display', serif; 
 }
 
-.nav_font {
-  font-family: sans-serif;
-}
 
 .navbar {
   transition: all 0.3s ease;
@@ -116,7 +109,6 @@
 }
 
 .mobile-nav {
-  font-family: "Poppins", sans-serif;
   color: #333;
   font-weight: 300;
   font-size: 14.5px;

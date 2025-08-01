@@ -45,7 +45,7 @@ function CartDrawer({ show, onClose }) {
       className={`container px-1 offcanvas offcanvas-end ${show ? "show" : ""}`}
       style={{ visibility: show ? "visible" : "hidden" }}
       tabIndex="-1"
-      ref={drawerRef}  // <-- Added this ref to detect clicks outside
+      ref={drawerRef}
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="offcanvas-title">Your Cart</h5>
@@ -66,7 +66,6 @@ function CartDrawer({ show, onClose }) {
                   key={item.media}
                   className="d-flex align-items-center justify-content-between border-bottom pb-2"
                 >
-                  {/* Product Info */}
                   <Link to={`/product/${item.productId}`} className="d-flex cart align-items-center flex-grow-1">
                     <img
                       src={item.media}
@@ -84,7 +83,6 @@ function CartDrawer({ show, onClose }) {
                     </div>
                   </Link>
 
-                  {/* Quantity Control */}
                   <div className="d-flex align-items-center mx-2">
                     <button
                       className="btn btn-sm btn-outline-secondary"
@@ -101,7 +99,6 @@ function CartDrawer({ show, onClose }) {
                     </button>
                   </div>
 
-                  {/* Remove */}
                   <button
                     className="btn btn-sm btn-outline-danger"
                     onClick={() => handleDelete(item)}

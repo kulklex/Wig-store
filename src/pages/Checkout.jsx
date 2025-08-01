@@ -75,7 +75,7 @@ const Checkout = () => {
               role="button"
               onClick={() => navigate("/")}
             >
-              Go shopping
+              Start shopping
             </span>
             .
           </p>
@@ -200,7 +200,6 @@ const Checkout = () => {
             </form>
           </div>
 
-          {/* Order Summary */}
           <div className="col-md-5 mt-4 mt-md-0">
             <div className="border rounded p-4 bg-light">
               <h5 className="fw-bold mb-3">Order Summary</h5>

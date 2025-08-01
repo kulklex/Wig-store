@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Fetch all products
+
 export const fetchProducts = createAsyncThunk(
   "products/fetchAll",
   async (_, thunkAPI) => {
@@ -14,7 +14,6 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
-// Fetch new arrivals
 export const fetchNewArrivals = createAsyncThunk(
   "products/fetchNewArrivals",
   async (_, thunkAPI) => {
@@ -27,7 +26,6 @@ export const fetchNewArrivals = createAsyncThunk(
   }
 );
 
-// Fetch best sellers
 export const fetchBestSellers = createAsyncThunk(
   "products/fetchBestSellers",
   async (_, thunkAPI) => {
@@ -40,13 +38,12 @@ export const fetchBestSellers = createAsyncThunk(
   }
 );
 
-// 🔍 Search products
 export const searchProducts = createAsyncThunk(
   "products/searchProducts",
   async (searchTerm, thunkAPI) => {
     try {
       const res = await axios.get(`/api/products?search=${searchTerm}`);
-      return res.data.products || res.data; // based on your API shape
+      return res.data.products || res.data; 
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || "Search failed");
     }
@@ -54,22 +51,18 @@ export const searchProducts = createAsyncThunk(
 );
 
 const initialState = {
-  // All Products
   productsData: [],
   loading: false,
   error: null,
 
-  // New Arrivals
   newArrivals: [],
   newArrivalsLoading: false,
   newArrivalsError: null,
 
-  // Best Sellers
   bestSellers: [],
   bestSellersLoading: false,
   bestSellersError: null,
 
-  // Search Results
   searchResults: [],
   searchLoading: false,
   searchError: null,
@@ -78,12 +71,9 @@ const initialState = {
 const productSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {
-    // Add non-async reducers here if needed
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      // All Products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -96,8 +86,6 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to fetch products";
       })
-
-      // New Arrivals
       .addCase(fetchNewArrivals.pending, (state) => {
         state.newArrivalsLoading = true;
         state.newArrivalsError = null;
@@ -110,8 +98,6 @@ const productSlice = createSlice({
         state.newArrivalsLoading = false;
         state.newArrivalsError = action.payload || "Failed to fetch new arrivals";
       })
-
-      // Best Sellers
       .addCase(fetchBestSellers.pending, (state) => {
         state.bestSellersLoading = true;
         state.bestSellersError = null;
@@ -124,8 +110,6 @@ const productSlice = createSlice({
         state.bestSellersLoading = false;
         state.bestSellersError = action.payload || "Failed to fetch best sellers";
       })
-
-      // Search Products
       .addCase(searchProducts.pending, (state) => {
         state.searchLoading = true;
         state.searchError = null;

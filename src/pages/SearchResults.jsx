@@ -1,4 +1,3 @@
-// pages/SearchResults.jsx
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,9 +25,9 @@ const SearchResults = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="mb-3">
+      {/* <h2 className="mb-3">
         Search Results for: <strong>{searchTerm}</strong>
-      </h2>
+      </h2> */}
 
       {searchLoading && <p>Loading...</p>}
       {searchError && <p className="text-danger">Error: {searchError}</p>}

@@ -12,7 +12,7 @@ const FeaturedOffers = () => {
     {
       img: qualityImg,
       title: "7 Days Return Policy",
-      description: "We provide 7 days free return policy",
+      description: "We provide 3 days free return policy",
     },
     {
       img: supportImg,

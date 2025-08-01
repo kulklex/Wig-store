@@ -94,7 +94,6 @@ if (!order || !order._id) {
       </div>
 
       <div className="row gy-4">
-        {/* Customer Info */}
         <div className="col-md-6">
           <div className="card shadow-sm border-0">
             <div className="card-body">
@@ -106,7 +105,6 @@ if (!order || !order._id) {
           </div>
         </div>
 
-        {/* Shipping Address */}
         <div className="col-md-6">
           <div className="card shadow-sm border-0">
             <div className="card-body">
@@ -121,7 +119,6 @@ if (!order || !order._id) {
           </div>
         </div>
 
-        {/* Items */}
         <div className="col-12">
           <div className="card shadow-sm border-0">
             <div className="card-body">
@@ -140,7 +137,6 @@ if (!order || !order._id) {
           </div>
         </div>
 
-        {/* Payment Info */}
         <div className="col-md-6">
           <div className="card shadow-sm border-0">
             <div className="card-body">
@@ -153,7 +149,6 @@ if (!order || !order._id) {
           </div>
         </div>
 
-        {/* Update Status */}
         <div className="col-md-6">
           <div className="card shadow-sm border-0">
             <div className="card-body">
@@ -199,7 +194,6 @@ if (!order || !order._id) {
           </div>
         </div>
 
-        {/* Status History */}
         <div className="col-12">
           <div className="card shadow-sm border-0">
             <div className="card-body">

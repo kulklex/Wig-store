@@ -15,7 +15,6 @@ const ConfirmModal = ({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             className="modal-backdrop fade show"
             style={{ zIndex: 1040 }}
@@ -25,7 +24,6 @@ const ConfirmModal = ({
             onClick={onCancel}
           />
 
-          {/* Modal */}
           <motion.div
             className="modal d-block"
             tabIndex="-1"

@@ -5,6 +5,7 @@ import { format } from "date-fns";
 const AdminUsersPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); 
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -17,7 +18,15 @@ const AdminUsersPage = () => {
         setLoading(false);
       }
     };
+    
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
     fetchUsers();
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   if (loading) {
@@ -29,20 +38,20 @@ const AdminUsersPage = () => {
       <h2 className="mb-4 text-center text-md-start">Manage Users</h2>
 
       <div className="table-responsive">
-        <table className="table table-bordered table-striped align-middle text-nowrap">
+        <table className="table table-bordered table-striped align-middle">
           <thead className="table-dark">
             <tr>
-              <th>User ID</th>
+              {!isMobile && <th>User ID</th>}
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Signed Up</th>
+              {!isMobile && <th>Signed Up</th>}
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user._id}>
-                <td>{user._id.slice(-6)}</td>
+                {!isMobile && <td>{user._id.slice(-6)}</td>}
                 <td>{user.name || "—"}</td>
                 <td>{user.email}</td>
                 <td>
@@ -54,7 +63,9 @@ const AdminUsersPage = () => {
                     {user.role}
                   </span>
                 </td>
-                <td>{format(new Date(user.createdAt), "dd MMM yyyy")}</td>
+                {!isMobile && (
+                  <td>{format(new Date(user.createdAt), "dd MMM yyyy")}</td>
+                )}
               </tr>
             ))}
           </tbody>

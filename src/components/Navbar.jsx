@@ -15,8 +15,9 @@ import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
   const [showShopDropdown, setShowShopDropdown] = useState(false);
+  const [showInfoDropdown, setShowInfoDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({});
+  const [expandedSections, setExpandedSections] = useState({ PRODUCTS: true });
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [hasMounted, setHasMounted] = useState(false);
@@ -37,6 +38,7 @@ const Navbar = () => {
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
 
   const dropdownTimeoutRef = useRef(null);
+  const infoDropdownTimeoutRef = useRef(null);
 
   const handleDropdownEnter = () => {
     if (dropdownTimeoutRef.current) {
@@ -48,7 +50,20 @@ const Navbar = () => {
   const handleDropdownLeave = () => {
     dropdownTimeoutRef.current = setTimeout(() => {
       setShowShopDropdown(false);
-    }, 200); // delay so user can move mouse into dropdown
+    }, 200);
+  };
+
+  const handleInfoDropdownEnter = () => {
+    if (infoDropdownTimeoutRef.current) {
+      clearTimeout(infoDropdownTimeoutRef.current);
+    }
+    setShowInfoDropdown(true);
+  };
+
+  const handleInfoDropdownLeave = () => {
+    infoDropdownTimeoutRef.current = setTimeout(() => {
+      setShowInfoDropdown(false);
+    }, 200);
   };
 
   useEffect(() => {
@@ -60,7 +75,6 @@ const Navbar = () => {
     dispatch(getTotals());
   }, [cart, dispatch]);
 
-  // Organized dropdown content
   const dropdownContent = [
     {
       title: "PRODUCTS",
@@ -121,6 +135,14 @@ const Navbar = () => {
     },
   ];
 
+  const infoLinks = [
+    { label: "About", to: "/about" },
+    { label: "Contact", to: "/contact" },
+    { label: "FAQs", to: "/faqs" },
+    { label: "Help", to: "/help" },
+    { label: "Shipping & Returns", to: "/shipping-returns" },
+  ];
+
   const toggleSection = (title) => {
     setExpandedSections((prev) => ({
       ...prev,
@@ -133,10 +155,10 @@ const Navbar = () => {
       {/* Desktop Navbar */}
       <nav className="bg-white d-flex py-3 position-relative d-none d-lg-block">
         <div className="d-flex align-items-center justify-content-between position-relative px-4">
-          {/* Left Side - Search */}
-          <div className="d-flex flex-1 align-items-center justify-content-between flex-shrink-1 gap-4">
-            <div className="d-flex justify-items-center align-items-center">
-              {user.role === "admin" && (
+          {/* Left Side */}
+          <div className="d-flex align-items-center gap-4">
+            <div className="d-flex justify-items-center align-items-center text-center">
+              {user?.role === "admin" && (
                 <Link
                   to="/admin/analytics"
                   className="d-flex align-items-center py-2 text-dark text-decoration-none"
@@ -146,13 +168,13 @@ const Navbar = () => {
                 </Link>
               )}
             </div>
-            <div className="position-relative d-flex align-items-center">
+            <div className="position-relative d-flex align-items-center justify-center">
               {!searchOpen ? (
                 <button
                   className="border-0 bg-transparent text-dark p-0"
                   onClick={() => setSearchOpen(true)}
                 >
-                  <FiSearch size={20} />
+                  <FiSearch size={16} />
                 </button>
               ) : (
                 <div
@@ -181,16 +203,21 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+          </div>
 
+          {/* Center - Home */}
+          <div className="d-flex align-items-center justify-content-around text-center gap-4">
             {/* Shop Dropdown */}
             <div
-              className="position-static"
+              className="me-4"
               onMouseEnter={handleDropdownEnter}
               onMouseLeave={handleDropdownLeave}
             >
-              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light extensions-dropdown">
-                SHOP HAIR EXTENSIONS{" "}
-                <span className="ms-2 fs-6">
+              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
+                <span className="extensions-dropdown">
+                  SHOP HAIR EXTENSIONS{" "}
+                </span>
+                <span className="ms-1 fs-6">
                   <FiChevronDown />
                 </span>
               </button>
@@ -216,7 +243,7 @@ const Navbar = () => {
                               <Link
                                 key={item}
                                 to={`/search?query=${item}`}
-                                className="text-decoration-none text-secondary fs-12 hover-text-dark"
+                                className="text-decoration-none fs-12 hover-text-dark"
                                 onClick={() => setShowShopDropdown(false)}
                               >
                                 {item}
@@ -230,16 +257,55 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+            <div className="ms-4 me-4">
+              <Link
+                to="/"
+                className="text-dark text-decoration-none extensions-dropdown"
+                style={{ letterSpacing: "5px", fontSize: "25px" }}
+              >
+                KarinaBeautyHub
+              </Link>
+            </div>
+
+            <div
+              className="ms-4"
+              onMouseEnter={handleInfoDropdownEnter}
+              onMouseLeave={handleInfoDropdownLeave}
+            >
+              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
+                <span className="extensions-dropdown">INFO</span>
+                <span className="ms-1 fs-6">
+                  <FiChevronDown />
+                </span>
+              </button>
+
+              {showInfoDropdown && (
+                <div
+                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown"
+                  style={{
+                    top: "100%",
+                    width: "100%",
+                    animation: "dropdownFadeSlide 0.2s ease-out",
+                  }}
+                >
+                  <div className="d-flex flex-column gap-2 px-3">
+                    {infoLinks.map(({ label, to }) => (
+                      <Link
+                        key={label}
+                        to={to}
+                        className="text-decoration-none text-dark fs-6 hover-text-dark"
+                        onClick={() => setShowInfoDropdown(false)}
+                      >
+                        {label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Center - Home */}
-          <div className="position-absolute start-50 translate-middle-x text-center">
-            <Link to="/" className="text-dark text-decoration-none fs-5">
-              KarinaBeautyHub
-            </Link>
-          </div>
-
-          {/* Right Side - Icons */}
+          {/* Right Side */}
           <div className="d-flex align-items-center gap-4 flex-shrink-0">
             {user == null ? (
               <Link to={"/sign-in"} className="text-dark">
@@ -278,7 +344,6 @@ const Navbar = () => {
         <div className="container-fluid px-4">
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex justify-content-between align-items-center">
-              {/* Mobile Menu Button */}
               <button
                 className="btn p-0 border-0 bg-transparent"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -287,20 +352,22 @@ const Navbar = () => {
               </button>
             </div>
 
-            {/* Mobile Home */}
-            <Link to="/" className="text-dark text-decoration-none fs-5">
-              KarinaBeautyHub
-            </Link>
+            <div className="position-absolute start-50 translate-middle-x">
+              <Link
+                to="/"
+                className="text-dark text-decoration-none fs-5 extensions-dropdown"
+              >
+                KarinaBeautyHub
+              </Link>
+            </div>
 
             <div className="d-flex align-items-center justify-items-center">
-              {/* Mobile Search */}
               <button
                 className="btn p-0 border-0 bg-transparent px-4"
                 onClick={() => setSearchOpen(!searchOpen)}
               >
                 <FiSearch size={20} />
               </button>
-              {/* Mobile Cart */}
               <button
                 onClick={() => dispatch(openCartDrawer())}
                 className="text-dark position-relative border-0 bg-transparent"
@@ -359,7 +426,7 @@ const Navbar = () => {
               </div>
 
               <div className="mb-2">
-                {user.role === "admin" && (
+                {user?.role === "admin" && (
                   <Link
                     to="/admin/analytics"
                     className="d-flex align-items-center py-2 text-dark text-decoration-none"
@@ -390,7 +457,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-light">
+              <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-bold extensions-dropdown">
                 SHOP HAIR EXTENSIONS
               </h6>
               {dropdownContent.map((section, index) => (
@@ -412,9 +479,9 @@ const Navbar = () => {
                   {expandedSections[section.title] && (
                     <ul className="list-unstyled mt-2 ps-3">
                       {section.items.map((item) => (
-                        <li key={item} className="mb-2">
+                        <li key={item} className="mb-2 extensions-dropdown">
                           <Link
-                            to="/"
+                            to={`/search?query=${item}`}
                             className="text-dark text-decoration-none"
                             onClick={() => setMobileMenuOpen(false)}
                           >
@@ -426,6 +493,37 @@ const Navbar = () => {
                   )}
                 </div>
               ))}
+              <div className="mb-3">
+                <button
+                  className="d-flex justify-content-between align-items-center w-100 p-0 bg-transparent border-0"
+                  onClick={() => toggleSection("INFO")}
+                >
+                  <h4 className="fw-semibold text-uppercase fs-6 text-secondary mb-0">
+                    Info
+                  </h4>
+                  {expandedSections["INFO"] ? (
+                    <FiChevronUp />
+                  ) : (
+                    <FiChevronDown />
+                  )}
+                </button>
+
+                {expandedSections["INFO"] && (
+                  <ul className="list-unstyled mt-2 ps-3">
+                    {infoLinks.map(({ label, to }) => (
+                      <li key={label} className="mb-2">
+                        <Link
+                          to={to}
+                          className="text-dark text-decoration-none"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          {label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
           <div

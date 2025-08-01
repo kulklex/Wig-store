@@ -68,15 +68,11 @@ const isAdminRoute = adminRoutes.some((route) =>
 );
 
 const hideNavbar = isAdminRoute;
-const hideFooter = isAdminRoute;
+const hideFooter = isAdminRoute || location.pathname === "/sign-in";
 
-// const hideFooterRoutes = [ "/sign-in" ];
-//   const hideNavbarRoutes = ["/admin/manage",];
-//   const hideFooter = hideFooterRoutes.includes(location.pathname);
-//   const hideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   return (
-    <>
+    <div className='d-flex flex-col min-vh-100'>
       {!hideNavbar && <Navbar />}
       <ScrollToTop />
       <main className="flex-grow">
@@ -96,7 +92,7 @@ const hideFooter = isAdminRoute;
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
 
           
-          {/* Admin routes (wrapped in RequireAdmin + AdminLayout) */}
+          {/* Admin routes */}
         <Route
           path="/admin/products"
           element={
@@ -170,7 +166,7 @@ const hideFooter = isAdminRoute;
         </Routes>
       </main>
       {!hideFooter && <Footer />}
-    </>
+    </div>
   );
 };
 

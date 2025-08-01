@@ -5,12 +5,10 @@ const CollectionCard = ({ data }) => {
   const navigate = useNavigate();
   const { _id, name, description = "", variants = [] } = data;
 
-  // Prefer image from variant with texture === "Straight"
   const straightVariant = variants.find(
     (variant) => variant.texture?.toLowerCase() === "straight"
   );
 
-  // Fallback to first variant or placeholder
   const image =
     straightVariant?.media ||
     variants[0]?.media ||

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import ConfirmModal from "../components/ConfirmModal";
+import { FiTrash } from "react-icons/fi";
 
 const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -33,15 +34,13 @@ const AdminProductsPage = () => {
   return (
     <div className="container mt-5">
       <h2 className="mb-4 text-center text-md-start">Manage Products</h2>
-
-      {/* Responsive table wrapper */}
       <div className="table-responsive">
         <table className="table table-bordered table-striped align-middle text-nowrap">
           <thead className="table-dark">
             <tr>
               <th>Name</th>
               <th>Variants</th>
-              <th>Actions</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -53,7 +52,7 @@ const AdminProductsPage = () => {
                   <div className="d-flex flex-wrap gap-2">
                     <Link
                       to={`/admin/edit-product/${p._id}`}
-                      className="btn btn-sm btn-warning"
+                      className="btn btn-sm btn-outline-primary"
                     >
                       Edit
                     </Link>
@@ -64,7 +63,7 @@ const AdminProductsPage = () => {
                       }}
                       className="btn btn-sm btn-danger"
                     >
-                      Delete
+                      <FiTrash />
                     </button>
                   </div>
                 </td>

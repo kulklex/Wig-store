@@ -145,7 +145,6 @@ const AdminCreateProduct = () => {
           <h4 className="mb-0">Create New Product</h4>
         </div>
         <div className="card-body">
-          {/* General Info */}
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="form-floating mb-3">
               <input
@@ -196,7 +195,6 @@ const AdminCreateProduct = () => {
               </div>
             </div>
 
-            {/* Variants Section */}
             <div className="card mt-4 shadow-sm border-0">
               <div className="card-body bg-light rounded">
                 <h5>Add Variant</h5>
@@ -430,7 +428,6 @@ const AdminCreateProduct = () => {
               </div>
             </div>
 
-            {/* Variants List */}
             {variants.length > 0 && (
               <ul className="list-group mt-4 shadow-sm">
                 {variants.map((v, i) => (
@@ -462,7 +459,7 @@ const AdminCreateProduct = () => {
               </ul>
             )}
 
-            {/* Texture Media Upload */}
+            {/* Media Upload */}
             <div className="card mt-4 border-0 shadow-sm">
               <div className="card-body bg-light rounded">
                 <h5 className="card-title">Upload Media per Texture</h5>
@@ -487,7 +484,6 @@ const AdminCreateProduct = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="btn btn-dark btn-lg mt-4 w-100 shadow-sm"

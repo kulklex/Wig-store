@@ -12,7 +12,6 @@ const Footer = () => {
     <footer className="bg-white border-top pt-5">
       <div className="container">
         <div className="row gy-4">
-          {/* More About Us */}
           <div className="col-12 col-md-4 col-lg-3">
             <h6 className="text-uppercase fw-bold mb-3">More About Us</h6>
             <ul className="list-unstyled small text-muted">
@@ -49,7 +48,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Extra Help */}
           <div className="col-12 col-md-4 col-lg-3">
             <h6 className="text-uppercase fw-bold mb-3">Extra Help</h6>
             <ul className="list-unstyled small text-muted">
@@ -91,7 +89,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Delivery Options */}
           <div className="col-12 col-md-4 col-lg-6">
             <h6 className="text-uppercase fw-bold mb-3">Delivery Options</h6>
             <p className="mb-1 small fw-semibold">
@@ -116,12 +113,10 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Divider */}
         <hr className="my-4" />
 
         {/* Payment Icons + Social Icons */}
         <div className="row align-items-center justify-content-between">
-          {/* Social Icons */}
           <div className="col-12 col-md-4 mb-3 mb-md-0 d-flex justify-content-center justify-content-md-start gap-3 fs-5">
             <FaInstagram />
             <FaFacebookF />
@@ -129,7 +124,6 @@ const Footer = () => {
             <FaTiktok />
           </div>
 
-          {/* Payment Icons */}
           <div className="col-12 col-md-8 d-flex justify-content-center justify-content-md-end gap-2 flex-wrap">
             <img src="https://img.icons8.com/color/36/amex.png" alt="Amex" />
             <img
@@ -148,7 +142,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Copyright */}
         <div className="text-center py-4 small text-muted mt-4 border-top">
           &copy; 2025 KarinaBeautyHub
         </div>

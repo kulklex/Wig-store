@@ -219,7 +219,6 @@ const Banner = () => {
         </div>
       </motion.div>
 
-      {/* RESPONSIVE HEIGHT STYLING */}
       <style>{`
         @media (max-width: 768px) {
           .slider-container,

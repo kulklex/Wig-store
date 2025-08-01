@@ -19,7 +19,6 @@ const AdminSidebar = () => {
 
   return (
     <>
-      {/* Toggle Button (mobile only) */}
       <button
         className="btn btn-dark d-md-none position-fixed top-0 start-0 m-3 z-3"
         onClick={() => setIsOpen(!isOpen)}
@@ -27,7 +26,6 @@ const AdminSidebar = () => {
         <FaBars />
       </button>
 
-      {/* Sidebar */}
       <div
         className={`bg-dark text-white p-3 ${
           isOpen ? "d-block" : "d-none"
@@ -41,13 +39,12 @@ const AdminSidebar = () => {
           zIndex: 1040,
         }}
       >
-        {/* Mobile Close Button */}
         <div className="d-flex justify-content-between align-items-center d-md-none mb-3">
           <h5 className="mb-0">Admin Menu</h5>
           <button className="btn-close btn-close-white" onClick={() => setIsOpen(false)} />
         </div>
 
-        {/* Navigation */}
+        {/* Desktop Navigation */}
         <ul className="nav nav-pills flex-column">
           <li className="nav-item">
             <NavLink

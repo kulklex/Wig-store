@@ -28,11 +28,11 @@ const GoogleLogin = () => {
         {
           theme: "outline",
           size: "large",
-          // ✅ Avoid invalid width
           width: 250,
         }
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCredentialResponse = async (response) => {
@@ -47,8 +47,7 @@ const GoogleLogin = () => {
 
       const user = res.data.user;
 
-      // Add token if available — store it in Redux + localStorage for client-side token validation
-      const token = res.data.token || null; // Add this in backend response if needed
+      const token = res.data.token || null; 
       const userWithToken = token ? { ...user, token } : user;
 
       dispatch(setUser(userWithToken));
@@ -72,7 +71,7 @@ const GoogleLogin = () => {
               <p className="text-muted small">Sign in with your Google account to continue</p>
             </div>
 
-            <div id="google-signin-btn" className="w-100 mb-3"></div>
+            <div id="google-signin-btn" className="w-100 mb-3 d-flex align-content-center justify-content-center text-center"></div>
 
             <hr className="my-4" />
 

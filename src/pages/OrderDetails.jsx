@@ -65,7 +65,6 @@ const OrderDetails = () => {
       <h3>Order #{order._id}</h3>
 
       <div className="row mt-4">
-        {/* Shipping Info */}
         <div className="col-md-6">
           <div className="card mb-3">
             <div className="card-header fw-bold">Shipping Information</div>
@@ -79,7 +78,6 @@ const OrderDetails = () => {
           </div>
         </div>
 
-        {/* Status Info */}
         <div className="col-md-6">
           <div className="card mb-3">
             <div className="card-header fw-bold">Order Status</div>
@@ -100,7 +98,6 @@ const OrderDetails = () => {
         </div>
       </div>
 
-      {/* Order Items */}
       <div className="card my-4">
         <div className="card-header fw-bold">Items</div>
         <ul className="list-group list-group-flush">

@@ -14,7 +14,6 @@ const AlertModal = ({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             className="modal-backdrop fade show"
             style={{ zIndex: 1040 }}
@@ -24,7 +23,6 @@ const AlertModal = ({
             onClick={onClose}
           />
 
-          {/* Modal Dialog */}
           <motion.div
             className="modal d-block"
             tabIndex="-1"
