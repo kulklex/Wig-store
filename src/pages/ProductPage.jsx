@@ -13,6 +13,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { addToCart, closeCartDrawer } from "../redux/cartSlice";
 import AlertModal from "../components/AlertModal";
 
@@ -20,6 +21,7 @@ const ProductPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const user = useSelector((state) => state.user.user);
 
   const [product, setProduct] = useState(null);
   const [selectedTexture, setSelectedTexture] = useState(null);
@@ -37,12 +39,65 @@ const ProductPage = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [modalTitle, setModalTitle] = useState("");
+
+  const [reviews, setReviews] = useState([]);
+  const [reviewText, setReviewText] = useState("");
+  const [rating, setRating] = useState(5);
+  const [submittingReview, setSubmittingReview] = useState(false);
+
+  const [canReview, setCanReview] = useState(false);
+  const alreadyReviewed = reviews.some((r) => r.user === user?.email);
+
+  const formatTimeAgo = (dateString) => {
+    const now = new Date();
+    const reviewDate = new Date(dateString);
+    const seconds = Math.floor((now - reviewDate) / 1000);
+
+    const intervals = [
+      { label: "year", seconds: 31536000 },
+      { label: "month", seconds: 2592000 },
+      { label: "week", seconds: 604800 },
+      { label: "day", seconds: 86400 },
+      { label: "hour", seconds: 3600 },
+      { label: "minute", seconds: 60 },
+      { label: "second", seconds: 1 },
+    ];
+
+    for (const interval of intervals) {
+      const count = Math.floor(seconds / interval.seconds);
+      if (count > 0) {
+        return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+      }
+    }
+
+    return "just now";
+  };
+
+  const StarRating = ({ rating }) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.25 && rating % 1 < 0.75;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    return (
+      <div className="d-flex align-items-center gap-1 my-1">
+        {[...Array(fullStars)].map((_, i) => (
+          <FaStar key={`full-${i}`} className="text-warning" size={20} />
+        ))}
+        {hasHalfStar && <FaStarHalfAlt className="text-warning" size={20} />}
+        {[...Array(emptyStars)].map((_, i) => (
+          <FaRegStar key={`empty-${i}`} className="text-warning" size={20} />
+        ))}
+      </div>
+    );
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(`/api/products/${id}`);
         setProduct(res.data);
+        setReviews(res.data?.reviews);
         setLoading(false);
       } catch (err) {
         console.error("Failed to load product:", err);
@@ -55,6 +110,27 @@ const ProductPage = () => {
   useEffect(() => {
     dispatch(closeCartDrawer());
   }, [dispatch]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const checkCanReview = async () => {
+      try {
+        const res = await axios.get(
+          `/api/products/${product._id}/eligible-to-review`
+        );
+        setCanReview(res.data.canReview);
+      } catch (err) {
+        console.error("Failed to check review eligibility", err);
+      }
+    };
+
+    if (product && user) {
+      checkCanReview();
+    }
+  }, [product, user]);
 
   const textureVariantsMap = useMemo(() => {
     const map = {};
@@ -78,22 +154,21 @@ const ProductPage = () => {
     }
   }, [product]);
 
-useEffect(() => {
-  if (selectedTexture && textureVariantsMap[selectedTexture]) {
-    const defaultVariant = textureVariantsMap[selectedTexture][0];
-    setMainImage(defaultVariant.media);
-    setSelectedLength(defaultVariant.length);
-    setSelectedOrigin(defaultVariant.origin);
-    setSelectedVariant(defaultVariant);
-    setQuantity(1);
+  useEffect(() => {
+    if (selectedTexture && textureVariantsMap[selectedTexture]) {
+      const defaultVariant = textureVariantsMap[selectedTexture][0];
+      setMainImage(defaultVariant.media);
+      setSelectedLength(defaultVariant.length);
+      setSelectedOrigin(defaultVariant.origin);
+      setSelectedVariant(defaultVariant);
+      setQuantity(1);
 
-    setSelectedLace(defaultVariant.lace || "");
-    setSelectedStyle(defaultVariant.style || "");
-    setSelectedWeight(defaultVariant.weight || "");
-    setSelectedFullDescription(defaultVariant.fullDescription || "");
-  }
-}, [selectedTexture, textureVariantsMap]);
-
+      setSelectedLace(defaultVariant.lace || "");
+      setSelectedStyle(defaultVariant.style || "");
+      setSelectedWeight(defaultVariant.weight || "");
+      setSelectedFullDescription(defaultVariant.fullDescription || "");
+    }
+  }, [selectedTexture, textureVariantsMap]);
 
   const handleLengthClick = (len) => {
     const matched = textureVariantsMap[selectedTexture]?.find(
@@ -124,22 +199,22 @@ useEffect(() => {
       return;
     }
 
-  const newCartItem = {
-  variantId: selectedVariant._id,
-  productId: product._id,
-  title: product.name,
-  price: selectedVariant.price,
-  media: selectedVariant.media,
-  stock: selectedVariant.stock,
-  texture: selectedVariant.texture,
-  length: selectedVariant.length || "",
-  origin: selectedVariant.origin || "",
-  lace: selectedVariant.lace || "",
-  style: selectedVariant.style || "",
-  weight: selectedVariant.weight || "",
-  fullDescription: selectedVariant.fullDescription || "",
-  cartQty: quantity,
-};
+    const newCartItem = {
+      variantId: selectedVariant._id,
+      productId: product._id,
+      title: product.name,
+      price: selectedVariant.price,
+      media: selectedVariant.media,
+      stock: selectedVariant.stock,
+      texture: selectedVariant.texture,
+      length: selectedVariant.length || "",
+      origin: selectedVariant.origin || "",
+      lace: selectedVariant.lace || "",
+      style: selectedVariant.style || "",
+      weight: selectedVariant.weight || "",
+      fullDescription: selectedVariant.fullDescription || "",
+      cartQty: quantity,
+    };
 
     dispatch(addToCart(newCartItem));
     setQuantity(1);
@@ -185,6 +260,38 @@ useEffect(() => {
     );
   };
 
+  const handleSubmitReview = async () => {
+    if (!rating) {
+      setModalTitle("Validation Error");
+      setModalMessage("Please provide a rating.");
+      setShowModal(true);
+      return;
+    }
+
+    setSubmittingReview(true);
+
+    try {
+      const res = await axios.post(`/api/products/${product._id}/reviews`, {
+        rating,
+        comment: reviewText,
+      });
+
+      setReviews((prev) => [...prev, res.data.review]);
+      setReviewText("");
+      setRating(5);
+      setModalTitle("Success");
+      setModalMessage("Thank you for your review!");
+      setShowModal(true);
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to submit review.";
+      setModalTitle("Review Error");
+      setModalMessage(msg);
+      setShowModal(true);
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
   return (
     <Container className="my-4">
       <Row>
@@ -212,13 +319,16 @@ useEffect(() => {
                     src={img}
                     alt={`all-thumb-${idx}`}
                     className="img-thumbnail mb-2"
-                    style={{ width: "80px", opacity: 0.5 }}
+                    style={{ width: "80px", cursor: "pointer", opacity: 0.5 }}
+                    onClick={() => setMainImage(img)}
                   />
                 ))}
             </div>
 
             <div className="flex-grow-1 d-flex justify-content-center align-items-center">
-              <img src={mainImage} alt="Main product" className="img-fluid" />
+              {mainImage && (
+                <img src={mainImage} alt="Main product" className="img-fluid" />
+              )}
             </div>
           </div>
         </Col>
@@ -393,11 +503,80 @@ useEffect(() => {
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
+
+          <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-4">
+            <Accordion.Item eventKey="3">
+              <Accordion.Header>Customer Reviews</Accordion.Header>
+              <Accordion.Body>
+                {reviews.length === 0 && <p>No reviews yet.</p>}
+
+                {reviews.map((rev, index) => (
+                  <div key={index} className="mb-3 border-bottom pb-2">
+                    <strong>{rev.user || "User"}</strong>
+                    <StarRating rating={rev.rating} />
+                    <p className="my-1">{rev.comment}</p>
+                    <small className="text-muted">
+                      {formatTimeAgo(rev.createdAt)}
+                    </small>
+                  </div>
+                ))}
+
+                {user && canReview && !alreadyReviewed && (
+                  <div className="mt-4">
+                    <h5>Write a Review</h5>
+                    <div className="my-2">
+                      <label>Rating: </label>
+                      <select
+                        value={rating}
+                        onChange={(e) => setRating(Number(e.target.value))}
+                        className="form-select w-auto d-inline ms-2"
+                      >
+                        {[5, 4, 3, 2, 1].map((r) => (
+                          <option key={r} value={r}>
+                            {r} -{" "}
+                            {
+                              [
+                                "Excellent",
+                                "Very Good",
+                                "Good",
+                                "Fair",
+                                "Poor",
+                              ][5 - r]
+                            }
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <textarea
+                      className="form-control mb-2"
+                      rows={3}
+                      placeholder="Write your review..."
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value)}
+                    />
+                    <Button
+                      variant="dark"
+                      disabled={submittingReview}
+                      onClick={handleSubmitReview}
+                    >
+                      {submittingReview ? "Submitting..." : "Submit Review"}
+                    </Button>
+                  </div>
+                )}
+
+                {user && alreadyReviewed && (
+                  <p className="mt-3 text-success">
+                    You have reviewed this product.
+                  </p>
+                )}
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
         </Col>
       </Row>
       <AlertModal
         isOpen={showModal}
-        title="Validation Error"
+        title={modalTitle}
         message={modalMessage}
         onClose={() => setShowModal(false)}
         onConfirm={() => setShowModal(false)}

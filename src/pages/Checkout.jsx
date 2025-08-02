@@ -141,7 +141,7 @@ const Checkout = () => {
               <div className="mb-3">
                 <label className="form-label">Phone Number</label>
                 <input
-                  type="tel"
+                  type="number"
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}

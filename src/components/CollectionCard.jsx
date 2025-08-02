@@ -1,9 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const CollectionCard = ({ data }) => {
   const navigate = useNavigate();
-  const { _id, name, description = "", variants = [] } = data;
+  const { _id, name, description = "", reviews, variants = [] } = data;
+
+  const StarRating = ({ rating }) => {
+    const full = Math.floor(rating);
+    const hasHalf = rating % 1 >= 0.25 && rating % 1 < 0.75;
+    const empty = 5 - full - (hasHalf ? 1 : 0);
+
+    return (
+      <div className="d-flex align-items-center gap-1 text-warning small">
+        {[...Array(full)].map((_, i) => (
+          <FaStar key={`full-${i}`} />
+        ))}
+        {hasHalf && <FaStarHalfAlt />}
+        {[...Array(empty)].map((_, i) => (
+          <FaRegStar key={`empty-${i}`} />
+        ))}
+        <span className="text-dark ms-1">{rating.toFixed(1)}</span>
+      </div>
+    );
+  };
 
   const straightVariant = variants.find(
     (variant) => variant.texture?.toLowerCase() === "straight"
@@ -34,9 +54,7 @@ const CollectionCard = ({ data }) => {
             onMouseOver={(e) =>
               (e.currentTarget.style.transform = "scale(1.05)")
             }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.transform = "scale(1)")
-            }
+            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
           />
         </figure>
 
@@ -48,6 +66,16 @@ const CollectionCard = ({ data }) => {
             {name}
           </h5>
 
+          {reviews?.length > 0 && (
+            <div className="mb-2">
+              <StarRating
+                rating={
+                  reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+                }
+              />
+            </div>
+          )}
+          
           <p className="card-text text-muted small mb-3">
             {description.length > 60
               ? `${description.slice(0, 60)}...`
