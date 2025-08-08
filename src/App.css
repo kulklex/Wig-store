@@ -222,3 +222,7 @@
 .option-button {
   border-radius: 0 !important;
 }
+
+.cookie {
+  cursor: pointer !important;
+}

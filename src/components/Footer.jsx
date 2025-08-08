@@ -6,8 +6,14 @@ import {
   FaSnapchatGhost,
   FaTiktok,
 } from "react-icons/fa";
+import { clearCookieConsent } from "../utils/cookieManager";
 
 const Footer = () => {
+  const handleResetConsent = () => {
+    clearCookieConsent();
+    window.location.reload();
+  };
+
   return (
     <footer className="bg-white border-top pt-5">
       <div className="container">
@@ -16,33 +22,43 @@ const Footer = () => {
             <h6 className="text-uppercase fw-bold mb-3">More About Us</h6>
             <ul className="list-unstyled small text-muted">
               <li>
-                <Link to="#" className="text-decoration-none text-reset">
+                <Link
+                  to="/about-us"
+                  className="text-decoration-none text-reset"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-decoration-none text-reset">
-                  Charity donations
-                </Link>
-              </li>
-              <li>
-                <Link to="#" className="text-decoration-none text-reset">
+                <Link
+                  to="mission-statement"
+                  className="text-decoration-none text-reset"
+                >
                   Mission Statement
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-decoration-none text-reset">
-                  Blog Posts
-                </Link>
-              </li>
-              <li>
-                <Link to="#" className="text-decoration-none text-reset">
+                <Link
+                  to="/privacy-policy"
+                  className="text-decoration-none text-reset"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-decoration-none text-reset">
+                <Link
+                  to="/terms-and-conditions"
+                  className="text-decoration-none text-reset"
+                >
                   Terms and conditions
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-decoration-none text-reset"
+                >
+                  Contact Us
                 </Link>
               </li>
             </ul>
@@ -52,39 +68,36 @@ const Footer = () => {
             <h6 className="text-uppercase fw-bold mb-3">Extra Help</h6>
             <ul className="list-unstyled small text-muted">
               <li>
-                <Link to="#" className="text-decoration-none text-reset">
+                <Link
+                  to="/returns-and-refunds"
+                  className="text-decoration-none text-reset"
+                >
                   Returns
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-decoration-none text-reset">
-                  Help Quiz
-                </Link>
-              </li>
-              <li>
-                <Link to="#" className="text-decoration-none text-reset">
-                  Loyalty Programme / Referrals
-                </Link>
-              </li>
-              <li>
-                <Link to="#" className="text-decoration-none text-reset">
+                <Link to="/faqs" className="text-decoration-none text-reset">
                   FAQs
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-decoration-none text-reset">
+                <Link
+                  to="/shipping"
+                  className="text-decoration-none text-reset"
+                >
                   Shipping + Delivery
                 </Link>
               </li>
               <li>
                 <Link to="#" className="text-decoration-none text-reset">
-                  Wholesale
+                  Blog Posts
                 </Link>
               </li>
-              <li>
-                <Link to="#" className="text-decoration-none text-reset">
-                  Search
-                </Link>
+              <li
+                  className="cookie cursor-pointer"
+                  onClick={handleResetConsent}
+                >
+                  Change Cookie Preferences
               </li>
             </ul>
           </div>

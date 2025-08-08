@@ -136,10 +136,10 @@ const Navbar = () => {
   ];
 
   const infoLinks = [
-    { label: "About", to: "/about" },
+    { label: "About", to: "/about-us" },
     { label: "Contact", to: "/contact" },
     { label: "FAQs", to: "/faqs" },
-    { label: "Help", to: "/help" },
+    { label: "Returns", to: "/returns-and-refunds" },
     { label: "Shipping & Returns", to: "/shipping-returns" },
   ];
 
@@ -224,7 +224,7 @@ const Navbar = () => {
 
               {showShopDropdown && (
                 <div
-                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown"
+                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown small"
                   style={{
                     top: "100%",
                     width: "100%",
@@ -281,7 +281,7 @@ const Navbar = () => {
 
               {showInfoDropdown && (
                 <div
-                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown"
+                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown small"
                   style={{
                     top: "100%",
                     width: "100%",
@@ -463,7 +463,7 @@ const Navbar = () => {
               {dropdownContent.map((section, index) => (
                 <div key={index} className="mb-3">
                   <button
-                    className="d-flex justify-content-between align-items-center w-100 p-0 bg-transparent border-0"
+                    className="d-flex justify-content-between align-items-center w-100 p-0 bg-transparent border-0 small"
                     onClick={() => toggleSection(section.title)}
                   >
                     <h4 className="fw-semibold text-uppercase fs-6 text-secondary mb-0">
@@ -509,7 +509,7 @@ const Navbar = () => {
                 </button>
 
                 {expandedSections["INFO"] && (
-                  <ul className="list-unstyled mt-2 ps-3">
+                  <ul className="list-unstyled mt-2 ps-3 small">
                     {infoLinks.map(({ label, to }) => (
                       <li key={label} className="mb-2">
                         <Link

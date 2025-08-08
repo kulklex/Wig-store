@@ -31,8 +31,7 @@ const CollectionCard = ({ data }) => {
 
   const image =
     straightVariant?.media ||
-    variants[0]?.media ||
-    "https://via.placeholder.com/300x300?text=No+Image";
+    variants[0]?.media
 
   return (
     <div

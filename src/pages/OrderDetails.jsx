@@ -14,10 +14,14 @@ const OrderDetails = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await axios.get(`/api/orders/${id}`, { withCredentials: true });
+        const res = await axios.get(`/api/orders/${id}`, {
+          withCredentials: true,
+        });
         setOrder(res.data);
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch order details");
+        setError(
+          err.response?.data?.message || "Failed to fetch order details"
+        );
       } finally {
         setLoading(false);
       }
@@ -37,7 +41,9 @@ const OrderDetails = () => {
             try {
               const res = await axios.get(`/api/products/${item.productId}`);
               const product = res.data;
-              const variant = product.variants.find((v) => v._id === item.variantId);
+              const variant = product.variants.find(
+                (v) => v._id === item.variantId
+              );
               if (variant) {
                 variantMap[item.variantId] = {
                   ...variant,
@@ -45,7 +51,10 @@ const OrderDetails = () => {
                 };
               }
             } catch (err) {
-              console.error(`Failed to fetch variant for ${item.productId}`, err);
+              console.error(
+                `Failed to fetch variant for ${item.productId}`,
+                err
+              );
             }
           }
         })
@@ -69,11 +78,21 @@ const OrderDetails = () => {
           <div className="card mb-3">
             <div className="card-header fw-bold">Shipping Information</div>
             <div className="card-body">
-              <p><strong>Name:</strong> {order.shippingAddress.name}</p>
-              <p><strong>Address:</strong> {order.shippingAddress.address}</p>
-              <p><strong>City:</strong> {order.shippingAddress.city}</p>
-              <p><strong>Postal Code:</strong> {order.shippingAddress.postalCode}</p>
-              <p><strong>Country:</strong> {order.shippingAddress.country}</p>
+              <p>
+                <strong>Name:</strong> {order.shippingAddress.name}
+              </p>
+              <p>
+                <strong>Address:</strong> {order.shippingAddress.address}
+              </p>
+              <p>
+                <strong>City:</strong> {order.shippingAddress.city}
+              </p>
+              <p>
+                <strong>Postal Code:</strong> {order.shippingAddress.postalCode}
+              </p>
+              <p>
+                <strong>Country:</strong> {order.shippingAddress.country}
+              </p>
             </div>
           </div>
         </div>
@@ -82,8 +101,14 @@ const OrderDetails = () => {
           <div className="card mb-3">
             <div className="card-header fw-bold">Order Status</div>
             <div className="card-body">
-              <p><strong>Status:</strong> {order.status}</p>
-              {order.eta && <p><strong>ETA:</strong> {order.eta}</p>}
+              <p>
+                <strong>Status:</strong> {order.status}
+              </p>
+              {order.eta && (
+                <p>
+                  <strong>ETA:</strong> {order.eta}
+                </p>
+              )}
               {order.trackingUrl && (
                 <p>
                   <strong>Tracking:</strong>{" "}
@@ -92,14 +117,22 @@ const OrderDetails = () => {
                   </a>
                 </p>
               )}
-              <p><strong>Placed On:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+              <p>
+                <strong>Placed On:</strong>{" "}
+                {new Date(order.createdAt).toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="card my-4">
-        <div className="card-header fw-bold">Items</div>
+        <div className="d-flex justify-content-between align-items-center m-2">
+          <div className="fw-bold">Items</div>
+         {order.status === "Delivered" && <button className="btn text-danger btn-sm mt-2" onClick={() => navigate(`/order/${order._id}/return`)}>
+            Return An Item
+          </button> }
+        </div>
         <ul className="list-group list-group-flush">
           {order.items.map((item, idx) => {
             const variant = variantData[item.variantId];
@@ -111,9 +144,13 @@ const OrderDetails = () => {
               >
                 <div className="d-flex align-items-center">
                   <img
-                    src={variant?.media || "https://via.placeholder.com/50"}
+                    src={variant?.media}
                     alt={variant?.productName || "Product"}
-                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      objectFit: "cover",
+                    }}
                     className="me-3"
                   />
                   <div>
@@ -124,7 +161,8 @@ const OrderDetails = () => {
                   </div>
                 </div>
                 <div className="text-end">
-                  {item.quantity} × £{variant?.price?.toLocaleString() || 0} <br />
+                  {item.quantity} × £{variant?.price?.toLocaleString() || 0}{" "}
+                  <br />
                   <strong>
                     £{(item.quantity * (variant?.price || 0)).toLocaleString()}
                   </strong>
