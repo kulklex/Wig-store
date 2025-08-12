@@ -50,13 +50,15 @@ const MyOrders = () => {
 
   return (
     <div className="container py-5 position-relative">
-      {user?.role === "admin" && <div className="d-flex justify-content-end mb-3">
+
+<div className="mb-4 d-flex justify-content-between p-2">
+      <h2>My Orders</h2>
+      <div className="d-flex justify-content-end text-center align-items-center mb-3">
         <button className="btn btn-dark btn-sm" onClick={handleLogout}>
           Log Out
         </button>
-      </div>}
-
-      <h2 className="mb-4">My Orders</h2>
+      </div>
+      </div>
 
       {loading && (
         <div className="text-center py-5">

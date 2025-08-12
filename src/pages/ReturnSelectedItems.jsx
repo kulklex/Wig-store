@@ -78,7 +78,14 @@ const ReturnSelectItems = () => {
   const proceed = () => {
     const filteredItems = Object.entries(selectedItems)
       .filter(([_, qty]) => qty && qty > 0)
-      .map(([variantId, quantity]) => ({ variantId, quantity }));
+      .map(([variantId, quantity]) => {
+        const orderItem = order.items.find((i) => i.variantId === variantId);
+        return {
+          productId: orderItem.productId,
+          variantId,
+          quantity,
+        };
+      });
 
     if (filteredItems.length === 0) {
       setShowModal(true);

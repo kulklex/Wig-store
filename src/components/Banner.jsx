@@ -1,27 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import slide_12_img from "../assets/slide-15.jpg";
-import slide_13_img from "../assets/black-woman.jpg";
-import slide_3_img from "../assets/model8.jpg";
+// import slide_1_img from "../assets/slide-15.jpg";
+
+// Desktop images
+import slide_2_img_desktop from "../assets/main5-copy_upscaled.jpeg";
+import slide_3_img_desktop from "../assets/main4-copy-1_upscaled.jpeg";
+
+// Mobile images (optimized, smaller or different crop)
+import slide_2_img_mobile from "../assets/main5.jpg";
+import slide_3_img_mobile from "../assets/main4.jpg";
 
 const Banner = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [slides] = useState([
-    {
-      id: 1,
-      image: slide_12_img,
-      title: "Natural Extensions",
-      subTitle: "CLOSURES & FRONTALS",
-      price: 49.99,
-      align: "end",
-      textColor: "#fff",
-      buttonBg: "#ffffff",
-      buttonColor: "#000000",
-      buttonText: "Shop Natural",
-    },
-    {
+    {  // {
+    //   id: 1,
+    //   image: slide_1_img,
+    //   title: "Natural Extensions",
+    //   subTitle: "CLOSURES & FRONTALS",
+    //   price: 49.99,
+    //   align: "end",
+    //   textColor: "#fff",
+    //   buttonBg: "#ffffff",
+    //   buttonColor: "#000000",
+    //   buttonText: "Shop Natural",
+    // },
       id: 2,
-      image: slide_13_img,
+      imageDesktop: slide_2_img_desktop,
+      imageMobile: slide_2_img_mobile,
       title: "Luxury Wigs",
       subTitle: "TAPES, CLIPS, LINKS",
       price: 39.99,
@@ -33,7 +40,8 @@ const Banner = () => {
     },
     {
       id: 3,
-      image: slide_3_img,
+      imageDesktop: slide_3_img_desktop,
+      imageMobile: slide_3_img_mobile,
       title: "Premium Hair Collection",
       subTitle: "FANCY A CHANGE?",
       price: 29.99,
@@ -48,10 +56,18 @@ const Banner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const timeoutRef = useRef(null);
 
+  // Listen for window resize
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Auto-slide
   const resetTimer = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      setCurrentIndex(prev => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 5000);
   };
 
@@ -60,37 +76,15 @@ const Banner = () => {
     return () => clearTimeout(timeoutRef.current);
   }, [currentIndex]);
 
-  const slideVariants = {
-    enter: { opacity: 0, x: 100 },
-    center: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -100 },
-  };
-
-  const buttonVariants = {
-    hover: { scale: 1.1, transition: { duration: 0.3 } },
-    tap: { scale: 0.9 },
-  };
-
   const getAlignmentStyles = (align) => {
     switch (align) {
       case "start":
-        return {
-          justifyContent: "flex-start",
-          textAlign: "left",
-          paddingLeft: "5%",
-        };
+        return { justifyContent: "flex-start", textAlign: "left", paddingLeft: "5%" };
       case "end":
-        return {
-          justifyContent: "flex-end",
-          textAlign: "right",
-          paddingRight: "5%",
-        };
+        return { justifyContent: "flex-end", textAlign: "right", paddingRight: "5%" };
       case "center":
       default:
-        return {
-          justifyContent: "center",
-          textAlign: "center",
-        };
+        return { justifyContent: "center", textAlign: "center" };
     }
   };
 
@@ -99,7 +93,7 @@ const Banner = () => {
       className="banner py-1"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
+      transition={{ duration: 0.5 }}
     >
       <motion.div
         className="slider-container"
@@ -114,32 +108,46 @@ const Banner = () => {
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={slides[currentIndex].id}
-            className="slide"
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
             style={{
               position: "absolute",
               top: 0,
               left: 0,
               width: "100%",
               height: "100%",
-              backgroundImage: `url(${slides[currentIndex].image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
               display: "flex",
               alignItems: "center",
               ...getAlignmentStyles(slides[currentIndex].align),
             }}
           >
+            <img
+              src={
+                windowWidth <= 768
+                  ? slides[currentIndex].imageMobile
+                  : slides[currentIndex].imageDesktop
+              }
+              alt={slides[currentIndex].title}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
+                zIndex: -1,
+              }}
+            />
+
+            {/* Slide text */}
             <motion.div
               className="slide-content"
-              initial={{ y: 50, opacity: 0 }}
+              initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
               style={{
                 color: slides[currentIndex].textColor,
                 maxWidth: "600px",
@@ -158,7 +166,7 @@ const Banner = () => {
               </motion.p>
               <motion.h2
                 style={{
-                  fontSize: "2.5rem",
+                  fontSize: windowWidth <= 768 ? "1.5rem" : "2.5rem",
                   marginBottom: "1rem",
                   fontWeight: "bold",
                 }}
@@ -166,12 +174,11 @@ const Banner = () => {
                 {slides[currentIndex].title}
               </motion.h2>
               <motion.button
-                variants={buttonVariants}
-                whileHover="hover"
-                whileTap="tap"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 style={{
-                  padding: "12px 24px",
-                  fontSize: "1.2rem",
+                  padding: windowWidth <= 768 ? "10px 18px" : "12px 24px",
+                  fontSize: windowWidth <= 768 ? "1rem" : "1.2rem",
                   backgroundColor: slides[currentIndex].buttonBg,
                   color: slides[currentIndex].buttonColor,
                   border: "none",
@@ -186,7 +193,7 @@ const Banner = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Pagination Dots */}
+        {/* Pagination */}
         <div
           className="pagination"
           style={{
@@ -199,7 +206,7 @@ const Banner = () => {
             zIndex: 10,
           }}
         >
-          {slides?.map((_, index) => (
+          {slides.map((_, index) => (
             <motion.span
               key={index}
               onClick={() => setCurrentIndex(index)}
@@ -218,16 +225,6 @@ const Banner = () => {
           ))}
         </div>
       </motion.div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .slider-container,
-          .slide {
-            height: 60vh !important;
-            min-height: 60vh !important;
-          }
-        }
-      `}</style>
     </motion.section>
   );
 };

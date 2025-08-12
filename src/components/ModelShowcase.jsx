@@ -1,10 +1,10 @@
 import React from "react";
-import model7 from "../assets/model7.jpg"
-import model2 from "../assets/model2.png"
-import model3 from "../assets/model3.jpg"
-import model4 from "../assets/model4.jpg"
-import model5 from "../assets/model5.jpg"
-import model6 from "../assets/model6.jpg"
+import model7 from "../assets/oldItems/model7.jpg"
+import model2 from "../assets/oldItems/model2.png"
+import model3 from "../assets/oldItems/model3.jpg"
+import model4 from "../assets/oldItems/model4.jpg"
+import model5 from "../assets/oldItems/model5.jpg"
+import model6 from "../assets/oldItems/model6.jpg"
 
 const models = [
   {

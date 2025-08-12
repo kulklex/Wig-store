@@ -8,6 +8,7 @@ const OrderDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [variantData, setVariantData] = useState({});
+  const [hasBeenReturned, setHasBeenReturned] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,6 +29,25 @@ const OrderDetails = () => {
     };
 
     fetchOrder();
+  }, [id]);
+
+   useEffect(() => {
+    const fetchReturnCheck = async () => {
+      try {
+        const res = await axios.get(`/api/orders/returns/check/${id}`, {
+          withCredentials: true,
+        });
+        setHasBeenReturned(res.data.hasBeenReturned);
+      } catch (err) {
+        setError(
+          err.response?.data?.message || "Failed to fetch return check details"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReturnCheck();
   }, [id]);
 
   useEffect(() => {
@@ -129,7 +149,7 @@ const OrderDetails = () => {
       <div className="card my-4">
         <div className="d-flex justify-content-between align-items-center m-2">
           <div className="fw-bold">Items</div>
-         {order.status === "Delivered" && <button className="btn text-danger btn-sm mt-2" onClick={() => navigate(`/order/${order._id}/return`)}>
+         {order.status === "Delivered" && !hasBeenReturned && <button className="btn text-danger btn-sm mt-2" onClick={() => navigate(`/order/${order._id}/return`)}>
             Return An Item
           </button> }
         </div>

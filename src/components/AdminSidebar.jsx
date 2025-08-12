@@ -7,6 +7,7 @@ import {
   FaUsers,
   FaChartBar,
 } from "react-icons/fa";
+import { MdAssignmentReturn } from "react-icons/md";
 
 const SIDEBAR_WIDTH = 250;
 
@@ -84,6 +85,16 @@ const AdminSidebar = () => {
             >
               <FaUsers className="me-2" />
               Users
+            </NavLink>
+          </li>
+          <li className="nav-item mb-2">
+            <NavLink
+              to="/admin/returns"
+              className="nav-link text-white d-flex align-items-center"
+              onClick={handleLinkClick}
+            >
+              <MdAssignmentReturn className="me-2" />
+              Returns
             </NavLink>
           </li>
         </ul>

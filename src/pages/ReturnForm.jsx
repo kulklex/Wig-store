@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AlertModal from "../components/AlertModal";
 import { useSelector } from "react-redux";
+import imageCompression from "browser-image-compression";
 
 const ReturnForm = () => {
   const { state } = useLocation();
@@ -12,6 +13,8 @@ const ReturnForm = () => {
   const [selectedReason, setSelectedReason] = useState("");
   const [otherReason, setOtherReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const [images, setImages] = useState([null, null, null]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -26,33 +29,77 @@ const ReturnForm = () => {
     "Other",
   ];
 
+  const handleImageChange = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      });
+
+      setImages((prev) => {
+        const newImages = [...prev];
+        newImages[index] = compressedFile;
+        return newImages;
+      });
+    } catch (error) {
+      setShowModal(true);
+      setModalTitle("Image Compression Error");
+      setModalMessage("Failed to compress image. Please try a different image.");
+    }
+  };
+
   const handleSubmit = async () => {
     if (!selectedReason) {
-        setShowModal(true)
-        setModalTitle("Required Field")
+      setShowModal(true);
+      setModalTitle("Required Field");
       setModalMessage("Please select a reason for return.");
       return;
     }
 
-    const finalReason =
-      selectedReason === "Other" && otherReason.trim()
-        ? `Other: ${otherReason}`
-        : selectedReason;
+    if (selectedReason === "Other" && !otherReason.trim()) {
+      setShowModal(true);
+      setModalTitle("Required Field");
+      setModalMessage("Please specify a reason for return.");
+      return;
+    }
+
+    if (images.every((img) => img === null)) {
+      setShowModal(true);
+      setModalTitle("No Image Selected");
+      setModalMessage(
+        "Please upload at least one image to support your return request."
+      );
+      return;
+    }
 
     setSubmitting(true);
 
     try {
-      await axios.post(
-        "/api/orders/returns",
-        {
-          user: user?.email,
-          orderId: state.order._id,
-          items: state.selectedItems,
-          reason: finalReason,
-          orderDetails: state.order,
-        },
-        { withCredentials: true }
+      const formData = new FormData();
+      formData.append("user", user?.email);
+      formData.append("orderId", state.order._id);
+      formData.append("items", JSON.stringify(state.selectedItems));
+      formData.append(
+        "reason",
+        selectedReason === "Other" && otherReason.trim()
+          ? `Other: ${otherReason}`
+          : selectedReason
       );
+
+      images.forEach((file) => {
+        if (file !== null) {
+          formData.append("images", file);
+        }
+      });
+
+      await axios.post("/api/orders/returns", formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setShowModal(true);
       setModalTitle("Return Request Submitted");
@@ -99,10 +146,68 @@ const ReturnForm = () => {
             rows={3}
             className="form-control"
             value={otherReason}
+            required
             onChange={(e) => setOtherReason(e.target.value)}
           />
         </div>
       )}
+
+      <div className="mb-4">
+        <label className="form-label">
+          Upload images to support your claim (up to 3 images)
+        </label>
+        <div className="d-flex gap-3">
+          {[0, 1, 2].map((index) => (
+            <div key={index} style={{ flex: 1 }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, index)}
+                className="form-control"
+              />
+              {images[index] && (
+                <div
+                  style={{ marginTop: "8px", position: "relative", cursor: "pointer" }}
+                >
+                  <img
+                    src={URL.createObjectURL(images[index])}
+                    alt={`Preview ${index + 1}`}
+                    style={{ width: "100%", height: "auto", borderRadius: "4px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImages((prev) => {
+                        const newImages = [...prev];
+                        newImages[index] = null;
+                        return newImages;
+                      });
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 2,
+                      right: 2,
+                      background: "rgba(0,0,0,0.6)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: 24,
+                      height: 24,
+                      cursor: "pointer",
+                    }}
+                    aria-label={`Remove image ${index + 1}`}
+                  >
+                    &times;
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <small className="text-muted">
+          Please upload at least one image, maximum of 3 images.
+        </small>
+      </div>
 
       <button
         onClick={handleSubmit}
