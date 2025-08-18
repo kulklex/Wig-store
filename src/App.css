@@ -135,42 +135,77 @@
   transform: scale(1.05);
 }
 
-/* Banner */
-.banner-container {
+
+/* Banner Slider Optimized Styles */
+.banner {
+  width: 100%;
   position: relative;
-  height: 75vh; 
   overflow: hidden;
 }
 
-.banner-image {
+.slider-container {
   width: 100%;
-  height: 100%;
-  object-fit:fill;
-  object-position: top
-}
-
-.banner-caption {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
-  z-index: 2;
-  max-width: 90%;
+  height: 100vh;
+  min-height: 600px;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 @media (max-width: 768px) {
-  .banner-container {
-    height: 40vh;
+  .slider-container {
+    height: 50vh;
+    min-height: 400px;
   }
-
-  .banner-caption h1 {
-    font-size: 1.8rem;
+  
+  .slider-container * {
+    transform: translateZ(0);
   }
+}
 
-  .banner-caption h5 {
-    font-size: 1rem;
+@media (min-width: 769px) and (max-width: 1024px) {
+  .slider-container {
+    height: 70vh;
+    min-height: 500px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .slider-container {
+    height: 100vh;
+    min-height: 700px;
+  }
+}
+
+.banner-loading {
+  will-change: background-position;
+}
+
+.banner * {
+  box-sizing: border-box;
+}
+
+.slider-container button:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.slider-container img,
+.slider-container div[style*="background-image"] {
+  will-change: transform;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner *,
+  .slider-container * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

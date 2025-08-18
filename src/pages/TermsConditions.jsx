@@ -43,27 +43,32 @@ const TermsAndConditions = () => {
         Due to hygiene reasons, we do not accept returns on wigs or hair products unless faulty. If you receive a defective item, contact us within 7 days of delivery. Refunds are subject to inspection and approval.
       </p>
 
-      <h5 className="fw-semibold mt-4">7. Privacy</h5>
+      <h5 className="fw-semibold mt-4">7. Cancellation</h5>
+      <p className="text-muted small">
+        Cancellations can only be done through directly contacting Us. Use any our available <a href="/contact">Contact Us</a> methods and you will get a response within 24hrs.
+      </p>
+
+      <h5 className="fw-semibold mt-4">8. Privacy</h5>
       <p className="text-muted small">
         Your privacy is important to us. Please refer to our <a href="/privacy-policy">Privacy Policy</a> to understand how we collect, use, and protect your personal information.
       </p>
 
-      <h5 className="fw-semibold mt-4">8. Intellectual Property</h5>
+      <h5 className="fw-semibold mt-4">9. Intellectual Property</h5>
       <p className="text-muted small">
         All content on this website — including images, text, logos, and graphics — is owned by Karina Beauty Hub or its licensors. Unauthorized use is strictly prohibited.
       </p>
 
-      <h5 className="fw-semibold mt-4">9. Limitation of Liability</h5>
+      <h5 className="fw-semibold mt-4">10. Limitation of Liability</h5>
       <p className="text-muted small">
         We shall not be held liable for any indirect, incidental, or consequential damages resulting from your use of this website or products purchased, except as required by law.
       </p>
 
-      <h5 className="fw-semibold mt-4">10. Changes to Terms</h5>
+      <h5 className="fw-semibold mt-4">11. Changes to Terms</h5>
       <p className="text-muted small">
         We may revise these terms from time to time. Continued use of the website after changes are posted constitutes your agreement to the updated terms.
       </p>
 
-      <h5 className="fw-semibold mt-4">11. Governing Law</h5>
+      <h5 className="fw-semibold mt-4">12. Governing Law</h5>
       <p className="text-muted small">
         These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the English courts.
       </p>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { closeCartDrawer, getTotals, openCartDrawer } from "../redux/cartSlice";
+import { fetchCategories } from "../redux/productSlice";
 import {
   FiSearch,
   FiShoppingCart,
@@ -10,7 +11,9 @@ import {
   FiX,
   FiChevronDown,
   FiChevronUp,
+  FiFilter,
 } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
@@ -21,6 +24,14 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [hasMounted, setHasMounted] = useState(false);
+  
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [filterForm, setFilterForm] = useState({
+    category: "",
+    minPrice: "",
+    maxPrice: "",
+    sort: "",
+  });
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
@@ -36,9 +47,14 @@ const Navbar = () => {
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user.user);
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
+  const { categories, categoriesLoading } = useSelector((state) => state.products);
 
   const dropdownTimeoutRef = useRef(null);
   const infoDropdownTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const handleDropdownEnter = () => {
     if (dropdownTimeoutRef.current) {
@@ -74,6 +90,31 @@ const Navbar = () => {
   useEffect(() => {
     dispatch(getTotals());
   }, [cart, dispatch]);
+
+  const handleFilterChange = (field, value) => {
+    setFilterForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleFilterSubmit = () => {
+    const params = new URLSearchParams();
+    
+    Object.entries(filterForm).forEach(([key, value]) => {
+      if (value && value !== "") {
+        params.append(key, value);
+      }
+    });
+
+    navigate(`/search?${params.toString()}`);
+    setFilterModalOpen(false);
+    setFilterForm({ category: "", minPrice: "", maxPrice: "", sort: "" });
+  };
+
+  const handleClearFilters = () => {
+    setFilterForm({ category: "", minPrice: "", maxPrice: "", sort: "" });
+  };
 
   const dropdownContent = [
     {
@@ -152,19 +193,17 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Desktop Navbar */}
       <nav className="bg-white d-flex py-3 position-relative d-none d-lg-block">
         <div className="d-flex align-items-center justify-content-between position-relative px-4">
-          {/* Left Side */}
           <div className="d-flex align-items-center gap-4">
-            <div className="d-flex justify-items-center align-items-center text-center">
+
+                  <div className="d-flex justify-items-center align-items-center text-center">
               {user?.role === "admin" && (
                 <Link
                   to="/admin/analytics"
                   className="d-flex align-items-center py-2 text-dark text-decoration-none"
-                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  <FiUser className="me-2" /> Admin Area
+                  <FiUser className="me-1" /> Admin Area
                 </Link>
               )}
             </div>
@@ -205,9 +244,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Center - Home */}
           <div className="d-flex align-items-center justify-content-around text-center gap-4">
-            {/* Shop Dropdown */}
             <div
               className="me-4"
               onMouseEnter={handleDropdownEnter}
@@ -305,7 +342,6 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right Side */}
           <div className="d-flex align-items-center gap-4 flex-shrink-0">
             {user == null ? (
               <Link to={"/sign-in"} className="text-dark">
@@ -339,7 +375,6 @@ const Navbar = () => {
         />
       )}
 
-      {/* Mobile Navbar */}
       <nav className="bg-white py-3 d-lg-none">
         <div className="container-fluid px-4">
           <div className="d-flex justify-content-between align-items-center">
@@ -363,7 +398,7 @@ const Navbar = () => {
 
             <div className="d-flex align-items-center justify-items-center">
               <button
-                className="btn p-0 border-0 bg-transparent px-4"
+                className="btn p-0 border-0 bg-transparent px-2"
                 onClick={() => setSearchOpen(!searchOpen)}
               >
                 <FiSearch size={20} />
@@ -383,7 +418,6 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile Search Bar */}
           {searchOpen && (
             <div className="mt-3">
               <div className="d-flex align-items-center px-3 py-2 bg-light rounded-pill shadow-sm">
@@ -410,7 +444,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Side Menu */}
       {mobileMenuOpen && (
         <div className="mobile-menu-overlay d-lg-none mobile-nav">
           <div className="mobile-menu-container bg-white vh-100 position-fixed start-0 top-0 w-75 shadow-lg overflow-auto">
@@ -455,6 +488,18 @@ const Navbar = () => {
                     <FiUser className="me-2" /> My Account
                   </Link>
                 )}
+              </div>
+
+              <div className="mb-4">
+                <button
+                  className="d-flex align-items-center py-2 text-dark text-decoration-none border-0 bg-transparent w-100"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setFilterModalOpen(true);
+                  }}
+                >
+                  <FiFilter className="me-2" /> Filter & Sort
+                </button>
               </div>
 
               <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-bold extensions-dropdown">
@@ -532,6 +577,119 @@ const Navbar = () => {
           />
         </div>
       )}
+
+      <AnimatePresence>
+        {filterModalOpen && (
+          <>
+            <motion.div
+              className="modal-backdrop fade show"
+              style={{ zIndex: 1040 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setFilterModalOpen(false)}
+            />
+
+            <motion.div
+              className="modal d-block"
+              tabIndex="-1"
+              style={{ zIndex: 1050 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div
+                  className="modal-content border-0 shadow rounded-3"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="modal-header bg-white text-black border-0">
+                    <h5 className="modal-title">Filter & Sort Products</h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      aria-label="Close"
+                      onClick={() => setFilterModalOpen(false)}
+                    ></button>
+                  </div>
+                  <div className="modal-body text-black">
+                    <div className="row g-3">
+                      <div className="col-12">
+                        <label className="form-label">Category</label>
+                        <select
+                          className="form-select"
+                          value={filterForm.category}
+                          onChange={(e) => handleFilterChange("category", e.target.value)}
+                          disabled={categoriesLoading}
+                        >
+                          <option value="">All Categories</option>
+                          {categories.map((cat) => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      <div className="col-6">
+                        <label className="form-label">Min Price (£)</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={filterForm.minPrice}
+                          onChange={(e) => handleFilterChange("minPrice", e.target.value)}
+                          min="0"
+                          placeholder="0"
+                        />
+                      </div>
+                      
+                      <div className="col-6">
+                        <label className="form-label">Max Price (£)</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={filterForm.maxPrice}
+                          onChange={(e) => handleFilterChange("maxPrice", e.target.value)}
+                          min="0"
+                          placeholder="Any"
+                        />
+                      </div>
+                      
+                      <div className="col-12">
+                        <label className="form-label">Sort By</label>
+                        <select
+                          className="form-select"
+                          value={filterForm.sort}
+                          onChange={(e) => handleFilterChange("sort", e.target.value)}
+                        >
+                          <option value="">Newest First</option>
+                          <option value="priceAsc">Price: Low to High</option>
+                          <option value="priceDesc">Price: High to Low</option>
+                          <option value="popular">Most Popular</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="modal-footer border-0">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={handleClearFilters}
+                    >
+                      Clear Filters
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-dark"
+                      onClick={handleFilterSubmit}
+                    >
+                      Apply Filters
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };

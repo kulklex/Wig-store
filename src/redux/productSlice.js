@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
 export const fetchProducts = createAsyncThunk(
   "products/fetchAll",
   async (_, thunkAPI) => {
@@ -40,12 +39,48 @@ export const fetchBestSellers = createAsyncThunk(
 
 export const searchProducts = createAsyncThunk(
   "products/searchProducts",
-  async (searchTerm, thunkAPI) => {
+  async (params, thunkAPI) => {
     try {
-      const res = await axios.get(`/api/products?search=${searchTerm}`);
-      return res.data.products || res.data; 
+      const query = new URLSearchParams();
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            query.append(key, value);
+          }
+        });
+      }
+      
+      const res = await axios.get(`/api/products?${query.toString()}`);
+      
+      if (Array.isArray(res.data)) {
+        return {
+          products: res.data,
+          page: 1,
+          pages: 1,
+          total: res.data.length,
+        };
+      } else {
+        return {
+          products: res.data.products || res.data,
+          page: res.data.page || 1,
+          pages: res.data.pages || 1,
+          total: res.data.total || 0,
+        };
+      }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || "Search failed");
+    }
+  }
+);
+
+export const fetchCategories = createAsyncThunk(
+  "products/fetchCategories",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axios.get("/api/products/categories");
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -66,6 +101,15 @@ const initialState = {
   searchResults: [],
   searchLoading: false,
   searchError: null,
+  searchPagination: {
+    page: 1,
+    pages: 1,
+    total: 0,
+  },
+
+  categories: [],
+  categoriesLoading: false,
+  categoriesError: null,
 };
 
 const productSlice = createSlice({
@@ -117,11 +161,28 @@ const productSlice = createSlice({
       })
       .addCase(searchProducts.fulfilled, (state, action) => {
         state.searchLoading = false;
-        state.searchResults = action.payload;
+        state.searchResults = action.payload.products;
+        state.searchPagination = {
+          page: action.payload.page,
+          pages: action.payload.pages,
+          total: action.payload.total,
+        };
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.searchLoading = false;
         state.searchError = action.payload || "Failed to search products";
+      })
+      .addCase(fetchCategories.pending, (state) => {
+        state.categoriesLoading = true;
+        state.categoriesError = null;
+      })
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categoriesLoading = false;
+        state.categories = action.payload;
+      })
+      .addCase(fetchCategories.rejected, (state, action) => {
+        state.categoriesLoading = false;
+        state.categoriesError = action.payload || "Failed to fetch categories";
       });
   },
 });

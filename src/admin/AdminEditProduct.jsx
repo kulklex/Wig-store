@@ -3,19 +3,28 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import AlertModal from "../components/AlertModal";
 import ConfirmModal from "../components/ConfirmModal";
+import imageCompression from "browser-image-compression";
 
 const AdminEditProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [status, setStatus] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
-  const [variantMediaMap, setVariantMediaMap] = useState({});
+  const [textureMediaMap, setTextureMediaMap] = useState({});
   const [newVariant, setNewVariant] = useState({
     texture: "",
     length: "",
     origin: "",
     price: "",
     stock: "",
+    style: "",
+    weight: "",
+    lace: "",
+    fullDescription: "",
+    promo: {
+      isActive: false,
+      discountPercent: 0,
+    },
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -25,8 +34,46 @@ const AdminEditProduct = () => {
   const [variantToRemove, setVariantToRemove] = useState(null);
 
   const navigate = useNavigate();
-  const normalizeKey = (texture, length, origin) =>
-    `${texture}_${length}_${origin}`.toLowerCase().replace(/[^a-z0-9]/g, "_");
+  
+  const normalizeTexture = (texture) => texture.toLowerCase().replace(/[^a-z0-9]/g, "_");
+
+  const compressImageIfNeeded = async (file) => {
+    const maxSizeMB = 10;
+    const fileSizeMB = file.size / (1024 * 1024);
+    
+    if (fileSizeMB <= maxSizeMB) {
+      return file;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setStatus(`Warning: ${file.name} is ${fileSizeMB.toFixed(1)}MB. Video files cannot be compressed. Please use a smaller file.`);
+      setTimeout(() => setStatus(""), 5000);
+      throw new Error("Video files cannot be compressed");
+    }
+
+    try {
+      setStatus(`Compressing ${file.name} (${fileSizeMB.toFixed(1)}MB → target: <${maxSizeMB}MB)...`);
+      
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: maxSizeMB - 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: file.type,
+      });
+
+      const compressedSizeMB = compressedFile.size / (1024 * 1024);
+      setStatus(`Compression complete: ${file.name} (${fileSizeMB.toFixed(1)}MB → ${compressedSizeMB.toFixed(1)}MB)`);
+      
+      setTimeout(() => setStatus(""), 3000);
+      
+      return compressedFile;
+    } catch (error) {
+      console.error("Image compression failed:", error);
+      setStatus("Image compression failed. Please try a smaller image.");
+      setTimeout(() => setStatus(""), 3000);
+      throw new Error("Image compression failed");
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -59,6 +106,17 @@ const AdminEditProduct = () => {
     }
   };
 
+  const handleTextureMediaChange = async (texture, file) => {
+    try {
+      const compressedFile = await compressImageIfNeeded(file);
+      const textureKey = normalizeTexture(texture);
+      setTextureMediaMap((prev) => ({ ...prev, [textureKey]: compressedFile }));
+    } catch (error) {
+      setModalMessage("Failed to process image. Please try a smaller file.");
+      setShowModal(true);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -68,16 +126,19 @@ const AdminEditProduct = () => {
     formData.append("brand", product.brand);
     formData.append("variants", JSON.stringify(product.variants));
 
-    Object.entries(variantMediaMap).forEach(([key, file]) => {
-      formData.append(`media_${key}`, file);
+    Object.entries(textureMediaMap).forEach(([textureKey, file]) => {
+      formData.append(`media_${textureKey}`, file);
     });
 
     try {
+      setStatus("Updating product...");
       await axios.put(`/api/products/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setStatus("Updated successfully");
-      navigate("/admin/manage");
+      setTimeout(() => {
+        navigate("/admin/products");
+      }, 2000);
     } catch (err) {
       console.error("Update failed", err);
       setStatus("Failed to update");
@@ -85,6 +146,8 @@ const AdminEditProduct = () => {
   };
 
   if (!product) return <p>Loading...</p>;
+
+  const uniqueTextures = [...new Set(product.variants?.map(v => v.texture) || [])];
 
   return (
     <div className="container mt-5">
@@ -135,17 +198,6 @@ const AdminEditProduct = () => {
         <h5>Variants</h5>
         <ul className="list-group mb-4">
           {product.variants?.map((variant, index) => {
-            const key = `${variant.texture}_${variant.length}_${variant.origin}`
-              .toLowerCase()
-              .replace(/[^a-z0-9]/g, "_");
-            const mediaFile = variantMediaMap[key];
-            let imageUrl = null;
-            if (mediaFile instanceof File) {
-              imageUrl = URL.createObjectURL(mediaFile);
-            } else if (typeof variant.media === "string") {
-              imageUrl = variant.media;
-            }
-
             const isEditing = editingIndex === index;
 
             return (
@@ -155,13 +207,31 @@ const AdminEditProduct = () => {
                     <p className="mb-2">
                       <strong>{variant.length}</strong> - {variant.texture} (
                       {variant.origin}) - £{variant.price}
+                      {variant.promo?.isActive &&
+                        variant.promo.discountPercent > 0 && (
+                          <>
+                            {" "}
+                            <br />
+                            <small>
+                              Promo: {variant.promo.discountPercent}% off
+                            </small>
+                            <br />
+                            <small>
+                              Promo Price: £
+                              {(
+                                variant.price *
+                                (1 - variant.promo.discountPercent / 100)
+                              ).toFixed(2)}
+                            </small>
+                          </>
+                        )}
                       <br />
                       <small>Stock: {variant.stock}</small>
                     </p>
 
-                    {imageUrl && (
+                    {variant.media && (
                       <img
-                        src={imageUrl}
+                        src={variant.media}
                         alt="Variant Preview"
                         className="img-fluid rounded"
                         style={{ maxWidth: "100px", objectFit: "cover" }}
@@ -244,54 +314,6 @@ const AdminEditProduct = () => {
                     </div>
                     <div className="col-6 col-md-2">
                       <input
-                        className="form-control"
-                        value={variant.style}
-                        onChange={(e) => {
-                          const updated = [...product.variants];
-                          updated[index].style = e.target.value;
-                          setProduct({ ...product, variants: updated });
-                        }}
-                        placeholder="Style"
-                      />
-                    </div>
-                    <div className="col-6 col-md-2">
-                      <input
-                        className="form-control"
-                        value={variant.weight}
-                        onChange={(e) => {
-                          const updated = [...product.variants];
-                          updated[index].weight = e.target.value;
-                          setProduct({ ...product, variants: updated });
-                        }}
-                        placeholder="Weight"
-                      />
-                    </div>
-                    <div className="col-6 col-md-2">
-                      <input
-                        className="form-control"
-                        value={variant.lace}
-                        onChange={(e) => {
-                          const updated = [...product.variants];
-                          updated[index].lace = e.target.value;
-                          setProduct({ ...product, variants: updated });
-                        }}
-                        placeholder="Lace"
-                      />
-                    </div>
-                    <div className="col-6 col-md-2">
-                      <input
-                        className="form-control"
-                        value={variant.fullDescription}
-                        onChange={(e) => {
-                          const updated = [...product.variants];
-                          updated[index].fullDescription = e.target.value;
-                          setProduct({ ...product, variants: updated });
-                        }}
-                        placeholder="Full Description"
-                      />
-                    </div>
-                    <div className="col-6 col-md-2">
-                      <input
                         type="number"
                         className="form-control"
                         value={variant.stock}
@@ -303,21 +325,94 @@ const AdminEditProduct = () => {
                         placeholder="Stock"
                       />
                     </div>
-                    <div className="col-12 col-md-4">
+                    <div className="col-6 col-md-2">
                       <input
-                        type="file"
-                        accept="image/*,video/*"
                         className="form-control"
-                        onChange={(e) =>
-                          setVariantMediaMap((prev) => ({
-                            ...prev,
-                            [normalizeKey(
-                              variant.texture,
-                              variant.length,
-                              variant.origin
-                            )]: e.target.files[0],
-                          }))
-                        }
+                        value={variant.style || ""}
+                        onChange={(e) => {
+                          const updated = [...product.variants];
+                          updated[index].style = e.target.value;
+                          setProduct({ ...product, variants: updated });
+                        }}
+                        placeholder="Style"
+                      />
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={variant.weight || ""}
+                        onChange={(e) => {
+                          const updated = [...product.variants];
+                          updated[index].weight = e.target.value;
+                          setProduct({ ...product, variants: updated });
+                        }}
+                        placeholder="Weight"
+                      />
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <input
+                        className="form-control"
+                        value={variant.lace || ""}
+                        onChange={(e) => {
+                          const updated = [...product.variants];
+                          updated[index].lace = e.target.value;
+                          setProduct({ ...product, variants: updated });
+                        }}
+                        placeholder="Lace"
+                      />
+                    </div>
+                    <div className="col-12">
+                      <textarea
+                        className="form-control"
+                        value={variant.fullDescription || ""}
+                        onChange={(e) => {
+                          const updated = [...product.variants];
+                          updated[index].fullDescription = e.target.value;
+                          setProduct({ ...product, variants: updated });
+                        }}
+                        placeholder="Full Description"
+                        rows="2"
+                      />
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={variant.promo?.isActive || false}
+                          onChange={(e) => {
+                            const updated = [...product.variants];
+                            updated[index].promo = {
+                              ...updated[index].promo,
+                              isActive: e.target.checked,
+                            };
+                            setProduct({ ...product, variants: updated });
+                          }}
+                        />
+                        <label className="form-check-label">Promo Active</label>
+                      </div>
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        className="form-control"
+                        placeholder="Discount %"
+                        value={variant.promo?.discountPercent || ""}
+                        onChange={(e) => {
+                          const updated = [...product.variants];
+                          updated[index].promo = {
+                            ...updated[index].promo,
+                            discountPercent: e.target.value
+                              ? parseFloat(e.target.value)
+                              : 0,
+                          };
+                          setProduct({ ...product, variants: updated });
+                        }}
+                        disabled={!variant.promo?.isActive}
                       />
                     </div>
                   </div>
@@ -328,168 +423,223 @@ const AdminEditProduct = () => {
         </ul>
 
         <hr />
-        <div className="border-1 p-2">
-          <h5>Add New Variant</h5>
-          <div className="row g-2 mb-3">
-            <div className="col-md-2">
+        <h5>Add New Variant</h5>
+        <div className="row g-2 mb-4">
+          <div className="col-6 col-md-2">
+            <input
+              className="form-control"
+              placeholder="Length"
+              value={newVariant.length}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, length: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-3">
+            <input
+              className="form-control"
+              placeholder="Texture"
+              value={newVariant.texture}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, texture: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              className="form-control"
+              placeholder="Origin"
+              value={newVariant.origin}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, origin: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Price"
+              value={newVariant.price}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, price: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              className="form-control"
+              placeholder="Style"
+              value={newVariant.style}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, style: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              className="form-control"
+              placeholder="Weight"
+              value={newVariant.weight}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, weight: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              className="form-control"
+              placeholder="Lace"
+              value={newVariant.lace}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, lace: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Stock"
+              value={newVariant.stock}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, stock: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-12">
+            <textarea
+              className="form-control"
+              placeholder="Full Description"
+              value={newVariant.fullDescription}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, fullDescription: e.target.value })
+              }
+              rows="2"
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <div className="form-check">
               <input
-                className="form-control"
-                value={newVariant.length}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, length: e.target.value })
-                }
-                placeholder="Length"
-              />
-            </div>
-            <div className="col-md-3">
-              <input
-                className="form-control"
-                value={newVariant.texture}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, texture: e.target.value })
-                }
-                placeholder="Texture"
-              />
-            </div>
-            <div className="col-md-2">
-              <input
-                className="form-control"
-                value={newVariant.origin}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, origin: e.target.value })
-                }
-                placeholder="Origin"
-              />
-            </div>
-            <div className="col-6 col-md-2">
-              <input
-                className="form-control"
-                value={newVariant.style}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, style: e.target.value })
-                }
-                placeholder="Style"
-              />
-            </div>
-            <div className="col-6 col-md-2">
-              <input
-                className="form-control"
-                value={newVariant.weight}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, weight: e.target.value })
-                }
-                placeholder="Weight"
-              />
-            </div>
-            <div className="col-6 col-md-2">
-              <input
-                className="form-control"
-                value={newVariant.lace}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, lace: e.target.value })
-                }
-                placeholder="Lace"
-              />
-            </div>
-            <div className="col-6 col-md-2">
-              <input
-                className="form-control"
-                value={newVariant.fullDescription}
+                className="form-check-input"
+                type="checkbox"
+                checked={newVariant.promo.isActive}
                 onChange={(e) =>
                   setNewVariant({
                     ...newVariant,
-                    fullDescription: e.target.value,
+                    promo: { ...newVariant.promo, isActive: e.target.checked },
                   })
                 }
-                placeholder="Full Description"
               />
+              <label className="form-check-label">Promo Active</label>
             </div>
-            <div className="col-md-2">
-              <input
-                type="number"
-                className="form-control"
-                value={newVariant.price}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, price: e.target.value })
-                }
-                placeholder="Price"
-              />
-            </div>
-            <div className="col-md-2">
-              <input
-                type="number"
-                className="form-control"
-                value={newVariant.stock}
-                onChange={(e) =>
-                  setNewVariant({ ...newVariant, stock: e.target.value })
-                }
-                placeholder="Stock"
-              />
-            </div>
-            <div className="col-12 col-md-4">
-              <input
-                type="file"
-                accept="image/*,video/*"
-                className="form-control"
-                onChange={(e) =>
-                  setVariantMediaMap((prev) => ({
-                    ...prev,
-                    [normalizeKey(
-                      newVariant.texture,
-                      newVariant.length,
-                      newVariant.origin
-                    )]: e.target.files[0],
-                  }))
-                }
-              />
-            </div>
-            <div className="col-md-1 d-flex align-items-end">
-              <button
-                className="btn btn-success w-100"
-                type="button"
-                onClick={() => {
-                  if (
-                    !newVariant.texture ||
-                    !newVariant.length ||
-                    !newVariant.price ||
-                    !newVariant.stock
-                  ) {
-                    return setModalMessage(
-                      "Texture, Length, Price, and Stock are all required"
-                    );
-                  } else {
-                    setProduct({
-                      ...product,
-                      variants: [...product.variants, newVariant],
-                    });
-                    setNewVariant({
-                      texture: "",
-                      length: "",
-                      origin: "",
-                      price: "",
-                      stock: "",
-                      lace: "",
-                      fullDescription: "",
-                      weight: "",
-                      style: "",
-                    });
-                  }
-                }}
-                disabled={
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              className="form-control"
+              placeholder="Discount %"
+              value={newVariant.promo.discountPercent}
+              onChange={(e) =>
+                setNewVariant({
+                  ...newVariant,
+                  promo: {
+                    ...newVariant.promo,
+                    discountPercent: e.target.value
+                      ? parseFloat(e.target.value)
+                      : 0,
+                  },
+                })
+              }
+              disabled={!newVariant.promo.isActive}
+            />
+          </div>
+          <div className="col-12 mt-2">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                if (
                   !newVariant.texture ||
                   !newVariant.length ||
+                  !newVariant.origin ||
                   !newVariant.price ||
                   !newVariant.stock
+                ) {
+                  setModalMessage(
+                    "Please fill in all required fields for the new variant."
+                  );
+                  setShowModal(true);
+                  return;
                 }
-              >
-                Add
-              </button>
-            </div>
+                setProduct((prev) => ({
+                  ...prev,
+                  variants: [...(prev.variants || []), newVariant],
+                }));
+                setNewVariant({
+                  texture: "",
+                  length: "",
+                  origin: "",
+                  price: "",
+                  stock: "",
+                  style: "",
+                  weight: "",
+                  lace: "",
+                  fullDescription: "",
+                  promo: {
+                    isActive: false,
+                    discountPercent: 0,
+                  },
+                });
+              }}
+            >
+              Add Variant
+            </button>
+          </div>
+        </div>
+
+        <hr />
+        <h5>Update Media by Texture</h5>
+        <div className="card mb-4">
+          <div className="card-body">
+            <p className="text-muted small">
+              Upload a new image for a texture to update all variants with that texture.
+            </p>
+            {uniqueTextures.map((texture) => {
+              const textureKey = normalizeTexture(texture);
+              const hasNewImage = textureMediaMap[textureKey];
+              return (
+                <div key={textureKey} className="mb-3">
+                  <label className="form-label">
+                    Media for <strong>{texture}</strong>
+                    {hasNewImage && <span className="text-success ms-2">✓ New Image Selected</span>}
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    className="form-control"
+                    onChange={async (e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        await handleTextureMediaChange(texture, e.target.files[0]);
+                      }
+                    }}
+                  />
+                  {hasNewImage && (
+                    <small className="text-muted">
+                      Selected: {hasNewImage.name} ({(hasNewImage.size / (1024 * 1024)).toFixed(1)}MB)
+                    </small>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
         <AlertModal
-          isOpen={showModal}
+          show={showModal}
           title="Validation Error"
           message={modalMessage}
           onClose={() => setShowModal(false)}
@@ -516,11 +666,21 @@ const AdminEditProduct = () => {
           confirmVariant="danger"
         />
 
-        <button type="submit" className="btn btn-primary my-2">
-          Save Changes
-        </button>
+        <div className="d-flex justify-content-between align-items-center">
+          <button type="submit" className="btn btn-success">
+            Save Product
+          </button>
+          {status && (
+            <div
+              className={`alert mb-0 ${
+                status.includes("Failed") ? "alert-danger" : "alert-success"
+              }`}
+            >
+              {status}
+            </div>
+          )}
+        </div>
       </form>
-      {status && <div className="alert mt-3">{status}</div>}
     </div>
   );
 };

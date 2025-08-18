@@ -70,10 +70,10 @@ const PrivacyPolicy = () => {
         The content of the Site (including, but not limited to all text and artwork) is protected by copyright. You may view any part of the Site for private purposes, but you are not permitted, without our permission, to store, reproduce, copy or transmit any part of it for other purposes or in any other medium.
       </p>
 
-      <h5 className="fw-semibold mt-4">Data Usage</h5>
+      {/* <h5 className="fw-semibold mt-4">Data Usage</h5>
       <p className="text-muted small">
         We share your order tracking number, courier name, and transaction number associated with your orders with a service provider called Proveway Uptrack. This provider synchronizes and verifies shipping details to the payment gateways. No personal information like email or name is used.
-      </p>
+      </p> */}
 
       <p className="text-muted small">
         For more information, please review <a href="https://www.proveway.com/blog/privacy-policy" target="_blank" rel="noopener noreferrer">Proveway's privacy policy</a>.

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { clearUser, setUser } from "./redux/authSlice";
 import Navbar from "./components/Navbar";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
@@ -37,6 +37,8 @@ import TrackingScripts from "./components/TrackingScripts";
 import CookieBanner from "./components/CookieBanner";
 import ReturnSelectItems from "./pages/ReturnSelectedItems";
 import ReturnForm from "./pages/ReturnForm";
+import AdminReturnsList from "./admin/AdminReturnsList";
+import AdminReturnDetails from "./admin/AdminReturnDetails";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -64,7 +66,7 @@ const App = () => {
   }, [dispatch]);
 
   const adminRoutes = [
-    "/admin/manage",
+    "/admin/returns",
     "/admin/products",
     "/admin/edit-product/:id",
     "/admin/create-products",
@@ -80,6 +82,7 @@ const App = () => {
 
   const hideNavbar = isAdminRoute;
   const hideFooter = isAdminRoute || location.pathname === "/sign-in";
+
 
   return (
     <div className="d-flex flex-col min-vh-100">
@@ -109,6 +112,14 @@ const App = () => {
           <Route path="/order/:id/return/form" element={<ReturnForm />} />
 
           {/* Admin routes */}
+          <Route
+            path="/admin"
+            element={
+              <RequireAdmin>
+               <Navigate to="/admin/analytics" replace />
+              </RequireAdmin>
+            }
+          />
           <Route
             path="/admin/products"
             element={
@@ -175,6 +186,26 @@ const App = () => {
               <RequireAdmin>
                 <AdminLayout>
                   <AdminAnalytics />
+                </AdminLayout>
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/returns"
+            element={
+              <RequireAdmin>
+                <AdminLayout>
+                  <AdminReturnsList/>
+                </AdminLayout>
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/returns/:id"
+            element={
+              <RequireAdmin>
+                <AdminLayout>
+                  <AdminReturnDetails/>
                 </AdminLayout>
               </RequireAdmin>
             }

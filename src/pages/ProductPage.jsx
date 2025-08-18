@@ -49,6 +49,26 @@ const ProductPage = () => {
   const [canReview, setCanReview] = useState(false);
   const alreadyReviewed = reviews.some((r) => r.user === user?.email);
 
+  const [bestSellers, setBestSellers] = useState([]);
+
+  useEffect(() => {
+    const fetchBestSellers = async () => {
+      try {
+        const res = await axios.get("/api/products/best-sellers");
+        setBestSellers(res.data);
+      } catch (error) {
+        console.error("Failed to load best sellers:", error);
+      }
+    };
+
+    fetchBestSellers();
+  }, []);
+
+  const isBestSeller = useMemo(() => {
+    if (!product || bestSellers.length === 0) return false;
+    return bestSellers.some((p) => p._id === product._id);
+  }, [product, bestSellers]);
+
   const formatTimeAgo = (dateString) => {
     const now = new Date();
     const reviewDate = new Date(dateString);
@@ -203,7 +223,10 @@ const ProductPage = () => {
       variantId: selectedVariant._id,
       productId: product._id,
       title: product.name,
-      price: selectedVariant.price,
+      price:
+        selectedVariant.promo?.isActive && selectedVariant.promo?.promoPrice
+          ? selectedVariant.promo.promoPrice
+          : selectedVariant.price,
       media: selectedVariant.media,
       stock: selectedVariant.stock,
       texture: selectedVariant.texture,
@@ -344,8 +367,36 @@ const ProductPage = () => {
         </Col>
 
         <Col lg={6} className="">
-          <h2 className="product-title">{product.name}</h2>
-          <p className="product-price">£{selectedVariant?.price}</p>
+          <h2 className="product-title">
+            {product.name}{" "}
+            {isBestSeller && (
+              <span
+                style={{
+                  fontSize: "0.9rem",
+                  color: "#ff4500",
+                  marginLeft: "6px",
+                }}
+              >
+                🔥 Best Seller
+              </span>
+            )}
+          </h2>
+
+          <p className="product-price">
+            {selectedVariant?.promo?.isActive &&
+            selectedVariant?.promo?.promoPrice ? (
+              <>
+                <span className="text-muted text-decoration-line-through">
+                  £{selectedVariant.price.toFixed(2)}
+                </span>{" "}
+                <span className="text-danger fw-bold">
+                  £{selectedVariant.promo.promoPrice.toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <>£{selectedVariant?.price.toFixed(2)}</>
+            )}
+          </p>
 
           <h6>LENGTH</h6>
           <div className="d-flex flex-wrap mb-4 gap-2">
@@ -468,11 +519,11 @@ const ProductPage = () => {
               +
             </Button>
           </ButtonGroup>
-          {selectedVariant?.stock > 0 && (
+          {/* {selectedVariant?.stock > 0 && (
             <small className="text-muted ms-2">
               {maxAvailableQty} left in stock
             </small>
-          )}
+          )} */}
 
           <Button
             variant="dark"

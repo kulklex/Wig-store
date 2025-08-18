@@ -7,6 +7,7 @@ import {
   FaUsers,
   FaChartBar,
 } from "react-icons/fa";
+import { MdCreateNewFolder } from "react-icons/md";
 import { MdAssignmentReturn } from "react-icons/md";
 
 const SIDEBAR_WIDTH = 250;
@@ -55,6 +56,16 @@ const AdminSidebar = () => {
             >
               <FaChartBar className="me-2" />
               Analytics
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              to="/admin/create-products"
+              className="nav-link text-white d-flex align-items-center"
+              onClick={handleLinkClick}
+            >
+              <MdCreateNewFolder className="me-2" />
+              New Product
             </NavLink>
           </li>
           <li className="nav-item mb-2">

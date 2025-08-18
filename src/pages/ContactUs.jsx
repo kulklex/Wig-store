@@ -87,24 +87,24 @@ const ContactUs = () => {
           </div>
         </div>
 
-        {/* <div className="col-md-6 mt-5 mt-md-0 fs-6">
+        <div className="col-md-6 mt-5 mt-md-0 fs-6">
           <h3 className="fw-semibold mb-3">Business Info</h3>
           <p className="text-muted small mb-1">Karina Beauty Hub</p>
           <p className="small mb-1">Unit 11, The Orchard Shopping Center</p>
           <p className="small mb-1">Dartford, DA1 1DN, UK</p>
           <p className="small mb-1">
-            Email: <a href="mailto:hello@karinabeautyhub.co.uk">hello@karinabeautyhub.co.uk</a>
+            Email: <a href="mailto:hello@karinabeautyhub.co.uk">karinabeautyhubb@gmail.com</a>
           </p>
           <p className="small mb-4">
             Phone: <a href="tel:07984165342">07984 165342</a>
           </p>
 
-          <h6 className="fw-semibold mb-2">Store Hours</h6>
+          {/* <h6 className="fw-semibold mb-2">Store Hours</h6>
           <ul className="list-unstyled text-muted small mb-4">
             <li>Mon - Fri: 9:00am - 6:00pm</li>
             <li>Saturday: 10:00am - 5:00pm</li>
             <li>Sunday: Closed</li>
-          </ul>
+          </ul> */}
 
           <div>
             <h6 className="fw-semibold mb-2">Find Us</h6>
@@ -118,7 +118,7 @@ const ContactUs = () => {
               loading="lazy"
             ></iframe>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );
