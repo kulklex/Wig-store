@@ -282,9 +282,9 @@ const SearchResults = () => {
         <>
           {searchResults.length > 0 ? (
             <>
-              <div className="row gx-4 my-4">
+              <div className="row gx-3 my-4">
                 {searchResults.map((product) => (
-                  <CollectionCard key={product._id} data={product} />
+                  <CollectionCard key={product._id} data={product} compact={true} />
                 ))}
               </div>
               

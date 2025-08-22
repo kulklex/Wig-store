@@ -71,7 +71,7 @@ const Checkout = () => {
           <p>
             Your cart is empty.{" "}
             <span
-              className="text-primary"
+              className="text-dark"
               role="button"
               onClick={() => navigate("/")}
             >
@@ -91,7 +91,7 @@ const Checkout = () => {
                 <p className="text-muted mb-3">
                   You can continue as guest or{" "}
                   <span
-                    className="text-primary"
+                    className="text-dark"
                     role="button"
                     onClick={() => navigate("/sign-in")}
                   >
@@ -102,7 +102,7 @@ const Checkout = () => {
                 <div className="d-flex gap-2">
                   <button
                     type="button"
-                    className="btn btn-outline-primary"
+                    className="btn btn-outline-dark"
                     onClick={() => navigate("/sign-in")}
                   >
                     Continue with Google
@@ -213,9 +213,7 @@ const Checkout = () => {
                       <h6 className="my-0">{item.title}</h6>
                       <small className="text-muted">Qty: {item.cartQty}</small>
                     </div>
-                    <span className="text-muted">
-                      £{(item.price * item.cartQty).toFixed(2)}
-                    </span>
+                    <span className="text-dark fw-bold">£{item.finalPrice}</span>
                   </li>
                 ))}
               </ul>

@@ -37,6 +37,18 @@ export const fetchBestSellers = createAsyncThunk(
   }
 );
 
+export const fetchRelatedProducts = createAsyncThunk(
+  "products/fetchRelatedProducts",
+  async (productId, thunkAPI) => {
+    try {
+      const res = await axios.get(`/api/products/${productId}/related`);
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const searchProducts = createAsyncThunk(
   "products/searchProducts",
   async (params, thunkAPI) => {
@@ -98,6 +110,10 @@ const initialState = {
   bestSellersLoading: false,
   bestSellersError: null,
 
+  relatedProducts: [],
+  relatedProductsLoading: false,
+  relatedProductsError: null,
+
   searchResults: [],
   searchLoading: false,
   searchError: null,
@@ -153,6 +169,18 @@ const productSlice = createSlice({
       .addCase(fetchBestSellers.rejected, (state, action) => {
         state.bestSellersLoading = false;
         state.bestSellersError = action.payload || "Failed to fetch best sellers";
+      })
+      .addCase(fetchRelatedProducts.pending, (state) => {
+        state.relatedProductsLoading = true;
+        state.relatedProductsError = null;
+      })
+      .addCase(fetchRelatedProducts.fulfilled, (state, action) => {
+        state.relatedProductsLoading = false;
+        state.relatedProducts = action.payload;
+      })
+      .addCase(fetchRelatedProducts.rejected, (state, action) => {
+        state.relatedProductsLoading = false;
+        state.relatedProductsError = action.payload || "Failed to fetch related products";
       })
       .addCase(searchProducts.pending, (state) => {
         state.searchLoading = true;

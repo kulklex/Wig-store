@@ -67,7 +67,7 @@ const GoogleLogin = () => {
         <div className="col-12 col-sm-10 col-md-6 col-lg-4">
           <div className="card shadow-sm border-0 p-4 rounded-4">
            <div className="text-center mb-4">
-              <h2 className="fw-bold text-dark mb-2"> <span className="text-primary">KarinaBeautyHub</span></h2>
+              <h2 className="fw-bold text-dark mb-2"> <span className="text-dark">KarinaBeautyHub</span></h2>
               <p className="text-muted small">Sign in with your Google account to continue</p>
             </div>
 

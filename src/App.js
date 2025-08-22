@@ -39,6 +39,7 @@ import ReturnSelectItems from "./pages/ReturnSelectedItems";
 import ReturnForm from "./pages/ReturnForm";
 import AdminReturnsList from "./admin/AdminReturnsList";
 import AdminReturnDetails from "./admin/AdminReturnDetails";
+import Wishlist from "./pages/Wishlist";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -110,6 +111,7 @@ const App = () => {
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order/:id/return" element={<ReturnSelectItems />} />
           <Route path="/order/:id/return/form" element={<ReturnForm />} />
+          <Route path="/wishlist" element={<Wishlist />} />
 
           {/* Admin routes */}
           <Route

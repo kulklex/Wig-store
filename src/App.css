@@ -25,7 +25,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #000000;
 }
 
 @keyframes App-logo-spin {
@@ -97,6 +97,112 @@
 .hover-text-dark {
   color: #212529 !important;
   font-family: 'Playfair Display', serif; 
+}
+
+.trust-indicator {
+  transition: all 0.3s ease;
+}
+
+.trust-indicator:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.icon-wrapper {
+  transition: all 0.3s ease;
+}
+
+.icon-wrapper:hover {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.1);
+}
+
+.category-card {
+  transition: all 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.special-offer-card {
+  transition: all 0.3s ease;
+}
+
+.special-offer-card:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+.customer-reviews-carousel .carousel-control-prev,
+.customer-reviews-carousel .carousel-control-next {
+  color: #000;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.customer-reviews-carousel .carousel-control-prev {
+  left: -20px;
+}
+
+.customer-reviews-carousel .carousel-control-next {
+  right: -20px;
+}
+
+.educational-card {
+  transition: all 0.3s ease;
+}
+
+.educational-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.instagram-post {
+  transition: all 0.3s ease;
+}
+
+.instagram-post:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.newsletter-form .form-control:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+}
+
+.newsletter-form .btn:hover {
+  background-color: #f8f9fa;
+  color: #000;
+  border-color: #000;
+}
+
+@media (max-width: 768px) {
+  .trust-indicator,
+  .category-card,
+  .educational-card {
+    margin-bottom: 1rem;
+  }
+  
+  .customer-reviews-carousel .carousel-control-prev,
+  .customer-reviews-carousel .carousel-control-next {
+    display: none;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .newsletter-form .form-control {
+    max-width: 100%;
+  }
 }
 
 

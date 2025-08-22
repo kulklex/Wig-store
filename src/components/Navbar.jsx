@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { closeCartDrawer, getTotals, openCartDrawer } from "../redux/cartSlice";
 import { fetchCategories } from "../redux/productSlice";
+import { getWishlistCount } from "../redux/wishlistSlice";
 import {
   FiSearch,
   FiShoppingCart,
@@ -12,6 +13,7 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiFilter,
+  FiHeart,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import CartDrawer from "./CartDrawer";
@@ -48,6 +50,7 @@ const Navbar = () => {
   const user = useSelector((state) => state.user.user);
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
   const { categories, categoriesLoading } = useSelector((state) => state.products);
+  const { wishlistCount } = useSelector((state) => state.wishlist);
 
   const dropdownTimeoutRef = useRef(null);
   const infoDropdownTimeoutRef = useRef(null);
@@ -55,6 +58,12 @@ const Navbar = () => {
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(getWishlistCount());
+    }
+  }, [user, dispatch]);
 
   const handleDropdownEnter = () => {
     if (dropdownTimeoutRef.current) {
@@ -194,176 +203,189 @@ const Navbar = () => {
   return (
     <>
       <nav className="bg-white d-flex py-3 position-relative d-none d-lg-block">
-        <div className="d-flex align-items-center justify-content-between position-relative px-4">
-          <div className="d-flex align-items-center gap-4">
-
-                  <div className="d-flex justify-items-center align-items-center text-center">
+        <div className="container-fluid px-4">
+          <div className="d-flex align-items-center justify-content-between">
+            {/* Left Section - Admin Area & Search */}
+            <div className="d-flex align-items-center gap-4" style={{ minWidth: "280px" }}>
               {user?.role === "admin" && (
                 <Link
                   to="/admin/analytics"
-                  className="d-flex align-items-center py-2 text-dark text-decoration-none"
+                  className="d-flex align-items-center py-2 text-dark text-decoration-none fw-medium"
+                  style={{ fontSize: "0.9rem" }}
                 >
-                  <FiUser className="me-1" /> Admin Area
+                  <FiUser className="me-2" size={18} /> Admin Area
                 </Link>
               )}
-            </div>
-            <div className="position-relative d-flex align-items-center justify-center">
-              {!searchOpen ? (
-                <button
-                  className="border-0 bg-transparent text-dark p-0"
-                  onClick={() => setSearchOpen(true)}
-                >
-                  <FiSearch size={16} />
-                </button>
-              ) : (
-                <div
-                  className="d-flex align-items-center px-2 py-1 bg-light rounded-pill shadow-sm"
-                  style={{ minWidth: "250px" }}
-                >
-                  <FiSearch className="me-2 text-muted" size={16} />
-                  <input
-                    type="text"
-                    className="form-control border-0 shadow-none bg-transparent px-1 py-0"
-                    placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyDown={handleSearch}
-                    autoFocus
-                    style={{
-                      fontSize: "0.9rem",
-                    }}
-                  />
+              
+              <div className="position-relative d-flex align-items-center">
+                {!searchOpen ? (
                   <button
-                    className="btn btn-sm border-0 bg-transparent text-muted"
-                    onClick={() => setSearchOpen(false)}
+                    className="border-0 bg-transparent text-dark p-0"
+                    onClick={() => setSearchOpen(true)}
                   >
-                    <FiX size={18} />
+                    <FiSearch size={16} />
                   </button>
-                </div>
-              )}
+                ) : (
+                  <div
+                    className="d-flex align-items-center px-3 py-2 bg-light rounded-pill shadow-sm"
+                    style={{ minWidth: "250px" }}
+                  >
+                    <FiSearch className="me-2 text-muted" size={16} />
+                    <input
+                      type="text"
+                      className="form-control border-0 shadow-none bg-transparent px-1 py-0"
+                      placeholder="Search products..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onKeyDown={handleSearch}
+                      autoFocus
+                      style={{
+                        fontSize: "0.9rem",
+                      }}
+                    />
+                    <button
+                      className="btn btn-sm border-0 bg-transparent text-muted"
+                      onClick={() => setSearchOpen(false)}
+                    >
+                      <FiX size={18} />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="d-flex align-items-center justify-content-around text-center gap-4">
-            <div
-              className="me-4"
-              onMouseEnter={handleDropdownEnter}
-              onMouseLeave={handleDropdownLeave}
-            >
-              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
-                <span className="extensions-dropdown">
-                  SHOP HAIR EXTENSIONS{" "}
-                </span>
-                <span className="ms-1 fs-6">
-                  <FiChevronDown />
-                </span>
-              </button>
-
-              {showShopDropdown && (
+            {/* Center Section - Logo & Shop Dropdown */}
+            <div className="d-flex align-items-center justify-content-center flex-grow-1">
+              <div className="d-flex align-items-center gap-4">
                 <div
-                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown small"
-                  style={{
-                    top: "100%",
-                    width: "100%",
-                    animation: "dropdownFadeSlide 0.2s ease-out",
-                  }}
+                  className="me-4"
+                  onMouseEnter={handleDropdownEnter}
+                  onMouseLeave={handleDropdownLeave}
                 >
-                  <div className="container-fluid px-4">
-                    <div className="row g-4">
-                      {dropdownContent.map((section, index) => (
-                        <div key={index} className="col">
-                          <h3 className="fs-6 fw-bold text-uppercase mb-3 pb-2 border-bottom">
-                            {section.title}
-                          </h3>
-                          <div className="d-flex flex-column gap-2">
-                            {section.items.map((item) => (
-                              <Link
-                                key={item}
-                                to={`/search?query=${item}`}
-                                className="text-decoration-none fs-12 hover-text-dark"
-                                onClick={() => setShowShopDropdown(false)}
-                              >
-                                {item}
-                              </Link>
-                            ))}
-                          </div>
+                  <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
+                    <span className="extensions-dropdown">
+                      SHOP HAIR EXTENSIONS{" "}
+                    </span>
+                    <span className="ms-1 fs-6">
+                      <FiChevronDown />
+                    </span>
+                  </button>
+
+                  {showShopDropdown && (
+                    <div
+                      className="position-absolute start-50 translate-middle-x bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown small"
+                      style={{
+                        top: "100%",
+                        minWidth: "800px",
+                        animation: "dropdownFadeSlide 0.2s ease-out",
+                      }}
+                    >
+                      <div className="container-fluid px-4">
+                        <div className="row g-4">
+                          {dropdownContent.map((section, index) => (
+                            <div key={index} className="col">
+                              <h3 className="fs-6 fw-bold text-uppercase mb-3 pb-2 border-bottom">
+                                {section.title}
+                              </h3>
+                              <div className="d-flex flex-column gap-2">
+                                {section.items.map((item) => (
+                                  <Link
+                                    key={item}
+                                    to={`/search?query=${item}`}
+                                    className="text-decoration-none fs-12 hover-text-dark"
+                                    onClick={() => setShowShopDropdown(false)}
+                                  >
+                                    {item}
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <div className="ms-4 me-4">
-              <Link
-                to="/"
-                className="text-dark text-decoration-none extensions-dropdown"
-                style={{ letterSpacing: "5px", fontSize: "25px" }}
-              >
-                KarinaBeautyHub
-              </Link>
-            </div>
 
-            <div
-              className="ms-4"
-              onMouseEnter={handleInfoDropdownEnter}
-              onMouseLeave={handleInfoDropdownLeave}
-            >
-              <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
-                <span className="extensions-dropdown">INFO</span>
-                <span className="ms-1 fs-6">
-                  <FiChevronDown />
-                </span>
-              </button>
-
-              {showInfoDropdown && (
-                <div
-                  className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown small"
-                  style={{
-                    top: "100%",
-                    width: "100%",
-                    animation: "dropdownFadeSlide 0.2s ease-out",
-                  }}
+                <Link
+                  to="/"
+                  className="text-dark text-decoration-none extensions-dropdown text-center"
+                  style={{ letterSpacing: "5px", fontSize: "25px", minWidth: "200px" }}
                 >
-                  <div className="d-flex flex-column gap-2 px-3">
-                    {infoLinks.map(({ label, to }) => (
-                      <Link
-                        key={label}
-                        to={to}
-                        className="text-decoration-none text-dark fs-6 hover-text-dark"
-                        onClick={() => setShowInfoDropdown(false)}
-                      >
-                        {label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+                  KarinaBeautyHub
+                </Link>
 
-          <div className="d-flex align-items-center gap-4 flex-shrink-0">
-            {user == null ? (
-              <Link to={"/sign-in"} className="text-dark">
-                <FiUser size={20} />
-              </Link>
-            ) : (
-              <Link to={"/my-orders"} className="text-dark">
-                <FiUser size={20} />
-              </Link>
-            )}
-            <button
-              onClick={() => dispatch(openCartDrawer())}
-              className="text-dark position-relative border-0 bg-transparent"
-              aria-label="Cart"
-            >
-              <FiShoppingCart size={20} />
-              {cart.totalQuantity > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {cart.totalQuantity}
-                </span>
+                <div
+                  className="ms-4"
+                  onMouseEnter={handleInfoDropdownEnter}
+                  onMouseLeave={handleInfoDropdownLeave}
+                >
+                  <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
+                    <span className="extensions-dropdown">INFO</span>
+                    <span className="ms-1 fs-6">
+                      <FiChevronDown />
+                    </span>
+                  </button>
+
+                  {showInfoDropdown && (
+                    <div
+                      className="position-absolute start-50 translate-middle-x bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown small"
+                      style={{
+                        top: "100%",
+                        minWidth: "150px",
+                        animation: "dropdownFadeSlide 0.2s ease-out",
+                      }}
+                    >
+                      <div className="d-flex flex-column gap-2 px-3">
+                        {infoLinks.map(({ label, to }) => (
+                          <Link
+                            key={label}
+                            to={to}
+                            className="text-decoration-none text-dark fs-6 hover-text-dark"
+                            onClick={() => setShowInfoDropdown(false)}
+                          >
+                            {label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Section - User & Cart */}
+            <div className="d-flex align-items-center gap-4" style={{ minWidth: "120px", justifyContent: "flex-end" }}>
+              {user == null ? (
+                <Link to={"/sign-in"} className="text-dark">
+                  <FiUser size={20} />
+                </Link>
+              ) : (
+                <Link to={"/my-orders"} className="text-dark">
+                  <FiUser size={20} />
+                </Link>
               )}
-            </button>
+              <Link to={"/wishlist"} className="text-dark position-relative border-0 bg-transparent">
+                <FiHeart size={20} />
+                {wishlistCount > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+              <button
+                onClick={() => dispatch(openCartDrawer())}
+                className="text-dark position-relative border-0 bg-transparent"
+                aria-label="Cart"
+              >
+                <FiShoppingCart size={20} />
+                {cart.totalQuantity > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {cart.totalQuantity}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -403,6 +425,16 @@ const Navbar = () => {
               >
                 <FiSearch size={20} />
               </button>
+              {user && (
+                <Link to="/wishlist" className="btn p-0 border-0 bg-transparent px-2 position-relative">
+                  <FiHeart size={20} />
+                  {wishlistCount > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
+                      {wishlistCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               <button
                 onClick={() => dispatch(openCartDrawer())}
                 className="text-dark position-relative border-0 bg-transparent"

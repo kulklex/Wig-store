@@ -11,13 +11,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import cartReducer, { getTotals } from "./redux/cartSlice";
 import productReducer from "./redux/productSlice"
 import authReducer from "./redux/authSlice"
-
+import wishlistReducer from "./redux/wishlistSlice"
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
     products: productReducer,
-    user: authReducer
+    user: authReducer,
+    wishlist: wishlistReducer
   },
 });
 

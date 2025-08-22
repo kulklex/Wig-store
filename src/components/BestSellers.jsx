@@ -24,13 +24,13 @@ const BestSellers = () => {
         paragraph="Shop the most loved and top-rated products in our store"
       />
 
-      <main className="row gx-4">
+      <main className="row gx-3">
         {bestSellersLoading && <p>Loading...</p>}
         {bestSellersError && <p>Error: {bestSellersError}</p>}
         {!bestSellersLoading &&
           !bestSellersError &&
           bestSellers?.map((product) => (
-            <CollectionCard key={product._id} data={product} />
+            <CollectionCard key={product._id} data={product} compact={true} />
           ))}
       </main>
     </section>

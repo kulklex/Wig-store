@@ -560,7 +560,7 @@ const AdminEditProduct = () => {
           <div className="col-12 mt-2">
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-dark"
               onClick={() => {
                 if (
                   !newVariant.texture ||
@@ -667,8 +667,8 @@ const AdminEditProduct = () => {
         />
 
         <div className="d-flex justify-content-between align-items-center">
-          <button type="submit" className="btn btn-success">
-            Save Product
+          <button type="submit" className="btn btn-dark">
+            Update Product
           </button>
           {status && (
             <div

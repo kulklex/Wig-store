@@ -211,7 +211,7 @@ const ReturnForm = () => {
 
       <button
         onClick={handleSubmit}
-        className="btn btn-primary"
+        className="btn btn-dark"
         disabled={submitting}
       >
         {submitting ? "Submitting..." : "Submit Return Request"}

@@ -15,13 +15,16 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { addToCart, closeCartDrawer } from "../redux/cartSlice";
+import { fetchRelatedProducts } from "../redux/productSlice";
 import AlertModal from "../components/AlertModal";
+import CollectionCard from "../components/CollectionCard";
 
 const ProductPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const user = useSelector((state) => state.user.user);
+  const { relatedProducts, relatedProductsLoading } = useSelector((state) => state.products);
 
   const [product, setProduct] = useState(null);
   const [selectedTexture, setSelectedTexture] = useState(null);
@@ -63,6 +66,53 @@ const ProductPage = () => {
 
     fetchBestSellers();
   }, []);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`/api/products/${id}`);
+        setProduct(res.data);
+        setReviews(res.data.reviews || []);
+        
+        if (res.data.variants && res.data.variants.length > 0) {
+          const firstVariant = res.data.variants[0];
+          setSelectedTexture(firstVariant.texture);
+          setSelectedLength(firstVariant.length);
+          setSelectedOrigin(firstVariant.origin);
+          setSelectedVariant(firstVariant);
+          setSelectedLace(firstVariant.lace || "");
+          setSelectedStyle(firstVariant.style || "");
+          setSelectedWeight(firstVariant.weight || "");
+          setSelectedFullDescription(firstVariant.fullDescription || "");
+          setMainImage(firstVariant.media || "");
+        }
+
+        dispatch(fetchRelatedProducts(id));
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    const checkCanReview = async () => {
+      if (user) {
+        try {
+          const res = await axios.get(`/api/products/${id}/can-review`);
+          setCanReview(res.data.canReview);
+        } catch (error) {
+          console.error("Failed to check review eligibility:", error);
+        }
+      }
+    };
+
+    checkCanReview();
+  }, [id, user]);
 
   const isBestSeller = useMemo(() => {
     if (!product || bestSellers.length === 0) return false;
@@ -113,44 +163,12 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await axios.get(`/api/products/${id}`);
-        setProduct(res.data);
-        setReviews(res.data?.reviews);
-        setLoading(false);
-      } catch (err) {
-        console.error("Failed to load product:", err);
-        setLoading(false);
-      }
-    };
-    fetchProduct();
-  }, [id]);
-
-  useEffect(() => {
     dispatch(closeCartDrawer());
   }, [dispatch]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    const checkCanReview = async () => {
-      try {
-        const res = await axios.get(
-          `/api/products/${product._id}/eligible-to-review`
-        );
-        setCanReview(res.data.canReview);
-      } catch (err) {
-        console.error("Failed to check review eligibility", err);
-      }
-    };
-
-    if (product && user) {
-      checkCanReview();
-    }
-  }, [product, user]);
 
   const textureVariantsMap = useMemo(() => {
     const map = {};
@@ -625,6 +643,38 @@ const ProductPage = () => {
           </Accordion>
         </Col>
       </Row>
+
+      <Row className="mt-5">
+        <Col>
+          <div className="text-center mb-4">
+            <h3 className="fw-bold text-dark mb-2">You Might Also Like</h3>
+            <p className="text-muted">Discover more products in this category</p>
+          </div>
+          
+          {relatedProductsLoading ? (
+            <div className="text-center py-4">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+          ) : relatedProducts.length > 0 ? (
+            <Row>
+              {relatedProducts.map((relatedProduct) => (
+                <CollectionCard 
+                  key={relatedProduct._id} 
+                  data={relatedProduct} 
+                  compact={true}
+                />
+              ))}
+            </Row>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-muted">No related products found</p>
+            </div>
+          )}
+        </Col>
+      </Row>
+
       <AlertModal
         isOpen={showModal}
         title={modalTitle}

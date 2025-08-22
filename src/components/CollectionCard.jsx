@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { FiHeart } from "react-icons/fi";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlist, removeFromWishlist, checkWishlistStatus } from "../redux/wishlistSlice";
 
-const CollectionCard = ({ data }) => {
+const CollectionCard = ({ data, compact = false }) => {
   const navigate = useNavigate();
-  const { _id, name, description = "", reviews = [], variants = [] } = data;
+  const dispatch = useDispatch();
+  const { _id, name, description = "", variants = [] } = data;
+  const user = useSelector((state) => state.user.user);
 
   const [bestSellerIds, setBestSellerIds] = useState([]);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   useEffect(() => {
     const fetchBestSellers = async () => {
@@ -18,45 +25,25 @@ const CollectionCard = ({ data }) => {
         console.error("Error fetching best sellers:", err);
       }
     };
+
     fetchBestSellers();
   }, []);
 
-  const getAverageRating = (list) => {
-    const nums = (Array.isArray(list) ? list : [])
-      .map((r) => Number(r?.rating))
-      .filter((n) => Number.isFinite(n) && n >= 0 && n <= 5);
-    if (nums.length === 0) return 0;
-    const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
-    return avg;
-  };
+  useEffect(() => {
+    if (user && _id) {
+      const checkStatus = async () => {
+        try {
+          const result = await dispatch(checkWishlistStatus(_id)).unwrap();
+          setIsInWishlist(result.isInWishlist);
+        } catch (error) {
+          console.error("Error checking wishlist status:", error);
+        }
+      };
+      checkStatus();
+    }
+  }, [user, _id, dispatch]);
 
-  const StarRating = ({ value, count }) => {
-    const rounded = Math.round((Number(value) || 0) * 2) / 2;
-    const full = Math.floor(rounded);
-    const hasHalf = rounded - full === 0.5;
-    const empty = Math.max(0, 5 - full - (hasHalf ? 1 : 0));
 
-    return (
-      <div className="d-flex align-items-center gap-1 text-warning small">
-        {[...Array(full)].map((_, i) => (
-          <FaStar key={`full-${i}`} />
-        ))}
-        {hasHalf && <FaStarHalfAlt />}
-        {[...Array(empty)].map((_, i) => (
-          <FaRegStar key={`empty-${i}`} />
-        ))}
-        <span className="text-dark ms-1">
-          {rounded.toFixed(1)}
-          {typeof count === "number" ? ` (${count})` : ""}
-        </span>
-      </div>
-    );
-  };
-
-  const averageRating = getAverageRating(reviews);
-  const reviewCount = Array.isArray(reviews) ? reviews.length : 0;
-
-  // Pick variant to show pricing from — prioritize Straight, fallback first
   const variantToShow =
     variants.find((v) => v.texture?.toLowerCase() === "straight") ||
     variants[0];
@@ -71,25 +58,21 @@ const CollectionCard = ({ data }) => {
     const promoPrice = Math.max(0, originalPrice * (1 - discount / 100));
 
     displayPrice = (
-      <div className="mb-3">
-        <span
-          className="text-muted text-decoration-line-through me-2"
-          style={{ fontSize: "0.9rem" }}
-        >
+      <div className="d-flex align-items-center gap-2 mb-2">
+        <span className="text-danger fw-bold fs-6">
+          £{promoPrice.toFixed(2)}
+        </span>
+        <span className="text-muted text-decoration-line-through" style={{ fontSize: "0.875rem" }}>
           £{originalPrice.toFixed(2)}
         </span>
-        <span
-          className="fw-bold text-danger"
-          style={{ fontSize: "0.9rem" }}
-          aria-label={`Discounted price ${promoPrice.toFixed(2)} pounds`}
-        >
-          £{promoPrice.toFixed(2)}
+        <span className="badge bg-danger text-white" style={{ fontSize: "0.625rem" }}>
+          -{discount}%
         </span>
       </div>
     );
   } else {
     displayPrice = variantToShow?.price ? (
-      <div className="mb-3 fw-semibold" style={{ fontSize: "1.0rem" }}>
+      <div className="fw-bold fs-6 mb-2 text-dark">
         £{Number(variantToShow.price).toFixed(2)}
       </div>
     ) : null;
@@ -102,68 +85,125 @@ const CollectionCard = ({ data }) => {
 
   const isBestSeller = bestSellerIds.includes(_id);
 
+  const cardClass = compact 
+    ? "col-6 col-md-4 col-lg-3 col-xl-2 mb-3" 
+    : "col-6 col-md-4 col-lg-3 mb-4";
+
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation();
+    if (!user) {
+      navigate('/sign-in');
+      return;
+    }
+
+    setWishlistLoading(true);
+    try {
+      if (isInWishlist) {
+        await dispatch(removeFromWishlist(_id)).unwrap();
+        setIsInWishlist(false);
+      } else {
+        await dispatch(addToWishlist(_id)).unwrap();
+        setIsInWishlist(true);
+      }
+    } catch (error) {
+      console.error("Wishlist operation failed:", error);
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
   return (
-    <div
-      className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
-      data-aos="fade-up"
-      style={{ cursor: "pointer" }}
-    >
-      <div className="card h-100 border-0 shadow-sm hover-shadow transition-3">
-        <figure className="overflow-hidden rounded-top m-0">
+    <div className={cardClass} data-aos="fade-up">
+      <div 
+        className="card h-100 border-0 shadow-sm position-relative overflow-hidden"
+        style={{ 
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          transform: isHovered ? "translateY(-4px)" : "translateY(0)"
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={() => navigate(`/product/${_id}`)}
+      >
+        {isBestSeller && (
+          <div className="position-absolute top-0 start-0 z-1">
+            <span className="badge bg-warning text-dark rounded-0 rounded-end" style={{ fontSize: "0.625rem" }}>
+              🔥 Best Seller
+            </span>
+          </div>
+        )}
+
+        <div className="position-relative overflow-hidden" style={{ aspectRatio: "1" }}>
           <img
             src={image}
             alt={name}
-            className="card-img-top img-fluid"
+            className="w-100 h-100"
             style={{
-              maxHeight: "300px",
               objectFit: "cover",
-              transition: "transform 0.3s",
+              transition: "transform 0.3s ease",
+              transform: isHovered ? "scale(1.05)" : "scale(1)"
             }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.transform = "scale(1.05)")
-            }
-            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
           />
-        </figure>
+          
+          {user && (
+            <div className="position-absolute top-0 end-0 p-2">
+              <button 
+                className={`btn btn-sm rounded-circle shadow-sm border-0 ${
+                  isInWishlist ? 'btn-danger' : 'btn-light'
+                }`}
+                style={{ width: "32px", height: "32px" }}
+                onClick={handleWishlistToggle}
+                disabled={wishlistLoading}
+              >
+                <FiHeart size={14} fill={isInWishlist ? "white" : "none"} />
+              </button>
+            </div>
+          )}
+        </div>
 
-        <div className="card-body d-flex flex-column justify-content-between px-3 py-3">
-          <h5
-            className="card-title text-dark fw-semibold text-truncate d-flex align-items-center"
+        <div className="card-body p-3">
+          <h6 
+            className="card-title fw-semibold text-dark mb-1"
+            style={{ 
+              fontSize: compact ? "0.875rem" : "1rem",
+              lineHeight: "1.3",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden"
+            }}
             title={name}
           >
             {name}
-            {isBestSeller && (
-              <span
-                style={{
-                  fontSize: "0.9rem",
-                  color: "#ff4500",
-                  marginLeft: "6px",
-                }}
-              >
-                🔥 Best Seller
-              </span>
-            )}
-          </h5>
+          </h6>
 
           {displayPrice}
 
-          {reviewCount > 0 && (
-            <div className="mb-2">
-              <StarRating value={averageRating} count={reviewCount} />
-            </div>
+          {!compact && description && (
+            <p 
+              className="text-muted mb-3"
+              style={{ 
+                fontSize: "0.75rem",
+                lineHeight: "1.4",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden"
+              }}
+            >
+              {description}
+            </p>
           )}
 
-          <p className="card-text text-muted small mb-3">
-            {description.length > 60
-              ? `${description.slice(0, 60)}...`
-              : description}
-          </p>
-
           <button
-            className="btn btn-dark w-80 mt-auto text-uppercase fw-medium"
-            onClick={() => navigate(`/product/${_id}`)}
+            className="btn btn-dark btn-sm w-100 text-uppercase fw-medium"
+            style={{ fontSize: "0.75rem" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/product/${_id}`);
+            }}
           >
-            Shop Now
+            View Details
           </button>
         </div>
       </div>
