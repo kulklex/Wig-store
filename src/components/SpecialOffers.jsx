@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { FiArrowRight } from "react-icons/fi";
 import CollectionCard from "./CollectionCard";
 
 const SpecialOffers = () => {
+  const navigate = useNavigate();
   const { productsData } = useSelector((state) => state.products);
   const [discountedProducts, setDiscountedProducts] = useState([]);
 
@@ -31,9 +35,21 @@ const SpecialOffers = () => {
 
       <main className="row gx-3">
           {discountedProducts.map((product) => (
-                  <CollectionCard data={product} compact={false} />
+                  <CollectionCard key={product._id} data={product} compact={false} />
           ))}
         </main>
+
+      <div className="text-center mb-5 mt-3 d-flex justify-content-center">
+        <Button
+          variant="outline-light"
+          size="lg"
+          className="px-4 py-2 fw-medium d-flex align-items-center justify-content-center mb-5"
+          onClick={() => navigate('/special-offers')}
+        >
+          Discover
+          <FiArrowRight className="ms-2" />
+        </Button>
+      </div>
     </section>
   );
 };

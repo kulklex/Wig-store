@@ -1,9 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { FiArrowRight } from "react-icons/fi";
 import CollectionCard from "./CollectionCard";
 import Header from "./Header";
 
 const BestSellers = () => {
+  const navigate = useNavigate();
   const {
     bestSellers,
     bestSellersLoading,
@@ -48,6 +52,18 @@ const BestSellers = () => {
           <CollectionCard key={product._id} data={product} compact={false} />
         ))}
       </main>
+
+      <div className="text-center mb-5 mt-3 d-flex justify-content-center">
+        <Button
+          variant="outline-dark"
+          size="lg"
+          className="px-4 py-2 fw-medium d-flex align-items-center justify-content-center mb-5"
+          onClick={() => navigate('/best-sellers')}
+        >
+          Discover
+          <FiArrowRight className="ms-2" />
+        </Button>
+      </div>
     </section>
   );
 };

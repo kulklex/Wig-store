@@ -234,7 +234,26 @@
 .model-img {
   object-fit: cover;
   height: 300px;
-  transition: transform 0.3s ease-in-out;
+}
+
+/* Cart Drawer Styles */
+.offcanvas-end {
+  width: 400px !important;
+  max-width: 90vw !important;
+}
+
+@media (max-width: 576px) {
+  .offcanvas-end {
+    width: 83vw !important;
+    max-width: 85vw !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .offcanvas-end {
+    width: 83vw !important;
+    max-width: 85vw !important;
+  }
 }
 
 .model-card:hover .model-img {

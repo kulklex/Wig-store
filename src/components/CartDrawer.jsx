@@ -42,8 +42,14 @@ function CartDrawer({ show, onClose }) {
 
   return (
     <div
-      className={`container px-1 offcanvas offcanvas-end ${show ? "show" : ""}`}
-      style={{ visibility: show ? "visible" : "hidden" }}
+      className={`offcanvas offcanvas-end ${show ? "show" : ""}`}
+      style={{ 
+        visibility: show ? "visible" : "hidden",
+        width: "400px",
+        maxWidth: "90vw"
+      }}
+      data-bs-scroll="true"
+      data-bs-backdrop="true"
       tabIndex="-1"
       ref={drawerRef}
     >

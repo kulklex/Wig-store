@@ -57,22 +57,25 @@ const CollectionCard = ({ data, compact = false }) => {
     const discount = Number(variantToShow.promo.discountPercent) || 0;
     const promoPrice = Math.max(0, originalPrice * (1 - discount / 100));
 
-    displayPrice = (
-      <div className="d-flex align-items-center gap-2 mb-2">
+    displayPrice = (<>
+       <div className="d-flex align-items-center gap-2 mb-2">
         <span className="text-danger fw-bold fs-6">
           £{promoPrice.toFixed(2)}
         </span>
-        <span className="text-muted text-decoration-line-through" style={{ fontSize: "0.875rem" }}>
-          £{originalPrice.toFixed(2)}
-        </span>
+        
         <span className="badge bg-danger text-white" style={{ fontSize: "0.625rem" }}>
           -{discount}%
         </span>
       </div>
-    );
+      <div>
+          <span className="text-muted text-decoration-line-through" style={{ fontSize: "0.875rem" }}>
+          £{originalPrice.toFixed(2)}
+        </span>
+      </div>
+   </> );
   } else {
     displayPrice = variantToShow?.price ? (
-      <div className="fw-bold fs-6 mb-2 text-dark">
+      <div className="fw-bold fs-6 mb-1 text-dark">
         £{Number(variantToShow.price).toFixed(2)}
       </div>
     ) : null;
@@ -87,7 +90,7 @@ const CollectionCard = ({ data, compact = false }) => {
 
   const cardClass = compact 
     ? "col-6 col-md-4 col-lg-3 col-xl-2 mb-3" 
-    : "col-6 col-md-4 col-lg-3 mb-4";
+    : "col-6 col-md-4 col-lg-3 mb-3";
 
   const handleWishlistToggle = async (e) => {
     e.stopPropagation();

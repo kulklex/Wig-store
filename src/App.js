@@ -41,6 +41,8 @@ import AdminReturnsList from "./admin/AdminReturnsList";
 import AdminReturnDetails from "./admin/AdminReturnDetails";
 import Wishlist from "./pages/Wishlist";
 import NewArrivalsPage from "./pages/NewArrivalsPage";
+import BestSellersPage from "./pages/BestSellersPage";
+import SpecialOffersPage from "./pages/SpecialOffersPage";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -113,6 +115,8 @@ const App = () => {
           <Route path="/order/:id/return" element={<ReturnSelectItems />} />
           <Route path="/order/:id/return/form" element={<ReturnForm />} />
           <Route path="/new-arrivals" element={<NewArrivalsPage />} />
+          <Route path="/best-sellers" element={<BestSellersPage />} />
+          <Route path="/special-offers" element={<SpecialOffersPage />} />
           <Route path="/wishlist" element={<Wishlist />} />
 
           {/* Admin routes */}
