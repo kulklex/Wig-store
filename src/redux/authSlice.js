@@ -4,7 +4,7 @@ const savedUser = localStorage.getItem('user');
 
 const initialState = {
   user: savedUser ? JSON.parse(savedUser) : null,
-  loading: true,
+  loading: false,
 };
 
 const authSlice = createSlice({

@@ -1,19 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FiArrowRight } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts, fetchCategories } from "../redux/productSlice";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const FeaturedCategories = () => {
-  const dispatch = useDispatch();
   const { categories, productsData } = useSelector((state) => state.products);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(fetchCategories());
-    dispatch(fetchProducts());
-  }, [dispatch]);
 
   const productsArray = Array.isArray(productsData?.products)
     ? productsData.products

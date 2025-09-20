@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
 export const fetchProducts = createAsyncThunk(
   "products/fetchAll",
   async (_, thunkAPI) => {
@@ -10,6 +11,15 @@ export const fetchProducts = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { products } = getState();
+      if (products.productsData.length > 0 && products.lastFetched && 
+          Date.now() - products.lastFetched < 5 * 60 * 1000) {
+        return false;
+      }
+    }
   }
 );
 
@@ -17,10 +27,19 @@ export const fetchNewArrivals = createAsyncThunk(
   "products/fetchNewArrivals",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get("/api/products/new-arrivals?days=90");
+      const res = await axios.get("/api/products/new-arrivals?days=120");
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { products } = getState();
+      if (products.newArrivals.length > 0 && products.newArrivalsLastFetched && 
+          Date.now() - products.newArrivalsLastFetched < 5 * 60 * 1000) {
+        return false;
+      }
     }
   }
 );
@@ -33,6 +52,15 @@ export const fetchBestSellers = createAsyncThunk(
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { products } = getState();
+      if (products.bestSellers.length > 0 && products.bestSellersLastFetched && 
+          Date.now() - products.bestSellersLastFetched < 5 * 60 * 1000) {
+        return false;
+      }
     }
   }
 );
@@ -94,6 +122,36 @@ export const fetchCategories = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { products } = getState();
+      if (products.categories.length > 0 && products.categoriesLastFetched && 
+          Date.now() - products.categoriesLastFetched < 10 * 60 * 1000) {
+        return false;
+      }
+    }
+  }
+);
+
+export const fetchHomepageData = createAsyncThunk(
+  "products/fetchHomepageData",
+  async (_, thunkAPI) => {
+    try {
+      const [categoriesRes, newArrivalsRes, bestSellersRes] = await Promise.all([
+        axios.get("/api/products/categories"),
+        axios.get("/api/products/new-arrivals?days=90"),
+        axios.get("/api/products/best-sellers")
+      ]);
+      
+      return {
+        categories: categoriesRes.data,
+        newArrivals: newArrivalsRes.data,
+        bestSellers: bestSellersRes.data
+      };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 
@@ -101,14 +159,17 @@ const initialState = {
   productsData: [],
   loading: false,
   error: null,
+  lastFetched: null,
 
   newArrivals: [],
   newArrivalsLoading: false,
   newArrivalsError: null,
+  newArrivalsLastFetched: null,
 
   bestSellers: [],
   bestSellersLoading: false,
   bestSellersError: null,
+  bestSellersLastFetched: null,
 
   relatedProducts: [],
   relatedProductsLoading: false,
@@ -126,14 +187,27 @@ const initialState = {
   categories: [],
   categoriesLoading: false,
   categoriesError: null,
+  categoriesLastFetched: null,
+
+  homepageDataLoading: false,
+  homepageDataError: null,
 };
 
 const productSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
+  reducers: {
+    clearSearchResults: (state) => {
+      state.searchResults = [];
+      state.searchPagination = { page: 1, pages: 1, total: 0 };
+    },
+    clearError: (state) => {
+      state.error = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
+      // Fetch all products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -141,11 +215,14 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.productsData = action.payload;
+        state.lastFetched = Date.now();
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch products";
       })
+      
+      // Fetch new arrivals
       .addCase(fetchNewArrivals.pending, (state) => {
         state.newArrivalsLoading = true;
         state.newArrivalsError = null;
@@ -153,11 +230,14 @@ const productSlice = createSlice({
       .addCase(fetchNewArrivals.fulfilled, (state, action) => {
         state.newArrivalsLoading = false;
         state.newArrivals = action.payload;
+        state.newArrivalsLastFetched = Date.now();
       })
       .addCase(fetchNewArrivals.rejected, (state, action) => {
         state.newArrivalsLoading = false;
         state.newArrivalsError = action.payload || "Failed to fetch new arrivals";
       })
+      
+      // Fetch best sellers
       .addCase(fetchBestSellers.pending, (state) => {
         state.bestSellersLoading = true;
         state.bestSellersError = null;
@@ -165,11 +245,14 @@ const productSlice = createSlice({
       .addCase(fetchBestSellers.fulfilled, (state, action) => {
         state.bestSellersLoading = false;
         state.bestSellers = action.payload;
+        state.bestSellersLastFetched = Date.now();
       })
       .addCase(fetchBestSellers.rejected, (state, action) => {
         state.bestSellersLoading = false;
         state.bestSellersError = action.payload || "Failed to fetch best sellers";
       })
+      
+      // Fetch related products
       .addCase(fetchRelatedProducts.pending, (state) => {
         state.relatedProductsLoading = true;
         state.relatedProductsError = null;
@@ -182,6 +265,8 @@ const productSlice = createSlice({
         state.relatedProductsLoading = false;
         state.relatedProductsError = action.payload || "Failed to fetch related products";
       })
+      
+      // Search products
       .addCase(searchProducts.pending, (state) => {
         state.searchLoading = true;
         state.searchError = null;
@@ -200,6 +285,8 @@ const productSlice = createSlice({
         state.searchLoading = false;
         state.searchError = action.payload || "Failed to search products";
       })
+      
+      // Fetch categories
       .addCase(fetchCategories.pending, (state) => {
         state.categoriesLoading = true;
         state.categoriesError = null;
@@ -207,12 +294,33 @@ const productSlice = createSlice({
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.categoriesLoading = false;
         state.categories = action.payload;
+        state.categoriesLastFetched = Date.now();
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.categoriesLoading = false;
         state.categoriesError = action.payload || "Failed to fetch categories";
+      })
+      
+      // Fetch homepage data (batch)
+      .addCase(fetchHomepageData.pending, (state) => {
+        state.homepageDataLoading = true;
+        state.homepageDataError = null;
+      })
+      .addCase(fetchHomepageData.fulfilled, (state, action) => {
+        state.homepageDataLoading = false;
+        state.categories = action.payload.categories;
+        state.newArrivals = action.payload.newArrivals;
+        state.bestSellers = action.payload.bestSellers;
+        state.categoriesLastFetched = Date.now();
+        state.newArrivalsLastFetched = Date.now();
+        state.bestSellersLastFetched = Date.now();
+      })
+      .addCase(fetchHomepageData.rejected, (state, action) => {
+        state.homepageDataLoading = false;
+        state.homepageDataError = action.payload || "Failed to fetch homepage data";
       });
   },
 });
 
+export const { clearSearchResults, clearError } = productSlice.actions;
 export default productSlice.reducer;

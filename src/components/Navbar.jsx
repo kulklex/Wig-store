@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { closeCartDrawer, getTotals, openCartDrawer } from "../redux/cartSlice";
-import { fetchCategories } from "../redux/productSlice";
+import { fetchCategories, fetchProducts } from "../redux/productSlice";
 import { getWishlistCount } from "../redux/wishlistSlice";
 import {
   FiSearch,
@@ -35,6 +35,9 @@ const Navbar = () => {
     sort: "",
   });
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
       navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
@@ -43,21 +46,22 @@ const Navbar = () => {
     }
   };
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user.user);
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
   const { categories, categoriesLoading } = useSelector((state) => state.products);
   const { wishlistCount } = useSelector((state) => state.wishlist);
+  const productsData = useSelector((state) => state.products.products);
 
   const dropdownTimeoutRef = useRef(null);
   const infoDropdownTimeoutRef = useRef(null);
 
   useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
+    if (!categories || !productsData?.products) {
+      dispatch(fetchCategories());
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, categories, productsData]);
 
   useEffect(() => {
     if (user) {
@@ -205,25 +209,15 @@ const Navbar = () => {
       <nav className="bg-white d-flex py-3 position-relative d-none d-lg-block">
         <div className="container-fluid px-4">
           <div className="d-flex align-items-center justify-content-between">
-            {/* Left Section - Admin Area & Search */}
-            <div className="d-flex align-items-center gap-4" style={{ minWidth: "280px" }}>
-              {user?.role === "admin" && (
-                <Link
-                  to="/admin/analytics"
-                  className="d-flex align-items-center py-2 text-dark text-decoration-none fw-medium"
-                  style={{ fontSize: "0.9rem" }}
-                >
-                  <FiUser className="me-2" size={18} /> Admin Area
-                </Link>
-              )}
-              
+            {/* Left Section - Search Icon */}
+            <div className="d-flex align-items-center">
               <div className="position-relative d-flex align-items-center">
                 {!searchOpen ? (
                   <button
                     className="border-0 bg-transparent text-dark p-0"
                     onClick={() => setSearchOpen(true)}
                   >
-                    <FiSearch size={16} />
+                    <FiSearch size={20} />
                   </button>
                 ) : (
                   <div
@@ -254,17 +248,18 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Center Section - Logo & Shop Dropdown */}
+            {/* Center Section - Navigation Links and Logo */}
             <div className="d-flex align-items-center justify-content-center flex-grow-1">
-              <div className="d-flex align-items-center gap-4">
+              <div className="d-flex align-items-center justify-content-center" style={{ gap: "80px" }}>
+                {/* SHOP HAIR EXTENSIONS - Left of Logo */}
                 <div
-                  className="me-4"
+                  className="position-relative"
                   onMouseEnter={handleDropdownEnter}
                   onMouseLeave={handleDropdownLeave}
                 >
                   <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
-                    <span className="extensions-dropdown">
-                      SHOP HAIR EXTENSIONS{" "}
+                    <span className="extensions-dropdown" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>
+                      SHOP HAIR EXTENSIONS
                     </span>
                     <span className="ms-1 fs-6">
                       <FiChevronDown />
@@ -273,7 +268,7 @@ const Navbar = () => {
 
                   {showShopDropdown && (
                     <div
-                      className="position-absolute start-50 translate-middle-x bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown small"
+                      className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown small"
                       style={{
                         top: "100%",
                         minWidth: "800px",
@@ -307,21 +302,35 @@ const Navbar = () => {
                   )}
                 </div>
 
+                {/* Logo - Center */}
                 <Link
                   to="/"
-                  className="text-dark text-decoration-none extensions-dropdown text-center"
-                  style={{ letterSpacing: "5px", fontSize: "25px", minWidth: "200px" }}
+                  className="text-dark text-decoration-none text-center"
+                  style={{ 
+                    letterSpacing: "2px", 
+                    fontSize: "22px", 
+                    fontWeight: "400",
+                    minWidth: "220px"
+                  }}
                 >
-                  KarinaBeautyHub
+                  <div style={{ lineHeight: "1.1" }}>
+                    <div>KARINABEAUTYHUB</div>
+                    <div style={{ fontSize: "11px", letterSpacing: "1.5px", fontWeight: "300", marginTop: "2px" }}>
+                      RAW HAIR EXTENSIONS
+                    </div>
+                  </div>
                 </Link>
 
+                {/* INFO - Right of Logo */}
                 <div
-                  className="ms-4"
+                  className="position-relative"
                   onMouseEnter={handleInfoDropdownEnter}
                   onMouseLeave={handleInfoDropdownLeave}
                 >
                   <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
-                    <span className="extensions-dropdown">INFO</span>
+                    <span className="extensions-dropdown" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>
+                      INFO
+                    </span>
                     <span className="ms-1 fs-6">
                       <FiChevronDown />
                     </span>
@@ -354,8 +363,18 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Right Section - User & Cart */}
-            <div className="d-flex align-items-center gap-4" style={{ minWidth: "120px", justifyContent: "flex-end" }}>
+            {/* Right Section - User and Cart Icons */}
+            <div className="d-flex align-items-center gap-4">
+              {user?.role === "admin" && (
+                <Link
+                  to="/admin/analytics"
+                  className="d-flex align-items-center py-2 text-dark text-decoration-none fw-medium"
+                  style={{ fontSize: "0.9rem" }}
+                >
+                  <FiUser className="me-2" size={18} /> Admin Area
+                </Link>
+              )}
+
               {user == null ? (
                 <Link to={"/sign-in"} className="text-dark">
                   <FiUser size={20} />
@@ -365,6 +384,7 @@ const Navbar = () => {
                   <FiUser size={20} />
                 </Link>
               )}
+
               <Link to={"/wishlist"} className="text-dark position-relative border-0 bg-transparent">
                 <FiHeart size={20} />
                 {wishlistCount > 0 && (
@@ -397,15 +417,22 @@ const Navbar = () => {
         />
       )}
 
+      {/* mobile view */}
       <nav className="bg-white py-3 d-lg-none">
         <div className="container-fluid px-4">
           <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex justify-content-between align-items-center gap-2">
               <button
                 className="btn p-0 border-0 bg-transparent"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+              </button>
+              <button
+                className="btn p-0 border-0 bg-transparent px-2"
+                onClick={() => setSearchOpen(!searchOpen)}
+              >
+                <FiSearch size={20} />
               </button>
             </div>
 
@@ -418,22 +445,16 @@ const Navbar = () => {
               </Link>
             </div>
 
-            <div className="d-flex align-items-center justify-items-center">
-              <button
-                className="btn p-0 border-0 bg-transparent px-2"
-                onClick={() => setSearchOpen(!searchOpen)}
-              >
-                <FiSearch size={20} />
-              </button>
+            <div className="d-flex align-items-center justify-items-center gap-3">
               {user && (
-                <Link to="/wishlist" className="btn p-0 border-0 bg-transparent px-2 position-relative">
+                <button onClick={() => navigate('wishlist')} className="position-relative border-0 bg-transparent">
                   <FiHeart size={20} />
                   {wishlistCount > 0 && (
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                       {wishlistCount}
                     </span>
                   )}
-                </Link>
+                </button>
               )}
               <button
                 onClick={() => dispatch(openCartDrawer())}

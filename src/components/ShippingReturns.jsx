@@ -12,12 +12,12 @@ const ShippingReturns = () => {
     {
       icon: FiShield,
       title: "Premium Quality Guarantee",
-      description: "All our hair extensions are 100% virgin hair with quality assurance."
+      description: "All our hair extensions have high quality assurance."
     },
     {
       icon: FiRefreshCw,
       title: "7-Day Returns",
-      description: "Not satisfied? Return within 7 days for a full refund or exchange."
+      description: "Not satisfied? Return within 7 days for a full refund"
     },
     {
       icon: FiCheckCircle,

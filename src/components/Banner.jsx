@@ -257,10 +257,10 @@ const slides = useMemo(() => [
                 <motion.p
                   style={{
                     textTransform: "uppercase",
-                    letterSpacing: isMobile ? "1px" : "2px",
-                    fontSize: isMobile ? "0.75rem" : "0.9rem",
+                    letterSpacing: isMobile ? "0.5px" : "0.5px",
+                    fontSize: isMobile ? "13px" : "13px",
                     marginBottom: "0.5rem",
-                    fontWeight: "500",
+                    fontWeight: "400",
                     opacity: 0.9,
                   }}
                 >
@@ -269,9 +269,10 @@ const slides = useMemo(() => [
                 
                 <motion.h2
                   style={{
-                    fontSize: isMobile ? "1.8rem" : "3rem",
+                    fontSize: isMobile ? "22px" : "22px",
                     marginBottom: "1.5rem",
-                    fontWeight: "700",
+                    fontWeight: "400",
+                    letterSpacing: "2px",
                     lineHeight: isMobile ? "1.2" : "1.1",
                     margin: "0.5rem 0 1.5rem 0",
                   }}
@@ -285,13 +286,13 @@ const slides = useMemo(() => [
                   transition={{ duration: 0.2 }}
                   style={{
                     padding: isMobile ? "12px 24px" : "15px 30px",
-                    fontSize: isMobile ? "0.9rem" : "1.1rem",
+                    fontSize: isMobile ? "13px" : "13px",
                     backgroundColor: slides[currentIndex].buttonBg,
                     color: slides[currentIndex].buttonColor,
                     border: "none",
                     borderRadius: "6px",
                     cursor: "pointer",
-                    fontWeight: "600",
+                    fontWeight: "400",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
                     boxShadow: "0 2px 10px rgba(0,0,0,0.1)",

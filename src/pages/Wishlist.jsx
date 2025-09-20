@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Form, Badge, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Button, Form, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getWishlist, removeFromWishlist, setCurrentPage } from "../redux/wishlistSlice";
-import { FiHeart, FiTrash2, FiFilter, FiX } from "react-icons/fi";
+import { getWishlist, setCurrentPage } from "../redux/wishlistSlice";
+import { FiHeart, FiFilter, FiX } from "react-icons/fi";
 import CollectionCard from "../components/CollectionCard";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
   const { wishlist, loading, currentPage, totalPages, totalItems } = useSelector((state) => state.wishlist);
-  const user = useSelector((state) => state.user.user);
+  const { user } = useSelector((state) => state.user);
 
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
@@ -32,14 +32,6 @@ const Wishlist = () => {
 
   const handlePageChange = (page) => {
     dispatch(setCurrentPage(page));
-  };
-
-  const handleRemoveFromWishlist = async (productId) => {
-    try {
-      await dispatch(removeFromWishlist(productId)).unwrap();
-    } catch (error) {
-      console.error("Error removing from wishlist:", error);
-    }
   };
 
   const renderPagination = () => {
@@ -121,8 +113,8 @@ const Wishlist = () => {
   if (!user) {
     return (
       <Container className="py-5 text-center">
-        <FiHeart size={64} className="text-muted mb-3" />
-        <h2 className="mb-3">Sign in to view your wishlist</h2>
+        <FiHeart size={64} className="text-muted mb-2" />
+        <h2 className="mb-2">Sign in to view your wishlist</h2>
         <p className="text-muted mb-4">Create an account or sign in to save your favorite products</p>
         <Button variant="dark" size="lg" href="/sign-in">
           Sign In
@@ -213,30 +205,17 @@ const Wishlist = () => {
           <FiHeart size={64} className="text-muted mb-3" />
           <h3 className="mb-3">Your wishlist is empty</h3>
           <p className="text-muted mb-4">Start adding products you love to your wishlist</p>
-          <Button variant="dark" size="lg" href="/search">
+          <Button variant="dark" size="lg" href="/">
             Browse Products
           </Button>
         </div>
       ) : (
         <>
-          <Row className="g-4">
+          <main className="row gx-3">
             {wishlist.map((item) => (
-              <Col key={item._id} lg={4} md={6}>
-                <div className="position-relative">
                   <CollectionCard data={item.product} compact={false} />
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    className="position-absolute top-0 end-0 m-2"
-                    onClick={() => handleRemoveFromWishlist(item.product._id)}
-                    style={{ zIndex: 10 }}
-                  >
-                    <FiTrash2 size={14} />
-                  </Button>
-                </div>
-              </Col>
             ))}
-          </Row>
+          </main>
 
           {renderPagination()}
         </>

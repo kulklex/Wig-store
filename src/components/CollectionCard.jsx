@@ -114,100 +114,103 @@ const CollectionCard = ({ data, compact = false }) => {
 
   return (
     <div className={cardClass} data-aos="fade-up">
-      <div 
-        className="card h-100 border-0 shadow-sm position-relative overflow-hidden"
-        style={{ 
-          cursor: "pointer",
-          transition: "all 0.3s ease",
-          transform: isHovered ? "translateY(-4px)" : "translateY(0)"
+    <div 
+      className="card h-100 border-0 shadow-sm position-relative"
+      style={{ 
+        cursor: "pointer",
+        transition: "transform 0.3s ease",
+        transform: isHovered ? "translateY(-4px)" : "translateY(0)"
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => navigate(`/product/${_id}`)}
+    >
+    {isBestSeller && (
+      <div className="position-absolute top-0 end-0 z-1">
+        <span className="badge text-dark rounded-0 rounded-end text-xl">
+          🔥
+        </span>
+      </div>
+    )}
+
+    <div className="ratio ratio-1x1 bg-light">
+      <img
+        src={image}
+        alt={name}
+        className="w-100 h-100"
+        style={{
+          objectFit: "cover",
+          transition: "transform 0.3s ease",
+          transform: isHovered ? "scale(1.05)" : "scale(1)"
         }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onClick={() => navigate(`/product/${_id}`)}
-      >
-        {isBestSeller && (
-          <div className="position-absolute top-0 start-0 z-1">
-            <span className="badge bg-warning text-dark rounded-0 rounded-end" style={{ fontSize: "0.625rem" }}>
-              🔥 Best Seller
-            </span>
-          </div>
-        )}
-
-        <div className="position-relative overflow-hidden" style={{ aspectRatio: "1" }}>
-          <img
-            src={image}
-            alt={name}
-            className="w-100 h-100"
-            style={{
-              objectFit: "cover",
-              transition: "transform 0.3s ease",
-              transform: isHovered ? "scale(1.05)" : "scale(1)"
-            }}
-          />
-          
-          {user && (
-            <div className="position-absolute top-0 end-0 p-2">
-              <button 
-                className={`btn btn-sm rounded-circle shadow-sm border-0 ${
-                  isInWishlist ? 'btn-danger' : 'btn-light'
-                }`}
-                style={{ width: "32px", height: "32px" }}
-                onClick={handleWishlistToggle}
-                disabled={wishlistLoading}
-              >
-                <FiHeart size={14} fill={isInWishlist ? "white" : "none"} />
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="card-body p-3">
-          <h6 
-            className="card-title fw-semibold text-dark mb-1"
-            style={{ 
-              fontSize: compact ? "0.875rem" : "1rem",
-              lineHeight: "1.3",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden"
-            }}
-            title={name}
+      />
+      {user && (
+        <div className="position-absolute top-0 end-0 p-2">
+          <button 
+            className={`btn btn-sm rounded-circle shadow-sm border-0 ${
+              isInWishlist ? 'btn-danger' : 'btn-light'
+            }`}
+            style={{ width: "32px", height: "32px" }}
+            onClick={handleWishlistToggle}
+            disabled={wishlistLoading}
           >
-            {name}
-          </h6>
-
-          {displayPrice}
-
-          {!compact && description && (
-            <p 
-              className="text-muted mb-3"
-              style={{ 
-                fontSize: "0.75rem",
-                lineHeight: "1.4",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden"
-              }}
-            >
-              {description}
-            </p>
-          )}
-
-          <button
-            className="btn btn-dark btn-sm w-100 text-uppercase fw-medium"
-            style={{ fontSize: "0.75rem" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/product/${_id}`);
-            }}
-          >
-            View Details
+            <FiHeart size={14} fill={isInWishlist ? "white" : "none"} />
           </button>
         </div>
+      )}
+    </div>
+
+    <div className="card-body d-flex flex-column p-3">
+      <h6 
+        className="card-title fw-semibold text-dark mb-2 flex-grow-0"
+        style={{ 
+          fontSize: compact ? "0.875rem" : "1rem",
+          lineHeight: "1.3",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          minHeight: compact ? "2.2rem" : "2.6rem"
+        }}
+        title={name}
+      >
+        {name}
+      </h6>
+      <div className="mb-2">{displayPrice}</div>
+
+      {!compact && description && (
+        <p 
+          className="text-muted small flex-grow-0 mb-3"
+          style={{ 
+            fontSize: "0.75rem",
+            lineHeight: "1.4",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            minHeight: "2.2rem"
+          }}
+        >
+          {description}
+        </p>
+      )}
+
+      <div className="mt-auto">
+        <button
+          className="btn btn-dark btn-sm w-100 text-uppercase fw-medium"
+          style={{ fontSize: "0.75rem" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/product/${_id}`);
+          }}
+        >
+          View Details
+        </button>
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 

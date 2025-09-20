@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { FaInstagram, FaTiktok } from "react-icons/fa";
 
 const ContactUs = () => {
   const [form, setForm] = useState({
@@ -88,7 +90,7 @@ const ContactUs = () => {
         </div>
 
         <div className="col-md-6 mt-5 mt-md-0 fs-6">
-          <h3 className="fw-semibold mb-3">Business Info</h3>
+          <h3 className="fw-semibold mb-2">Business Info</h3>
           <p className="text-muted small mb-1">Karina Beauty Hub</p>
           <p className="small mb-1">Unit 11, The Orchard Shopping Center</p>
           <p className="small mb-1">Dartford, DA1 1DN, UK</p>
@@ -106,8 +108,20 @@ const ContactUs = () => {
             <li>Sunday: Closed</li>
           </ul> */}
 
+          <div className="d-flex my-3">
+            <div className="col-12 col-md-4 mb-md-0 d-flex justify-content-md-start gap-2 fs-5">
+              <Link to="https://www.instagram.com/karina_beautyhub_uk/" className="text-dark" style={{textDecoration: "none",}} target="__blank">
+                <FaInstagram />
+              </Link>
+              <Link to="https://www.tiktok.com/@karinabeautyhub.uk" className="text-dark" style={{textDecoration: "none",}} target="__blank">
+                <FaTiktok />
+              </Link>
+            </div>
+
+          </div>
+
           <div>
-            <h6 className="fw-semibold mb-2">Find Us</h6>
+            <h6 className="fw-semibold my-2">Find Us</h6>
             <iframe
               title="Location Map"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2493.733985836558!2d0.21595261557939446!3d51.44444317962569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a723739e36c5%3A0x9aa6b7b8fa45d8e3!2sThe%20Orchard%20Shopping%20Centre%2C%20Dartford%20DA1%201DN%2C%20UK!5e0!3m2!1sen!2suk!4v1690456745165!5m2!1sen!2suk"

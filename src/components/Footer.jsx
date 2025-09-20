@@ -2,8 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {
   FaInstagram,
-  FaFacebookF,
-  FaSnapchatGhost,
   FaTiktok,
 } from "react-icons/fa";
 import { clearCookieConsent } from "../utils/cookieManager";
@@ -19,8 +17,8 @@ const Footer = () => {
       <div className="container">
         <div className="row gy-4">
           <div className="col-12 col-md-4 col-lg-3">
-            <h6 className="text-uppercase fw-bold mb-3">More About Us</h6>
-            <ul className="list-unstyled small text-muted">
+            <h6 className="text-uppercase fw-bold mb-3" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>More About Us</h6>
+            <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
               <li>
                 <Link
                   to="/about-us"
@@ -65,8 +63,8 @@ const Footer = () => {
           </div>
 
           <div className="col-12 col-md-4 col-lg-3">
-            <h6 className="text-uppercase fw-bold mb-3">Extra Help</h6>
-            <ul className="list-unstyled small text-muted">
+            <h6 className="text-uppercase fw-bold mb-3" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Extra Help</h6>
+            <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
               <li>
                 <Link
                   to="/returns-and-refunds"
@@ -103,11 +101,11 @@ const Footer = () => {
           </div>
 
           <div className="col-12 col-md-4 col-lg-6">
-            <h6 className="text-uppercase fw-bold mb-3">Delivery Options</h6>
-            <p className="mb-1 small fw-semibold">
+            <h6 className="text-uppercase fw-bold mb-3" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Delivery Options</h6>
+            <p className="mb-1 small fw-semibold" style={{ fontSize: "13px" }}>
               UK: Non Custom Made Orders:
             </p>
-            <ul className="list-unstyled small text-muted">
+            <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
               <li>
                 Standard delivery (3–5 working days) -{" "}
                 <strong>FREE above £150.00 / £5.00 below</strong>
@@ -128,13 +126,14 @@ const Footer = () => {
 
         <hr className="my-4" />
 
-        {/* Payment Icons + Social Icons */}
         <div className="row align-items-center justify-content-between">
           <div className="col-12 col-md-4 mb-3 mb-md-0 d-flex justify-content-center justify-content-md-start gap-3 fs-5">
-            <FaInstagram />
-            <FaFacebookF />
-            <FaSnapchatGhost />
-            <FaTiktok />
+            <Link to="https://www.instagram.com/karina_beautyhub_uk/" className="text-dark" style={{textDecoration: "none",}} target="__blank">
+              <FaInstagram />
+            </Link>
+            <Link to="https://www.tiktok.com/@karinabeautyhub.uk" className="text-dark" style={{textDecoration: "none",}} target="__blank">
+              <FaTiktok />
+            </Link>
           </div>
 
           <div className="col-12 col-md-8 d-flex justify-content-center justify-content-md-end gap-2 flex-wrap">
@@ -155,7 +154,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="text-center py-4 small text-muted mt-4 border-top">
+        <div className="text-center py-4 small text-muted mt-4 border-top" style={{ fontSize: "13px" }}>
           &copy; 2025 KarinaBeautyHub
         </div>
       </div>

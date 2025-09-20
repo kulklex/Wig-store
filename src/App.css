@@ -50,7 +50,6 @@
         }
         .hover-text-dark {
           color: #212529 !important;
-          font-family: 'Playfair Display', serif; 
         }
 
 /* Optional fade-in animation */
@@ -90,13 +89,12 @@
 }
 
 .extensions-dropdown {
-  font-family: 'Playfair Display', serif; 
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 
 .hover-text-dark {
   color: #212529 !important;
-  font-family: 'Playfair Display', serif; 
 }
 
 .trust-indicator {
@@ -216,14 +214,16 @@
 
 .mobile-nav {
   color: #333;
-  font-weight: 300;
-  font-size: 14.5px;
-  letter-spacing: 0.3px;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.5px;
   line-height: 1.6;
 }
 
 .card-title {
-  font-size: 1.1rem;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
 .btn-dark {
@@ -337,24 +337,25 @@
 
 
 .product-title {
-  font-family: "Playfair Display", serif;
-  font-weight: 300;
-  font-size: 2rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
   color: #222;
   margin-bottom: 0.5rem;
+  letter-spacing: 2px;
 }
 
 .product-price {
-  font-size: 1.2rem;
+  font-size: 13px;
   font-weight: 400;
   color: #444;
   margin-bottom: 2rem;
 }
 
 .option-title {
-  font-size: 0.85rem;
-  font-weight: 300;
-  letter-spacing: 1px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   color: #555;
   margin-top: 1rem;
@@ -366,4 +367,126 @@
 
 .cookie {
   cursor: pointer !important;
+}
+
+/* Skeleton Loading Styles */
+.skeleton-image {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 0.375rem;
+}
+
+.skeleton-title,
+.skeleton-title-white {
+  height: 1rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 0.25rem;
+  width: 80%;
+}
+
+.skeleton-title-white {
+  background: linear-gradient(90deg, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-price {
+  height: 0.875rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 0.25rem;
+  width: 60%;
+}
+
+.skeleton-text,
+.skeleton-text-white {
+  height: 0.75rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+.skeleton-text-white {
+  background: linear-gradient(90deg, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-button,
+.skeleton-button-white {
+  height: 2rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 0.375rem;
+  width: 100%;
+}
+
+.skeleton-button-white {
+  background: linear-gradient(90deg, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.skeleton-number {
+  height: 1.5rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 0.25rem;
+  width: 60%;
+  margin: 0 auto;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Enhanced Loading States */
+.loading-overlay {
+  position: relative;
+  min-height: 200px;
+}
+
+.loading-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-overlay::after {
+  content: 'Loading...';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: #666;
+  font-size: 0.875rem;
 }
