@@ -2,7 +2,7 @@ const Header = ({ head1, head2, paragraph, classStyle = "", filter}) => {
   return (
     <header className={`text-center mb-5 ${classStyle}`} id="section-header">
       <h2 className="display-5 fw-semibold text-uppercase" style={{ fontSize: "28px", letterSpacing: "2px", fontWeight: "400" }}>
-        <span className="text-secondary">{head1}</span>{" "}
+        <span className="text-dark">{head1}</span>{" "}
         <span className="text-dark">{head2}</span>
       </h2>
       {paragraph && (
