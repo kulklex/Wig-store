@@ -88,7 +88,7 @@ const App = () => {
   const hideFooter = isAdminRoute || location.pathname === "/sign-in";
 
 
-  return (
+  return (<>
     <div className="d-flex flex-col min-vh-100">
       {!hideNavbar && <Navbar />}
       <ScrollToTop />
@@ -222,8 +222,9 @@ const App = () => {
       </main>
       {!hideFooter && <Footer />}
       <TrackingScripts />
-      <CookieBanner />
     </div>
+      <CookieBanner />
+    </>
   );
 };
 
