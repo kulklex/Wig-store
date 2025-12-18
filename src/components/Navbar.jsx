@@ -324,7 +324,7 @@ const Navbar = () => {
                   }}
                 >
                   <div style={{ lineHeight: "1.1" }}>
-                    <div>KARINABEAUTYHUB</div>
+                    <div>KarinaHairLuxe</div>
                     <div style={{ fontSize: "11px", letterSpacing: "1.5px", fontWeight: "300", marginTop: "2px" }}>
                       RAW HAIR EXTENSIONS
                     </div>
@@ -441,7 +441,7 @@ const Navbar = () => {
                 to="/"
                 className="text-dark text-decoration-none fs-5 extensions-dropdown"
               >
-                KarinaBeautyHub
+                KarinaHairLuxe
               </Link>
             </div>
 

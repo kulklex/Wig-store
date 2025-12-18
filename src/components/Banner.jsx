@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-
 const slide_2_img_desktop = "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1755428279/main3-copy_zluofp.jpg";
 const slide_3_img_desktop = "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1755460955/main5-copy-min_vysooi.jpg";
 const slide_2_img_mobile = "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1755460796/main3-min_2_jdwuze.jpg";
@@ -12,11 +11,11 @@ const Banner = () => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const timeoutRef = useRef(null);
 
-const slides = useMemo(() => [
+  const slides = useMemo(() => [
     {
       id: 2,
-      imageDesktop: slide_2_img_desktop,
-      imageMobile: slide_2_img_mobile,
+      imageDesktop: slide_3_img_desktop,
+      imageMobile: slide_3_img_mobile,
       title: "Luxury Wigs",
       subTitle: "TAPES, CLIPS, LINKS",
       price: 39.99,
@@ -25,19 +24,21 @@ const slides = useMemo(() => [
       buttonBg: "#ffffff",
       buttonColor: "#808080",
       buttonText: "Shop Wigs",
+      link: "/best-sellers"
     },
     {
       id: 3,
-      imageDesktop: slide_3_img_desktop,
-      imageMobile: slide_3_img_mobile,
+      imageDesktop: slide_2_img_desktop,
+      imageMobile: slide_2_img_mobile,
       title: "Premium Hair Collection",
       subTitle: "FANCY A CHANGE?",
       price: 29.99,
       align: "center",
-      textColor: "#000000",
-      buttonBg: "#000000",
+      textColor: "#d4a574",
+      buttonBg: "#8b6f47",
       buttonColor: "#ffffff",
       buttonText: "Shop Now",
+      link: "/best-sellers"
     },
   ], []);
 
@@ -80,7 +81,6 @@ const slides = useMemo(() => [
     preloadImages();
   }, [isMobile, slides]);
 
-  // Auto-slide with cleanup
   const resetTimer = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
@@ -134,13 +134,16 @@ const slides = useMemo(() => [
     resetTimer();
   };
 
-  // Loading skeleton
+  const handleNavigate = (link) => {
+    window.location.href = link;
+  };
+
   if (!imagesLoaded) {
     return (
       <div className="banner-loading" style={{
         width: "100%",
-        height: isMobile ? "40vh" : "100vh",
-        minHeight: isMobile ? "300px" : "600px",
+        height: isMobile ? "50vh" : "100vh",
+        minHeight: isMobile ? "400px" : "600px",
         background: "linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)",
         backgroundSize: "20px 20px",
         backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
@@ -221,7 +224,6 @@ const slides = useMemo(() => [
               }}
             />
 
-            {/* Gradient overlay for better text readability */}
             <div
               style={{
                 position: "absolute",
@@ -258,7 +260,7 @@ const slides = useMemo(() => [
                   style={{
                     textTransform: "uppercase",
                     letterSpacing: isMobile ? "0.5px" : "0.5px",
-                    fontSize: isMobile ? "13px" : "13px",
+                    fontSize: isMobile ? "11px" : "13px",
                     marginBottom: "0.5rem",
                     fontWeight: "400",
                     opacity: 0.9,
@@ -269,7 +271,7 @@ const slides = useMemo(() => [
                 
                 <motion.h2
                   style={{
-                    fontSize: isMobile ? "22px" : "22px",
+                    fontSize: isMobile ? "18px" : "22px",
                     marginBottom: "1.5rem",
                     fontWeight: "400",
                     letterSpacing: "2px",
@@ -285,8 +287,8 @@ const slides = useMemo(() => [
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
                   style={{
-                    padding: isMobile ? "12px 24px" : "15px 30px",
-                    fontSize: isMobile ? "13px" : "13px",
+                    padding: isMobile ? "10px 20px" : "15px 30px",
+                    fontSize: isMobile ? "11px" : "13px",
                     backgroundColor: slides[currentIndex].buttonBg,
                     color: slides[currentIndex].buttonColor,
                     border: "none",
@@ -298,6 +300,7 @@ const slides = useMemo(() => [
                     boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
                     transition: "all 0.2s ease",
                   }}
+                  onClick={() => handleNavigate(slides[currentIndex].link)}
                 >
                   {slides[currentIndex].buttonText}
                 </motion.button>
@@ -306,7 +309,6 @@ const slides = useMemo(() => [
           </motion.div>
         </AnimatePresence>
 
-        {/* Enhanced Pagination */}
         <div
           style={{
             position: "absolute",
@@ -314,12 +316,8 @@ const slides = useMemo(() => [
             left: "50%",
             transform: "translateX(-50%)",
             display: "flex",
-            gap: "8px",
+            gap: "12px",
             zIndex: 10,
-            background: "rgba(0,0,0,0.3)",
-            padding: "8px 12px",
-            borderRadius: "20px",
-            backdropFilter: "blur(10px)",
           }}
         >
           {slides.map((_, index) => (
@@ -327,18 +325,15 @@ const slides = useMemo(() => [
               key={index}
               onClick={() => handleDotClick(index)}
               animate={{
-                scale: currentIndex === index ? 1.3 : 1,
                 backgroundColor: currentIndex === index ? "#fff" : "rgba(255,255,255,0.5)",
               }}
               whileHover={{ 
-                scale: currentIndex === index ? 1.3 : 1.1,
                 backgroundColor: currentIndex === index ? "#fff" : "rgba(255,255,255,0.8)"
               }}
               transition={{ duration: 0.2 }}
               style={{
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
+                width: "40px",
+                height: "4px",
                 border: "none",
                 cursor: "pointer",
                 outline: "none",

@@ -13,9 +13,9 @@ const TermsAndConditions = () => {
       <h5 className="fw-semibold mt-4">1. Definitions</h5>
       <p className="text-muted small">
         In these terms:
-        <br /><strong>"We", "us", "our"</strong> refers to Karina Beauty Hub.
+        <br /><strong>"We", "us", "our"</strong> refers to Karina Hair Luxury.
         <br /><strong>"You", "user"</strong> refers to any individual or entity accessing this website.
-        <br /><strong>"Website"</strong> means <a href="https://www.karinabeautyhub.co.uk">www.karinabeautyhub.co.uk</a> and any sub-domains of this site.
+        <br /><strong>"Website"</strong> means <a href="https://www.KarinaHairLuxe.co.uk">www.KarinaHairLuxe.co.uk</a> and any sub-domains of this site.
       </p>
 
       <h5 className="fw-semibold mt-4">2. Use of the Website</h5>
@@ -55,7 +55,7 @@ const TermsAndConditions = () => {
 
       <h5 className="fw-semibold mt-4">9. Intellectual Property</h5>
       <p className="text-muted small">
-        All content on this website — including images, text, logos, and graphics — is owned by Karina Beauty Hub or its licensors. Unauthorized use is strictly prohibited.
+        All content on this website — including images, text, logos, and graphics — is owned by Karina Hair Luxury or its licensors. Unauthorized use is strictly prohibited.
       </p>
 
       <h5 className="fw-semibold mt-4">10. Limitation of Liability</h5>

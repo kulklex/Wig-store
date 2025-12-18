@@ -17,7 +17,7 @@ const CustomerReviews = () => {
       name: "Michelle Chen",
       location: "Manchester, UK",
       rating: 5,
-      comment: "I've tried many hair extensions but Karina Beauty Hub's Malaysian curly hair is by far the best. The texture is so natural and they last forever with proper care.",
+      comment: "I've tried many hair extensions but Karina Hair Luxury's Malaysian curly hair is by far the best. The texture is so natural and they last forever with proper care.",
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
     },
     {

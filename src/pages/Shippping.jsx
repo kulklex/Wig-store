@@ -130,7 +130,7 @@ const ShippingDelivery = () => {
       <p className="text-muted small">
         We ship via <strong>DPD</strong>. Orders are processed within 1–2 business days. Once processed, tracking details will be sent via email.
         <br /><br />
-        Once an order is placed, it cannot be changed. Address updates require order cancellation and reordering. Karina Beauty Hub is not liable for incorrect shipping details provided by customers.
+        Once an order is placed, it cannot be changed. Address updates require order cancellation and reordering. Karina Hair Luxury is not liable for incorrect shipping details provided by customers.
         <br /><br />
         International customers are responsible for any import duties, customs fees, or local taxes. We recommend placing orders at least 1 week in advance to avoid unexpected delays.
       </p>

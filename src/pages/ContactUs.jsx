@@ -91,11 +91,11 @@ const ContactUs = () => {
 
         <div style={{ fontSize: "13px" }} className="col-md-6 mt-5 mt-md-0 fs-6">
           <h3 className="fw-semibold mb-2">Business Info</h3>
-          <p className="text-muted small mb-1">Karina Beauty Hub</p>
+          <p className="text-muted small mb-1">Karina Hair Luxury</p>
           <p className="small mb-1">Unit 11, The Orchard Shopping Center</p>
           <p className="small mb-1">Dartford, DA1 1DN, UK</p>
           <p className="small mb-1">
-            Email: <a href="mailto:hello@karinabeautyhub.co.uk">karinabeautyhubb@gmail.com</a>
+            Email: <a href="mailto:hello@KarinaHairLuxe.co.uk">KarinaHairLuxeb@gmail.com</a>
           </p>
           <p className="small mb-4">
             Phone: <a href="tel:07984165342">07984 165342</a>
@@ -113,7 +113,7 @@ const ContactUs = () => {
               <Link to="https://www.instagram.com/karina_beautyhub_uk/" className="text-dark" style={{textDecoration: "none",}} target="__blank">
                 <FaInstagram />
               </Link>
-              <Link to="https://www.tiktok.com/@karinabeautyhub.uk" className="text-dark" style={{textDecoration: "none",}} target="__blank">
+              <Link to="https://www.tiktok.com/@KarinaHairLuxe.uk" className="text-dark" style={{textDecoration: "none",}} target="__blank">
                 <FaTiktok />
               </Link>
             </div>

@@ -155,7 +155,6 @@ const SpecialOffersPage = () => {
             head1="SPECIAL"
             head2="OFFERS"
             paragraph="Limited time deals on premium hair extensions."
-            filter={filteredProducts.length}
         />
 
       <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">

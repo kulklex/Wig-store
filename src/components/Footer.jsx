@@ -131,7 +131,7 @@ const Footer = () => {
             <Link to="https://www.instagram.com/karina_beautyhub_uk/" className="text-dark" style={{textDecoration: "none",}} target="__blank">
               <FaInstagram />
             </Link>
-            <Link to="https://www.tiktok.com/@karinabeautyhub.uk" className="text-dark" style={{textDecoration: "none",}} target="__blank">
+            <Link to="https://www.tiktok.com/@KarinaHairLuxe.uk" className="text-dark" style={{textDecoration: "none",}} target="__blank">
               <FaTiktok />
             </Link>
           </div>
@@ -155,7 +155,7 @@ const Footer = () => {
         </div>
 
         <div className="text-center py-4 small text-muted mt-4 border-top" style={{ fontSize: "13px" }}>
-          &copy; 2025 KarinaBeautyHub
+          &copy; 2025 KarinaHairLuxe
         </div>
       </div>
     </footer>

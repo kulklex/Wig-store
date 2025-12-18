@@ -11,7 +11,7 @@ const PrivacyPolicy = () => {
       </p>
 
       <p className="text-muted small">
-        The personal information we collect allows us to keep you posted on our latest product announcements and upcoming events. It also helps us to improve our services, content, and advertising. If you don’t want to be on our mailing list, you can opt out anytime by sending an email to hello@karinabeautyhub.co.uk.
+        The personal information we collect allows us to keep you posted on our latest product announcements and upcoming events. It also helps us to improve our services, content, and advertising. If you don’t want to be on our mailing list, you can opt out anytime by sending an email to hello@KarinaHairLuxe.co.uk.
       </p>
 
       <p className="text-muted small">

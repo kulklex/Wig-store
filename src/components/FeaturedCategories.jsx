@@ -77,6 +77,7 @@ const FeaturedCategories = () => {
                       variant="outline-light"
                       size="sm"
                       className="fw-medium"
+                      onClick={() => navigate("/best-sellers")}
                     >
                       Shop Now <FiArrowRight className="ms-1" />
                     </Button>

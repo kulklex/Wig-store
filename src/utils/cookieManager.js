@@ -1,4 +1,4 @@
-export const COOKIE_NAME = "KarinaBeautyHub_cookie_consent";
+export const COOKIE_NAME = "KarinaHairLuxe_cookie_consent";
 
 export const getCookieConsent = () => {
   return localStorage.getItem(COOKIE_NAME);

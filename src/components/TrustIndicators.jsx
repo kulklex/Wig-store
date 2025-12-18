@@ -30,7 +30,7 @@ const TrustIndicators = () => {
     <section className="py-5 bg-light">
       <Container>
         <div className="text-center mb-5">
-          <h2 className="display-6 fw-bold text-dark mb-3">Why Choose Karina Beauty Hub?</h2>
+          <h2 className="display-6 fw-bold text-dark mb-3">Why Choose Karina Hair Luxury?</h2>
           <p className="lead text-muted">Trusted by thousands of customers worldwide</p>
         </div>
         
