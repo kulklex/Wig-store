@@ -27,7 +27,7 @@ export const fetchNewArrivals = createAsyncThunk(
   "products/fetchNewArrivals",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get("/api/products/new-arrivals?days=120");
+      const res = await axios.get("/api/products/new-arrivals?days=320");
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);

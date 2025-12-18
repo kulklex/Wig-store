@@ -15,11 +15,13 @@ const Checkout = () => {
 
   const [form, setForm] = useState({
     name: "",
+    user: "",
     email: "",
     address: "",
     city: "",
     zip: "",
     phone: "",
+    deliveryInstructions: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -37,12 +39,14 @@ const Checkout = () => {
     try {
       const res = await axios.post("/api/create-checkout-session", {
         email: user ? user.email : form.email,
+        user: user ? user.email : form.email,
         shippingInfo: {
           name: form.name,
           address: form.address,
           city: form.city,
           zip: form.zip,
           phone: form.phone,
+          deliveryInstructions: form.deliveryInstructions,
         },
         items: items.map((item) => ({
           productId: item.productId,
@@ -176,7 +180,7 @@ const Checkout = () => {
                 </div>
 
                 <div className="col-md-6 mb-3">
-                  <label className="form-label">ZIP Code</label>
+                  <label className="form-label">Postal Code</label>
                   <input
                     type="text"
                     name="zip"
@@ -184,6 +188,17 @@ const Checkout = () => {
                     onChange={handleChange}
                     className="form-control"
                     required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Delivery Instructions <span className="text-muted">(Optional)</span></label>
+                  <textarea
+                    name="deliveryInstructions"
+                    value={form.deliveryInstructions}
+                    onChange={handleChange}
+                    className="form-control"
+                    rows="2"
+                    placeholder=""
                   />
                 </div>
               </div>

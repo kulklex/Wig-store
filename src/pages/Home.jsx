@@ -15,6 +15,7 @@ import { useHomepageData } from '../hooks/useHomepageData';
 export default function Home() {
   const { loading, error, hasData } = useHomepageData();
 
+
   if (loading && !hasData) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
@@ -47,7 +48,7 @@ export default function Home() {
       <SpecialOffers />
       <ShippingReturns />
       <CustomerReviews />
-      <InstagramFeed />
+      {/* <InstagramFeed /> */}
       <EducationalContent />
     </>
   );

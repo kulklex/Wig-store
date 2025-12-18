@@ -194,7 +194,7 @@ const Navbar = () => {
     { label: "Contact", to: "/contact" },
     { label: "FAQs", to: "/faqs" },
     { label: "Returns", to: "/returns-and-refunds" },
-    { label: "Shipping & Returns", to: "/shipping-returns" },
+    { label: "Shipping", to: "/shipping" },
   ];
 
   const toggleSection = (title) => {
@@ -211,7 +211,7 @@ const Navbar = () => {
           <div className="d-flex align-items-center justify-content-between">
             {/* Left Section - Search Icon */}
             <div className="d-flex align-items-center">
-              <div className="position-relative d-flex align-items-center">
+              <div className="position-relative d-flex align-items-center gap-4">
                 {!searchOpen ? (
                   <button
                     className="border-0 bg-transparent text-dark p-0"
@@ -245,6 +245,16 @@ const Navbar = () => {
                     </button>
                   </div>
                 )}
+
+                  {user?.role === "admin" && (
+                <Link
+                  to="/admin/analytics"
+                  className="d-flex align-items-center py-2 text-dark text-decoration-none fw-medium"
+                  style={{ fontSize: "0.9rem" }}
+                >
+                  <FiUser className="me-2" size={18} /> Admin Area
+                </Link>
+              )}
               </div>
             </div>
 
@@ -350,7 +360,7 @@ const Navbar = () => {
                           <Link
                             key={label}
                             to={to}
-                            className="text-decoration-none text-dark fs-6 hover-text-dark"
+                            className="text-decoration-none text-dark fs-12 hover-text-dark"
                             onClick={() => setShowInfoDropdown(false)}
                           >
                             {label}
@@ -365,16 +375,6 @@ const Navbar = () => {
 
             {/* Right Section - User and Cart Icons */}
             <div className="d-flex align-items-center gap-4">
-              {user?.role === "admin" && (
-                <Link
-                  to="/admin/analytics"
-                  className="d-flex align-items-center py-2 text-dark text-decoration-none fw-medium"
-                  style={{ fontSize: "0.9rem" }}
-                >
-                  <FiUser className="me-2" size={18} /> Admin Area
-                </Link>
-              )}
-
               {user == null ? (
                 <Link to={"/sign-in"} className="text-dark">
                   <FiUser size={20} />

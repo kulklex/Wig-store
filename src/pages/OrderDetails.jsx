@@ -9,6 +9,8 @@ const OrderDetails = () => {
   const [error, setError] = useState("");
   const [variantData, setVariantData] = useState({});
   const [hasBeenReturned, setHasBeenReturned] = useState(false);
+  const [trackingInfo, setTrackingInfo] = useState(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -86,6 +88,25 @@ const OrderDetails = () => {
     fetchVariants();
   }, [order]);
 
+   const handleTrackShipment = async () => {
+    setTrackingLoading(true);
+    try {
+      const res = await axios.get(`/api/orders/${id}/track`, {
+        withCredentials: true,
+      });
+      setTrackingInfo(res.data.tracking);
+      // Update order status if it changed
+      if (res.data.order.status !== order.status) {
+        setOrder({ ...order, status: res.data.order.status });
+      }
+    } catch (err) {
+      console.error("Failed to track shipment:", err);
+      alert("Failed to get tracking information");
+    } finally {
+      setTrackingLoading(false);
+    }
+   }
+
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="alert alert-danger mt-4">{error}</div>;
 
@@ -141,6 +162,87 @@ const OrderDetails = () => {
                 <strong>Placed On:</strong>{" "}
                 {new Date(order.createdAt).toLocaleString()}
               </p>
+
+              {order.shipping && order.shipping.trackingNumbers && (
+                <div className="mt-3 p-3 bg-light rounded">
+                  <h6 className="fw-bold mb-2">
+                    <i className="bi bi-truck"></i> DPD Shipping
+                  </h6>
+                  <p className="mb-1">
+                    <strong>Carrier:</strong> {order.shipping.carrier}
+                  </p>
+                  <p className="mb-1">
+                    <strong>Service:</strong>{" "}
+                    {order.shipping.service || "Standard Next Day"}
+                  </p>
+                  <p className="mb-2">
+                    <strong>Tracking Number:</strong>{" "}
+                    <code>{order.shipping.trackingNumbers[0]}</code>
+                  </p>
+                  <button
+                    className="btn btn-sm btn-dark"
+                    onClick={handleTrackShipment}
+                    disabled={trackingLoading}
+                  >
+                    {trackingLoading ? "Loading..." : "Track Shipment"}
+                  </button>
+                </div>
+              )}
+              
+              {trackingInfo && (
+                <div className="mt-3 p-3 border rounded">
+                  <h6 className="fw-bold mb-2">Live Tracking</h6>
+                  <p className="mb-1">
+                    <strong>Current Status:</strong> {trackingInfo.status}
+                  </p>
+                  {trackingInfo.location && (
+                    <p className="mb-1">
+                      <strong>Location:</strong> {trackingInfo.location}
+                    </p>
+                  )}
+                  {trackingInfo.timestamp && (
+                    <p className="mb-1">
+                      <strong>Last Update:</strong>{" "}
+                      {new Date(trackingInfo.timestamp).toLocaleString()}
+                    </p>
+                  )}
+                  {trackingInfo.estimatedDelivery && (
+                    <p className="mb-1">
+                      <strong>Estimated Delivery:</strong>{" "}
+                      {new Date(
+                        trackingInfo.estimatedDelivery
+                      ).toLocaleDateString()}
+                    </p>
+                  )}
+
+                  {/* Show tracking events if available */}
+                  {trackingInfo.events && trackingInfo.events.length > 0 && (
+                    <div className="mt-3">
+                      <h6 className="fw-bold">Tracking History:</h6>
+                      <ul className="list-unstyled">
+                        {trackingInfo.events.map((event, idx) => (
+                          <li key={idx} className="mb-2 text-muted small">
+                            <i className="bi bi-circle-fill text-primary me-2"></i>
+                            <strong>{event.status}</strong> -{" "}
+                            {new Date(event.timestamp).toLocaleString()}
+                            {event.location && ` at ${event.location}`}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Show error if shipping failed */}
+              {order.shipping && order.shipping.error && (
+                <div className="alert alert-warning mt-3">
+                  <small>
+                    <i className="bi bi-exclamation-triangle"></i> Shipping
+                    label pending. Our team is processing your order.
+                  </small>
+                </div>
+              )}
             </div>
           </div>
         </div>

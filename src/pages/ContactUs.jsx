@@ -38,11 +38,11 @@ const ContactUs = () => {
       <div className="row mb-5">
         <div className="col-md-6">
           <h3 className="mb-3 fw-semibold">Contact Us</h3>
-          <p className="mb-4 fs-6 text-muted">
+          <p style={{ fontSize: "13px" }} className="mb-4 fs-6 text-muted">
             Have questions about our wigs, an order, or our services? We’re here to help.
           </p>
 
-          <div className="card p-4 shadow-sm border-0 fs-6">
+          <div style={{ fontSize: "13px" }} className="card p-4 shadow border-0 fs-6">
             <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="name" className="form-label small mb-1">Your Name</label>
@@ -89,7 +89,7 @@ const ContactUs = () => {
           </div>
         </div>
 
-        <div className="col-md-6 mt-5 mt-md-0 fs-6">
+        <div style={{ fontSize: "13px" }} className="col-md-6 mt-5 mt-md-0 fs-6">
           <h3 className="fw-semibold mb-2">Business Info</h3>
           <p className="text-muted small mb-1">Karina Beauty Hub</p>
           <p className="small mb-1">Unit 11, The Orchard Shopping Center</p>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchHomepageData } from '../redux/productSlice';
 
@@ -10,24 +10,21 @@ export const useHomepageData = () => {
     bestSellers,
     homepageDataLoading,
     homepageDataError,
-    categoriesLastFetched,
-    newArrivalsLastFetched,
-    bestSellersLastFetched
   } = useSelector((state) => state.products);
 
+  const hasData = categories.length > 0 && newArrivals.length > 0 && bestSellers.length > 0;
+  
+  const fetchAttempted = useRef(false);
+
   useEffect(() => {
-    const now = Date.now();
-    const fiveMinutes = 5 * 60 * 1000;
-    const tenMinutes = 10 * 60 * 1000;
-    
-    const needsCategories = !categories.length || !categoriesLastFetched || (now - categoriesLastFetched > tenMinutes);
-    const needsNewArrivals = !newArrivals.length || !newArrivalsLastFetched || (now - newArrivalsLastFetched > fiveMinutes);
-    const needsBestSellers = !bestSellers.length || !bestSellersLastFetched || (now - bestSellersLastFetched > fiveMinutes);
-    
-    if (needsCategories || needsNewArrivals || needsBestSellers) {
-      dispatch(fetchHomepageData());
+    if (!fetchAttempted.current) {
+      fetchAttempted.current = true;
+      
+      if (!hasData && !homepageDataLoading) {
+        dispatch(fetchHomepageData());
+      }
     }
-  }, [dispatch, categories.length, newArrivals.length, bestSellers.length, categoriesLastFetched, newArrivalsLastFetched, bestSellersLastFetched]);
+  }, [dispatch, hasData, homepageDataLoading]);
 
   return {
     categories,
@@ -35,6 +32,6 @@ export const useHomepageData = () => {
     bestSellers,
     loading: homepageDataLoading,
     error: homepageDataError,
-    hasData: categories.length > 0 && newArrivals.length > 0 && bestSellers.length > 0
+    hasData
   };
 };
