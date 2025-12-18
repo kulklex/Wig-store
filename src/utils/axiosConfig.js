@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // Axios instance
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://wig-store-server-production.up.railway.app/',
+  baseURL: process.env.REACT_APP_API_URL || 'https://wig-store-server-production.up.railway.app/' === "production"
+      ? "https://wig-store-server-production.up.railway.app/"
+      : "http://localhost:3300",
   timeout: 10000, 
   headers: {
     'Content-Type': 'application/json',
