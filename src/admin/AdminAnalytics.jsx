@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "../utils/axiosConfig";
 import {
   LineChart,
   Line,
@@ -10,7 +11,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import axios from "axios";
 
 // const colors = [
 //   "#8884d8",

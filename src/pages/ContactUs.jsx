@@ -1,5 +1,5 @@
+import axios from "../utils/axiosConfig";
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 

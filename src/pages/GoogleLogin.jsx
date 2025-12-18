@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../utils/axiosConfig";
 import { setUser } from "../redux/authSlice";
 import AlertModal from "../components/AlertModal";
 

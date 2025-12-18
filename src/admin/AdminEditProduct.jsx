@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../utils/axiosConfig";
 import { useNavigate, useParams } from "react-router-dom";
 import AlertModal from "../components/AlertModal";
 import ConfirmModal from "../components/ConfirmModal";

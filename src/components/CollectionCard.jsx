@@ -1,7 +1,7 @@
+import axios from "../utils/axiosConfig";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiHeart } from "react-icons/fi";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist, removeFromWishlist, checkWishlistStatus } from "../redux/wishlistSlice";
 

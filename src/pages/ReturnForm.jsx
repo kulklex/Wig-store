@@ -1,6 +1,6 @@
+import axios from "../utils/axiosConfig";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import AlertModal from "../components/AlertModal";
 import { useSelector } from "react-redux";
 import imageCompression from "browser-image-compression";

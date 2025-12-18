@@ -1,3 +1,4 @@
+import axios from "../utils/axiosConfig";
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -11,7 +12,6 @@ import {
   Spinner,
   Badge,
 } from "react-bootstrap";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { addToCart, closeCartDrawer } from "../redux/cartSlice";

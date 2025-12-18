@@ -1,6 +1,6 @@
+import axios from "../utils/axiosConfig";
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import AlertModal from "../components/AlertModal";
 
 const ReturnSelectItems = () => {
