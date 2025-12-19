@@ -555,16 +555,16 @@ const Navbar = () => {
                 </button>
               </div>
 
-              <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-bold extensions-dropdown">
+              {/* <h6 className="pb-3 pt-2 border-0 bg-transparent align-items-center fw-bold extensions-dropdown">
                 SHOP HAIR EXTENSIONS
-              </h6>
+              </h6> */}
               {dropdownContent.map((section, index) => (
                 <div key={index} className="mb-3">
                   <button
                     className="d-flex justify-content-between align-items-center w-100 p-0 bg-transparent border-0 small"
                     onClick={() => toggleSection(section.title)}
                   >
-                    <h4 className="fw-semibold text-uppercase fs-6 text-secondary mb-0">
+                    <h4 className="text-dark text-decoration-none fs-6">
                       {section.title}
                     </h4>
                     {expandedSections[section.title] ? (
@@ -596,7 +596,7 @@ const Navbar = () => {
                   className="d-flex justify-content-between align-items-center w-100 p-0 bg-transparent border-0"
                   onClick={() => toggleSection("INFO")}
                 >
-                  <h4 className="fw-semibold text-uppercase fs-6 text-secondary mb-0">
+                  <h4 className="text-dark text-decoration-none fs-6 text-uppercase">
                     Info
                   </h4>
                   {expandedSections["INFO"] ? (
