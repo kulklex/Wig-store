@@ -1,17 +1,18 @@
 import axios from 'axios';
 
-// Axios instance
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://wig-store-server-production.up.railway.app/' === "production"
-      ? "https://wig-store-server-production.up.railway.app/"
-      : "http://localhost:3300",
-  timeout: 10000, 
+  baseURL:
+    process.env.REACT_APP_API_URL ||
+    (process.env.NODE_ENV === "production"
+      ? "https://wig-store-server-production.up.railway.app"
+      : "http://localhost:3300"),
+  timeout: 10000,
+  withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
-// Request interceptor
 api.interceptors.request.use(
   (config) => {
     return config;
@@ -21,7 +22,6 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => {
     return response;
