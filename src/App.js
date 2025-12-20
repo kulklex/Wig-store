@@ -56,6 +56,7 @@ const App = () => {
     loading,
     newArrivalsLoading,
     bestSellersLoading,
+    searchLoading,
   } = useSelector((state) => state.products);
 
   useEffect(() => {
@@ -107,9 +108,14 @@ const App = () => {
   const isSpecialOffersPage = location.pathname.startsWith("/special-offers");
   const isProductsPage = location.pathname.startsWith("/products");
   const isProductDetailPage = location.pathname.startsWith("/product/");
+  const isSearchPage = location.pathname.startsWith("/search");
   const isUserRoute = !isAdminRoute && location.pathname !== "/sign-in";
   const anyDataLoading =
-    homepageDataLoading || newArrivalsLoading || bestSellersLoading || loading;
+    homepageDataLoading ||
+    newArrivalsLoading ||
+    bestSellersLoading ||
+    searchLoading ||
+    loading;
 
   const hideNavbar = isAdminRoute;
   const hideFooter =
@@ -120,6 +126,7 @@ const App = () => {
     (isBestSellersPage && !hasBestSellersPageData && bestSellersLoading) ||
     (isSpecialOffersPage && !hasSpecialOffersData && loading) ||
     (isProductsPage && loading) ||
+    (isSearchPage && searchLoading) ||
     isProductDetailPage ||
     (isUserRoute && anyDataLoading);
 

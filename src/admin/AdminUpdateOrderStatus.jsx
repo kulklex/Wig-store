@@ -47,13 +47,12 @@ const AdminUpdateOrderStatus = () => {
     if (selectedStatus === order.status) return;
 
     try {
-      const res = await axios.put(`/api/orders/admin/${id}/status`, {
+      await axios.put(`/api/orders/admin/${id}/status`, {
         status: selectedStatus,
         eta,
         trackingUrl,
       });
-      setOrder(res.data);
-      navigate("/admin/orders")
+      navigate("/admin/orders");
     } catch (err) {
       console.error("Failed to update status", err);
     }
