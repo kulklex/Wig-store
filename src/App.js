@@ -105,6 +105,9 @@ const App = () => {
   const isNewArrivalsPage = location.pathname.startsWith("/new-arrivals");
   const isBestSellersPage = location.pathname.startsWith("/best-sellers");
   const isSpecialOffersPage = location.pathname.startsWith("/special-offers");
+  const isUserRoute = !isAdminRoute && location.pathname !== "/sign-in";
+  const anyDataLoading =
+    homepageDataLoading || newArrivalsLoading || bestSellersLoading || loading;
 
   const hideNavbar = isAdminRoute;
   const hideFooter =
@@ -113,7 +116,8 @@ const App = () => {
     (isHome && !hasHomeData && homepageDataLoading) ||
     (isNewArrivalsPage && !hasNewArrivalsPageData && newArrivalsLoading) ||
     (isBestSellersPage && !hasBestSellersPageData && bestSellersLoading) ||
-    (isSpecialOffersPage && !hasSpecialOffersData && loading);
+    (isSpecialOffersPage && !hasSpecialOffersData && loading) ||
+    (isUserRoute && anyDataLoading);
 
 
   return (<>

@@ -1,9 +1,297 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Form, Spinner } from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getWishlist, setCurrentPage } from "../redux/wishlistSlice";
-import { FiHeart, FiFilter, FiX } from "react-icons/fi";
+import { FiHeart, FiFilter } from "react-icons/fi";
+import { ChevronDown, Check } from "lucide-react";
 import CollectionCard from "../components/CollectionCard";
+
+const SortDropdown = ({ sortValue, onSortChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const sortOptions = [
+    { value: "addedAt", label: "Recently Added" },
+    { value: "nameAsc", label: "Name A-Z" },
+    { value: "nameDesc", label: "Name Z-A" },
+    { value: "priceAsc", label: "Price Low to High" },
+    { value: "priceDesc", label: "Price High to Low" },
+    { value: "rating", label: "Highest Rated" },
+  ];
+
+  const selectedSort = sortOptions.find(opt => opt.value === sortValue) || sortOptions[0];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const handleSelect = (option) => {
+    onSortChange(option.value);
+    setIsOpen(false);
+  };
+
+  return (
+    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <div ref={dropdownRef} style={{ position: "relative", display: "inline-block" }}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "10px 16px",
+            backgroundColor: "#fff",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: "500",
+            color: "#374151",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            boxShadow: isOpen ? "0 4px 12px rgba(0, 0, 0, 0.1)" : "0 1px 3px rgba(0, 0, 0, 0.05)",
+            outline: "none",
+          }}
+          onMouseEnter={(e) => {
+            if (!isOpen) {
+              e.currentTarget.style.borderColor = "#d1d5db";
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.08)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isOpen) {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+            }
+          }}
+        >
+          <span style={{ color: "#6b7280", fontSize: "13px" }}>Sort by:</span>
+          <span style={{ color: "#111827" }}>{selectedSort.label}</span>
+          <ChevronDown
+            size={16}
+            style={{
+              transition: "transform 0.2s ease",
+              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+              color: "#9ca3af",
+            }}
+          />
+        </button>
+
+        {isOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(100% + 8px)",
+              right: 0,
+              minWidth: "220px",
+              backgroundColor: "#fff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "12px",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+              zIndex: 1000,
+              overflow: "hidden",
+              animation: "slideDown 0.2s ease",
+            }}
+          >
+            {sortOptions.map((option, index) => (
+              <button
+                key={option.value}
+                onClick={() => handleSelect(option)}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px 16px",
+                  backgroundColor: selectedSort.value === option.value ? "#f9fafb" : "#fff",
+                  border: "none",
+                  borderBottom: index < sortOptions.length - 1 ? "1px solid #f3f4f6" : "none",
+                  fontSize: "14px",
+                  fontWeight: selectedSort.value === option.value ? "600" : "500",
+                  color: selectedSort.value === option.value ? "#111827" : "#374151",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  textAlign: "left",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f9fafb";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 
+                    selectedSort.value === option.value ? "#f9fafb" : "#fff";
+                }}
+              >
+                <span>{option.label}</span>
+                {selectedSort.value === option.value && (
+                  <Check size={16} style={{ color: "#3b82f6", strokeWidth: 2.5 }} />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+const ItemsPerPageDropdown = ({ value, onChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const options = [
+    { value: 12, label: "12 items" },
+    { value: 24, label: "24 items" },
+    { value: 48, label: "48 items" },
+  ];
+
+  const selected = options.find(opt => opt.value === value) || options[0];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const handleSelect = (option) => {
+    onChange(option.value);
+    setIsOpen(false);
+  };
+
+  return (
+    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <div ref={dropdownRef} style={{ position: "relative", display: "inline-block" }}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "10px 16px",
+            backgroundColor: "#fff",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: "500",
+            color: "#374151",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            boxShadow: isOpen ? "0 4px 12px rgba(0, 0, 0, 0.1)" : "0 1px 3px rgba(0, 0, 0, 0.05)",
+            outline: "none",
+          }}
+          onMouseEnter={(e) => {
+            if (!isOpen) {
+              e.currentTarget.style.borderColor = "#d1d5db";
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.08)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isOpen) {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+            }
+          }}
+        >
+          <span style={{ color: "#111827" }}>{selected.label}</span>
+          <ChevronDown
+            size={16}
+            style={{
+              transition: "transform 0.2s ease",
+              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+              color: "#9ca3af",
+            }}
+          />
+        </button>
+
+        {isOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(100% + 8px)",
+              right: 0,
+              minWidth: "140px",
+              backgroundColor: "#fff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "12px",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+              zIndex: 1000,
+              overflow: "hidden",
+              animation: "slideDown 0.2s ease",
+            }}
+          >
+            {options.map((option, index) => (
+              <button
+                key={option.value}
+                onClick={() => handleSelect(option)}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px 16px",
+                  backgroundColor: selected.value === option.value ? "#f9fafb" : "#fff",
+                  border: "none",
+                  borderBottom: index < options.length - 1 ? "1px solid #f3f4f6" : "none",
+                  fontSize: "14px",
+                  fontWeight: selected.value === option.value ? "600" : "500",
+                  color: selected.value === option.value ? "#111827" : "#374151",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  textAlign: "left",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f9fafb";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 
+                    selected.value === option.value ? "#f9fafb" : "#fff";
+                }}
+              >
+                <span>{option.label}</span>
+                {selected.value === option.value && (
+                  <Check size={16} style={{ color: "#3b82f6", strokeWidth: 2.5 }} />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -153,48 +441,63 @@ const Wishlist = () => {
       </div>
 
       {showFilters && (
-        <div className="bg-light p-3 rounded mb-4">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h6 className="mb-0">Filter & Sort</h6>
-            <Button
-              variant="outline-dark"
-              size="sm"
-              onClick={() => setShowFilters(false)}
-            >
-              <FiX />
-            </Button>
+        <div style={{
+          backgroundColor: "#fff",
+          padding: "24px",
+          borderRadius: "12px",
+          marginBottom: "24px",
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+          animation: "slideDown 0.3s ease"
+        }}>
+          <div style={{
+            marginBottom: "20px",
+            paddingBottom: "16px",
+            borderBottom: "2px solid #f3f4f6"
+          }}>
+            <h5 style={{
+              margin: 0,
+              fontSize: "18px",
+              fontWeight: "600",
+              color: "#111827"
+            }}>Filter & Sort</h5>
           </div>
           
           <Row className="g-3">
-            <Col md={4}>
-              <Form.Group>
-                <Form.Label className="small fw-medium">Sort by</Form.Label>
-                <Form.Select
-                  value={filters.sort}
-                  onChange={(e) => handleFilterChange("sort", e.target.value)}
-                >
-                  <option value="addedAt">Recently Added</option>
-                  <option value="nameAsc">Name A-Z</option>
-                  <option value="nameDesc">Name Z-A</option>
-                  <option value="priceAsc">Price Low to High</option>
-                  <option value="priceDesc">Price High to Low</option>
-                  <option value="rating">Highest Rated</option>
-                </Form.Select>
-              </Form.Group>
+            <Col md={6}>
+              <div style={{
+                marginBottom: "8px"
+              }}>
+                <label style={{
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#374151",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px"
+                }}>Sort by</label>
+              </div>
+              <SortDropdown 
+                sortValue={filters.sort}
+                onSortChange={(value) => handleFilterChange("sort", value)}
+              />
             </Col>
             
-            <Col md={4}>
-              <Form.Group>
-                <Form.Label className="small fw-medium">Items per page</Form.Label>
-                <Form.Select
-                  value={filters.limit}
-                  onChange={(e) => handleFilterChange("limit", parseInt(e.target.value))}
-                >
-                  <option value={12}>12 items</option>
-                  <option value={24}>24 items</option>
-                  <option value={48}>48 items</option>
-                </Form.Select>
-              </Form.Group>
+            <Col md={6}>
+              <div style={{
+                marginBottom: "8px"
+              }}>
+                <label style={{
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#374151",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px"
+                }}>Items per page</label>
+              </div>
+              <ItemsPerPageDropdown 
+                value={filters.limit}
+                onChange={(value) => handleFilterChange("limit", value)}
+              />
             </Col>
           </Row>
         </div>
@@ -213,7 +516,7 @@ const Wishlist = () => {
         <>
           <main className="row gx-3">
             {wishlist.map((item) => (
-                  <CollectionCard data={item.product} compact={false} />
+                  <CollectionCard key={item._id} data={item.product} compact={false} />
             ))}
           </main>
 
