@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { clearUser, setUser } from "./redux/authSlice";
 import Navbar from "./components/Navbar";
@@ -47,6 +47,16 @@ import SpecialOffersPage from "./pages/SpecialOffersPage";
 const App = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const {
+    homepageDataLoading,
+    newArrivals,
+    bestSellers,
+    categories,
+    productsData,
+    loading,
+    newArrivalsLoading,
+    bestSellersLoading,
+  } = useSelector((state) => state.products);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -84,8 +94,26 @@ const App = () => {
     location.pathname.startsWith(route.replace(/:.*$/, ""))
   );
 
+  const hasHomeData =
+    categories.length > 0 && newArrivals.length > 0 && bestSellers.length > 0;
+  const hasNewArrivalsPageData = newArrivals.length > 0;
+  const hasBestSellersPageData = bestSellers.length > 0;
+  const productsArray = Array.isArray(productsData?.products) ? productsData.products : productsData;
+  const hasSpecialOffersData = Array.isArray(productsArray) && productsArray.length > 0;
+
+  const isHome = location.pathname === "/";
+  const isNewArrivalsPage = location.pathname.startsWith("/new-arrivals");
+  const isBestSellersPage = location.pathname.startsWith("/best-sellers");
+  const isSpecialOffersPage = location.pathname.startsWith("/special-offers");
+
   const hideNavbar = isAdminRoute;
-  const hideFooter = isAdminRoute || location.pathname === "/sign-in";
+  const hideFooter =
+    isAdminRoute ||
+    location.pathname === "/sign-in" ||
+    (isHome && !hasHomeData && homepageDataLoading) ||
+    (isNewArrivalsPage && !hasNewArrivalsPageData && newArrivalsLoading) ||
+    (isBestSellersPage && !hasBestSellersPageData && bestSellersLoading) ||
+    (isSpecialOffersPage && !hasSpecialOffersData && loading);
 
 
   return (<>

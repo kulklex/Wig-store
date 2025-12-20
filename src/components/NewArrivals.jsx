@@ -31,7 +31,7 @@ export default function NewArrivals() {
         {newArrivalsLoading && <p>Loading...</p>}
         {newArrivalsError && <p>Error: {newArrivalsError}</p>}
         {newArrivals.length > 0 &&
-          newArrivals.map((product) => (
+          newArrivals.slice(0, 4).map((product) => (
             <CollectionCard key={product._id} data={product} compact={false} />
           ))}
       </main>

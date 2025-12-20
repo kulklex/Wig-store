@@ -48,7 +48,7 @@ const BestSellers = () => {
       />
 
       <main className="row gx-3">
-        {bestSellers.map((product) => (
+        {bestSellers.slice(0, 4).map((product) => (
           <CollectionCard key={product._id} data={product} compact={false} />
         ))}
       </main>

@@ -19,7 +19,7 @@ const CollectionCard = ({ data, compact = false }) => {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const res = await axios.get("/api/products/best-sellers?limit=6");
+        const res = await axios.get("/api/products/best-sellers");
         setBestSellerIds((res.data || []).map((p) => p._id));
       } catch (err) {
         console.error("Error fetching best sellers:", err);

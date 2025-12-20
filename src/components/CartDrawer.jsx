@@ -45,8 +45,8 @@ function CartDrawer({ show, onClose }) {
       className={`offcanvas offcanvas-end ${show ? "show" : ""}`}
       style={{ 
         visibility: show ? "visible" : "hidden",
-        width: "400px",
-        maxWidth: "90vw"
+        width: "420px",
+        maxWidth: "100vw"
       }}
       data-bs-scroll="true"
       data-bs-backdrop="true"
@@ -70,47 +70,51 @@ function CartDrawer({ show, onClose }) {
               {cart.items.map((item) => (
                 <div
                   key={item.media}
-                  className="d-flex align-items-center justify-content-between border-bottom pb-2"
+                  className="border-bottom pb-3"
                 >
-                  <Link to={`/product/${item.productId}`} className="d-flex cart align-items-center flex-grow-1">
-                    <img
-                      src={item.media}
-                      alt={item.title}
-                      width={60}
-                      height={60}
-                      className="img-thumbnail me-2"
-                    />
-                    <div>
-                      <div className="fw-semibold">{item.title}</div>
-                      <small>{item.length}</small>|
-                      <small className="fw-medium">{" "}{item.texture}</small>|
-                      <small>{" "}{item.origin}</small>
-                      <div className="small text-muted">£{item.price.toFixed(2)}</div>
+                  <div className="d-flex align-items-start gap-3 flex-wrap">
+                    <Link to={`/product/${item.productId}`} className="d-flex align-items-start text-decoration-none text-dark">
+                      <img
+                        src={item.media}
+                        alt={item.title}
+                        width={68}
+                        height={68}
+                        className="rounded border"
+                      />
+                      <div className="ms-3">
+                        <div className="fw-semibold">{item.title}</div>
+                        <div className="small text-muted">
+                          {item.length} | {item.texture} | {item.origin}
+                        </div>
+                        <div className="fw-semibold mt-1">£{item.price.toFixed(2)}</div>
+                      </div>
+                    </Link>
+
+                    <div className="ms-auto d-flex align-items-center gap-2">
+                      <div className="d-flex align-items-center border rounded px-2 py-1">
+                        <button
+                          className="btn btn-sm border-0 px-2"
+                          onClick={() => handleDecrease(item)}
+                        >
+                          −
+                        </button>
+                        <span className="mx-2">{item.cartQty}</span>
+                        <button
+                          className="btn btn-sm border-0 px-2"
+                          onClick={() => handleIncrease(item)}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDelete(item)}
+                        aria-label="Remove item"
+                      >
+                        <FiTrash2 />
+                      </button>
                     </div>
-                  </Link>
-
-                  <div className="d-flex align-items-center mx-2">
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      onClick={() => handleDecrease(item)}
-                    >
-                      −
-                    </button>
-                    <span className="mx-2">{item.cartQty}</span>
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      onClick={() => handleIncrease(item)}
-                    >
-                      +
-                    </button>
                   </div>
-
-                  <button
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={() => handleDelete(item)}
-                  >
-                    <FiTrash2 />
-                  </button>
                 </div>
               ))}
             </div>

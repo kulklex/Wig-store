@@ -34,7 +34,7 @@ const SpecialOffers = () => {
       </div>
 
       <main className="row gx-3">
-          {discountedProducts.map((product) => (
+          {discountedProducts.slice(0, 4).map((product) => (
                   <CollectionCard key={product._id} data={product} compact={false} />
           ))}
         </main>
