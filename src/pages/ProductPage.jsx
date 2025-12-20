@@ -8,7 +8,6 @@ import {
   Button,
   Accordion,
   ButtonGroup,
-  Carousel,
   Spinner,
   Badge,
 } from "react-bootstrap";
@@ -208,6 +207,13 @@ const ProductPage = () => {
     }
   }, [selectedTexture, textureVariantsMap]);
 
+  const scrollToGallery = () => {
+    const el = document.getElementById("product-gallery");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const handleLengthClick = (len) => {
     const matched = textureVariantsMap[selectedTexture]?.find(
       (v) => v.length === len
@@ -280,7 +286,9 @@ const ProductPage = () => {
     ...new Set((textureVariantsMap[selectedTexture] || []).map((v) => v.media)),
   ];
 
-  const allVariantImages = [...new Set(product.variants.map((v) => v.media))];
+  const allVariantImages = [
+    ...new Set(product.variants.map((v) => v.media).filter(Boolean)),
+  ];
 
   const getUniqueAttributeValues = (attribute) => {
     const values = product.variants
@@ -299,6 +307,25 @@ const ProductPage = () => {
         (!selectedFullDescription ||
           v.fullDescription === selectedFullDescription)
     );
+  };
+
+  const variantThumbs = allVariantImages.slice(0, 8);
+
+  const handleThumbClick = (img) => {
+    setMainImage(img);
+    const matchedVariant = product.variants.find((v) => v.media === img) || null;
+    if (matchedVariant) {
+      const normalized = matchedVariant.texture.toLowerCase().replace(/\s+/g, "_");
+      setSelectedTexture(normalized);
+      setSelectedLength(matchedVariant.length);
+      setSelectedOrigin(matchedVariant.origin);
+      setSelectedVariant(matchedVariant);
+      setSelectedLace(matchedVariant.lace || "");
+      setSelectedStyle(matchedVariant.style || "");
+      setSelectedWeight(matchedVariant.weight || "");
+      setSelectedFullDescription(matchedVariant.fullDescription || "");
+      setQuantity(1);
+    }
   };
 
   const handleSubmitReview = async () => {
@@ -335,86 +362,86 @@ const ProductPage = () => {
 
   return (
     <Container className="my-4">
-      <Row>
-        <Col lg={6} className="d-none d-lg-flex">
-          <div className="d-flex me-3">
+      <Row className="g-4">
+        <Col lg={6}>
+          <div id="product-gallery" className="border rounded-4 p-3 bg-white shadow-sm h-100">
             <div
-              className="d-flex flex-column align-items-center overflow-auto"
-              style={{ maxHeight: "600px" }}
+              className="ratio ratio-1x1 rounded-3 bg-light d-flex align-items-center justify-content-center overflow-hidden"
+              style={{ minHeight: "380px" }}
             >
-              {textureVariantImages.map((img, idx) => (
-                <img
-                  key={`texture-img-${idx}`}
-                  src={img}
-                  alt={`texture-thumb-${idx}`}
-                  className="img-thumbnail mb-2"
-                  style={{ width: "80px", cursor: "pointer" }}
-                  onClick={() => setMainImage(img)}
-                />
-              ))}
-              {allVariantImages
-                .filter((img) => !textureVariantImages.includes(img))
-                .map((img, idx) => (
-                  <img
-                    key={`all-thumb-${idx}`}
-                    src={img}
-                    alt={`all-thumb-${idx}`}
-                    className="img-thumbnail mb-2"
-                    style={{ width: "80px", cursor: "pointer", opacity: 0.5 }}
-                    onClick={() => setMainImage(img)}
-                  />
-                ))}
-            </div>
-
-            <div className="flex-grow-1 d-flex justify-content-center align-items-center">
               {mainImage && (
-                <img src={mainImage} alt="Main product" className="img-fluid" />
+                <img
+                  src={mainImage}
+                  alt="Product"
+                  className="img-fluid h-100"
+                  style={{ objectFit: "cover" }}
+                />
               )}
             </div>
+
+            {variantThumbs.length > 0 && (
+              <div className="d-flex flex-wrap gap-2 mt-3">
+                {variantThumbs.map((img, idx) => (
+                  <button
+                    key={`thumb-${idx}`}
+                    type="button"
+                    className="p-0 border-0 bg-transparent rounded-3"
+                    onClick={() => handleThumbClick(img)}
+                    style={{
+                      boxShadow:
+                        mainImage === img
+                          ? "0 0 0 2px #111"
+                          : "0 1px 3px rgba(0,0,0,0.12)",
+                    }}
+                  >
+                    <img
+                      src={img}
+                      alt={`thumb-${idx}`}
+                      className="rounded-3"
+                      style={{ width: "90px", height: "90px", objectFit: "cover" }}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </Col>
 
-        <Col xs={12} className="d-lg-none mb-4">
-          <Carousel indicators={true} controls={false}>
-            {textureVariantImages.map((img, idx) => (
-              <Carousel.Item key={idx}>
-                <img src={img} className="d-block w-100" alt={`slide-${idx}`} />
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        </Col>
-
         <Col lg={6} className="">
-          <h2 className="product-title">
-            {product.name}{" "}
-            {isBestSeller && (
-              <span
-                style={{
-                  fontSize: "0.9rem",
-                  color: "#ff4500",
-                  marginLeft: "6px",
-                }}
-              >
-                🔥 Best Seller
-              </span>
-            )}
-          </h2>
-
-          <p className="product-price">
-            {selectedVariant?.promo?.isActive &&
-            selectedVariant?.promo?.promoPrice ? (
-              <>
-                <span className="text-muted text-decoration-line-through">
-                  £{selectedVariant.price.toFixed(2)}
-                </span>{" "}
-                <span className="text-danger fw-bold">
-                  £{selectedVariant.promo.promoPrice.toFixed(2)}
+          <div className="mb-3">
+            <h2 className="product-title mb-2 d-flex align-items-center gap-2">
+              {product.name}{" "}
+              {isBestSeller && (
+                <span
+                  className="top-0"
+                  style={{
+                    fontSize: "0.6rem",
+                    color: "#ff4500",
+                    marginLeft: "5px",
+                  }}
+                >
+                  🔥 Best Seller
                 </span>
-              </>
-            ) : (
-              <>£{selectedVariant?.price.toFixed(2)}</>
-            )}
-          </p>
+              )}
+            </h2>
+
+            <div className="d-flex align-items-center gap-2 mt-2 mb-4">
+              {selectedVariant?.promo?.isActive && selectedVariant?.promo?.promoPrice ? (
+                <>
+                  <span className="text-muted text-decoration-line-through fs-6 mb-0">
+                    £{selectedVariant.price.toFixed(2)}
+                  </span>
+                  <span className="text-danger fw-bold fs-4 mb-0">
+                    £{selectedVariant.promo.promoPrice.toFixed(2)}
+                  </span>
+                </>
+              ) : (
+                <span className="fw-bold fs-4 text-dark mb-0">
+                  £{selectedVariant?.price.toFixed(2)}
+                </span>
+              )}
+            </div>
+          </div>
 
           <h6>LENGTH</h6>
           <div className="d-flex flex-wrap mb-4 gap-2">
@@ -449,7 +476,10 @@ const ProductPage = () => {
                 variant={selectedTexture === texture ? "dark" : "outline-dark"}
                 className="me-1 mb-2 option-button"
                 key={texture}
-                onClick={() => setSelectedTexture(texture)}
+                onClick={() => {
+                  setSelectedTexture(texture);
+                  scrollToGallery();
+                }}
               >
                 {texture.replace(/_/g, " ")}
               </Button>

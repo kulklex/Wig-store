@@ -105,6 +105,8 @@ const App = () => {
   const isNewArrivalsPage = location.pathname.startsWith("/new-arrivals");
   const isBestSellersPage = location.pathname.startsWith("/best-sellers");
   const isSpecialOffersPage = location.pathname.startsWith("/special-offers");
+  const isProductsPage = location.pathname.startsWith("/products");
+  const isProductDetailPage = location.pathname.startsWith("/product/");
   const isUserRoute = !isAdminRoute && location.pathname !== "/sign-in";
   const anyDataLoading =
     homepageDataLoading || newArrivalsLoading || bestSellersLoading || loading;
@@ -117,6 +119,8 @@ const App = () => {
     (isNewArrivalsPage && !hasNewArrivalsPageData && newArrivalsLoading) ||
     (isBestSellersPage && !hasBestSellersPageData && bestSellersLoading) ||
     (isSpecialOffersPage && !hasSpecialOffersData && loading) ||
+    (isProductsPage && loading) ||
+    isProductDetailPage ||
     (isUserRoute && anyDataLoading);
 
 
