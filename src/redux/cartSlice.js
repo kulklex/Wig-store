@@ -17,13 +17,19 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action) {
-      const { variantId, cartQty } = action.payload;
+      const { variantId, cartQty = 1, stock } = action.payload;
       const itemIndex = state.items.findIndex((item) => item.variantId === variantId);
+      const maxStock = stock ?? state.items[itemIndex]?.stock ?? Infinity;
 
       if (itemIndex >= 0) {
-        state.items[itemIndex].cartQty += cartQty;
+        const currentQty = state.items[itemIndex].cartQty;
+        const desiredQty = currentQty + cartQty;
+        const nextQty = Math.min(desiredQty, maxStock);
+        state.items[itemIndex].cartQty = nextQty;
       } else {
-        const tempProduct = { ...action.payload };
+        const allowedQty = Math.min(cartQty, maxStock);
+        if (allowedQty <= 0) return; // nothing to add if no stock
+        const tempProduct = { ...action.payload, cartQty: allowedQty };
         state.items.push(tempProduct);
       }
       state.showDrawer = true;

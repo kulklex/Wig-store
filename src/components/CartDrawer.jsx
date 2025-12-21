@@ -33,7 +33,13 @@ function CartDrawer({ show, onClose }) {
   }, [show, onClose]);
 
   const handleDelete = (item) => dispatch(removeFromCart(item));
-  const handleIncrease = (item) => dispatch(addToCart(item));
+  const handleIncrease = (item) => {
+    // Prevent adding beyond available stock
+    if (item.stock !== undefined && item.cartQty >= item.stock) {
+      return;
+    }
+    dispatch(addToCart({ ...item, cartQty: 1 }));
+  };
   const handleDecrease = (item) => dispatch(decreaseCart(item));
   const handleCheckout = () => {
     onClose();

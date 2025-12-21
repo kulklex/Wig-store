@@ -266,6 +266,7 @@ const AdminEditProduct = () => {
                 {isEditing && (
                   <div className="row g-2 mt-3">
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Length</label>
                       <input
                         className="form-control"
                         value={variant.length}
@@ -278,6 +279,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-3">
+                      <label className="form-label small mb-1">Texture</label>
                       <input
                         className="form-control"
                         value={variant.texture}
@@ -290,6 +292,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Origin</label>
                       <input
                         className="form-control"
                         value={variant.origin}
@@ -302,6 +305,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Color</label>
                       <input
                         className="form-control"
                         value={variant.color || ""}
@@ -314,6 +318,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Lace Size</label>
                       <input
                         className="form-control"
                         value={variant.laceSize || ""}
@@ -326,6 +331,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Price (£)</label>
                       <input
                         type="number"
                         className="form-control"
@@ -339,6 +345,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Stock</label>
                       <input
                         type="number"
                         className="form-control"
@@ -352,6 +359,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Style</label>
                       <input
                         className="form-control"
                         value={variant.style || ""}
@@ -364,6 +372,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Weight</label>
                       <input
                         type="number"
                         className="form-control"
@@ -377,6 +386,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-6 col-md-2">
+                      <label className="form-label small mb-1">Lace</label>
                       <input
                         className="form-control"
                         value={variant.lace || ""}
@@ -389,6 +399,7 @@ const AdminEditProduct = () => {
                       />
                     </div>
                     <div className="col-12">
+                      <label className="form-label small mb-1">Full Description</label>
                       <textarea
                         className="form-control"
                         value={variant.fullDescription || ""}
