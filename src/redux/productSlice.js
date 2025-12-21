@@ -134,6 +134,29 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
+export const fetchProductAttributes = createAsyncThunk(
+  "products/fetchProductAttributes",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axios.get("/api/products/attributes");
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { products } = getState();
+      if (
+        products.attributesLastFetched &&
+        Date.now() - products.attributesLastFetched < 10 * 60 * 1000
+      ) {
+        return false;
+      }
+    }
+  }
+);
+
 export const fetchHomepageData = createAsyncThunk(
   "products/fetchHomepageData",
   async (_, thunkAPI) => {
@@ -188,6 +211,17 @@ const initialState = {
   categoriesLoading: false,
   categoriesError: null,
   categoriesLastFetched: null,
+
+  attributes: {
+    categories: [],
+    textures: [],
+    laceSizes: [],
+    laceTypes: [],
+    colors: [],
+  },
+  attributesLoading: false,
+  attributesError: null,
+  attributesLastFetched: null,
 
   homepageDataLoading: false,
   homepageDataError: null,
@@ -318,6 +352,21 @@ const productSlice = createSlice({
       .addCase(fetchHomepageData.rejected, (state, action) => {
         state.homepageDataLoading = false;
         state.homepageDataError = action.payload || "Failed to fetch homepage data";
+      })
+
+      // Fetch product attributes for dynamic menus
+      .addCase(fetchProductAttributes.pending, (state) => {
+        state.attributesLoading = true;
+        state.attributesError = null;
+      })
+      .addCase(fetchProductAttributes.fulfilled, (state, action) => {
+        state.attributesLoading = false;
+        state.attributes = action.payload;
+        state.attributesLastFetched = Date.now();
+      })
+      .addCase(fetchProductAttributes.rejected, (state, action) => {
+        state.attributesLoading = false;
+        state.attributesError = action.payload || "Failed to fetch product attributes";
       });
   },
 });

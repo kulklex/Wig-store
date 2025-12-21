@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { closeCartDrawer, getTotals, openCartDrawer } from "../redux/cartSlice";
-import { fetchCategories, fetchProducts } from "../redux/productSlice";
+import { fetchCategories, fetchProductAttributes } from "../redux/productSlice";
 import { getWishlistCount } from "../redux/wishlistSlice";
 import {
   FiSearch,
@@ -49,7 +49,7 @@ const Navbar = () => {
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user.user);
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
-  const { categories, categoriesLoading } = useSelector((state) => state.products);
+  const { categories, categoriesLoading, attributes } = useSelector((state) => state.products);
   const { wishlistCount } = useSelector((state) => state.wishlist);
   const productsData = useSelector((state) => state.products.products);
 
@@ -57,11 +57,15 @@ const Navbar = () => {
   const infoDropdownTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (!categories || !productsData?.products) {
+    if (!categories) return;
+    if (categories.length === 0) {
       dispatch(fetchCategories());
-      dispatch(fetchProducts());
     }
-  }, [dispatch, categories, productsData]);
+  }, [dispatch, categories]);
+
+  useEffect(() => {
+    dispatch(fetchProductAttributes());
+  }, [dispatch]);
 
   useEffect(() => {
     if (user) {
@@ -129,65 +133,37 @@ const Navbar = () => {
     setFilterForm({ category: "", minPrice: "", maxPrice: "", sort: "" });
   };
 
-  const dropdownContent = [
-    {
-      title: "PRODUCTS",
-      items: [
-        "Raw Bundles",
-        "Frontals",
-        "Closures",
-        "Wigs",
-        "Microlinks & I-Tips",
-        "Tape Ins",
-        "Clip Ins",
-        "Ponytails",
-        "Accessories",
-        "Adhesives & Styling",
-      ],
-    },
-    {
-      title: "TEXTURE",
-      items: [
-        "Straight",
-        "Bodywave",
-        "Luxe Curl (Deep Wave)",
-        "Loose Wave",
-        "Loose Curls (Water Wave)",
-        "Kinky Curly",
-        "Yaki Straight",
-        "Kinky Straight",
-        "Vietnamese (DD) Straight",
-        "Cambodian (DD) Wavy",
-        "Burmese (DD) Curly",
-      ],
-    },
-    {
-      title: "LACE SIZE",
-      items: [
-        "2x6 Closures",
-        "4x4 Closures",
-        "5x5 Closures",
-        "6x6 Closures",
-        "7x7 Closures",
-        "9x6 Closures",
-        "13x4 Frontals",
-        "13x6 Frontals",
-        "360 Frontals",
-        "Full Lace",
-        "U-Part",
-        "Headband",
-        "Half Wig",
-      ],
-    },
-    {
-      title: "LACE TYPE",
-      items: ["HD Thin Lace", "Transparent Swiss Lace", "Brown Swiss Lace"],
-    },
-    {
-      title: "COLOR",
-      items: ["#18 Raw Hair", "#613 Virgin Blonde"],
-    },
-  ];
+  const dropdownContent = useMemo(() => {
+    const sections = [
+      {
+        title: "PRODUCTS",
+        items: attributes?.categories?.length ? attributes.categories : categories,
+      },
+      {
+        title: "TEXTURE",
+        items: attributes?.textures || [],
+      },
+      {
+        title: "LACE SIZE",
+        items: attributes?.laceSizes || [],
+      },
+      {
+        title: "LACE TYPE",
+        items: attributes?.laceTypes || [],
+      },
+      {
+        title: "COLOR",
+        items: attributes?.colors || [],
+      },
+    ];
+
+    return sections
+      .map((section) => ({
+        ...section,
+        items: (section.items || []).filter((item) => item && String(item).trim() !== ""),
+      }))
+      .filter((section) => section.items.length > 0);
+  }, [attributes, categories]);
 
   const infoLinks = [
     { label: "About", to: "/about-us" },
