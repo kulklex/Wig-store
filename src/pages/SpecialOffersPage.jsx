@@ -163,11 +163,16 @@ const SpecialOffersPage = () => {
 
   const [sortBy, setSortBy] = useState('discount');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12);
+  const [itemsPerPage] = useState(8);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [discountRange, setDiscountRange] = useState({ min: '', max: '' });
+
+  // Reset pagination when any filter/sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortBy, selectedCategories, priceRange, discountRange]);
 
   useEffect(() => {
     if (productsData?.products) {
@@ -269,6 +274,13 @@ const SpecialOffersPage = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Keep page within bounds
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);

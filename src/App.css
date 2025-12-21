@@ -181,7 +181,79 @@
   border-color: #000;
 }
 
+/* Pagination Styles - Black and White Theme */
+.pagination {
+  gap: 0.5rem;
+}
+
+/* Higher specificity + !important to override Bootstrap defaults */
+.pagination .page-item .page-link {
+  color: #000 !important;
+  background-color: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-width: 44px;
+  text-align: center;
+  box-shadow: none;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #f3f4f6 !important;
+  border-color: #000 !important;
+  color: #000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #000 !important;
+  border-color: #000 !important;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pagination .page-item.active .page-link:hover {
+  background-color: #000 !important;
+  border-color: #000 !important;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #9ca3af !important;
+  background-color: #f9fafb !important;
+  border-color: #e5e7eb !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.pagination .page-item.disabled .page-link:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Footer changer responsive behaviour */
+.changer {
+  display: flex !important;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 0;
+}
+
 @media (max-width: 768px) {
+  .pagination .page-item .page-link {
+    padding: 8px 12px;
+    font-size: 13px;
+    min-width: 38px;
+  }
+  
   .trust-indicator,
   .category-card,
   .educational-card {

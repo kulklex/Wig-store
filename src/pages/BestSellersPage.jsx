@@ -166,10 +166,15 @@ const BestSellersPage = () => {
 
   const [sortBy, setSortBy] = useState('popular');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12);
+  const [itemsPerPage] = useState(8);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
+
+  // Reset pagination on filter/sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortBy, selectedCategories, priceRange]);
 
   useEffect(() => {
     dispatch(fetchBestSellers());
@@ -237,6 +242,13 @@ const BestSellersPage = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Keep page within bounds
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);

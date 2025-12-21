@@ -9,6 +9,8 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+const ITEMS_PER_PAGE = 8;
+
 const SearchResults = () => {
   const query = useQuery();
   const searchTerm = query.get('query') || '';
@@ -44,7 +46,7 @@ const SearchResults = () => {
       maxPrice,
       sort,
       page: currentPage,
-      limit: 12,
+      limit: ITEMS_PER_PAGE,
     };
     
     if (searchTerm || category || minPrice || maxPrice || sort) {
@@ -73,6 +75,7 @@ const SearchResults = () => {
     });
 
     params.append('page', '1');
+    params.append('limit', ITEMS_PER_PAGE.toString());
 
     window.location.href = `/search?${params.toString()}`;
   };
@@ -85,6 +88,7 @@ const SearchResults = () => {
       params.append('query', searchTerm);
     }
     params.append('page', '1');
+    params.append('limit', ITEMS_PER_PAGE.toString());
     
     window.location.href = `/search?${params.toString()}`;
   };
@@ -98,6 +102,7 @@ const SearchResults = () => {
     if (maxPrice) params.append('maxPrice', maxPrice);
     if (sort) params.append('sort', sort);
     params.append('page', newPage.toString());
+    params.append('limit', ITEMS_PER_PAGE.toString());
     
     window.location.href = `/search?${params.toString()}`;
   };

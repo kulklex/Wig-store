@@ -16,95 +16,97 @@ const Footer = () => {
     <footer className="bg-white border-top pt-5">
       <div className="container">
         <div className="row gy-4">
-          <div className="col-12 col-md-4 col-lg-3">
-            <h6 className="text-uppercase fw-bold mb-3" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>More About Us</h6>
-            <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
-              <li>
-                <Link
-                  to="/about-us"
-                  className="text-decoration-none text-reset"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="mission-statement"
-                  className="text-decoration-none text-reset"
-                >
-                  Mission Statement
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/privacy-policy"
-                  className="text-decoration-none text-reset"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/terms-and-conditions"
-                  className="text-decoration-none text-reset"
-                >
-                  Terms and conditions
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/contact"
-                  className="text-decoration-none text-reset"
-                >
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
+          <div className="col-12 col-lg-6">
+            <div className="changer row gy-3 w-100">
+              <div className="col-12 col-md-6">
+                <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>More About Us</h6>
+                <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
+                  <li>
+                    <Link
+                      to="/about-us"
+                      className="text-decoration-none text-reset"
+                    >
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="mission-statement"
+                      className="text-decoration-none text-reset"
+                    >
+                      Mission Statement
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/privacy-policy"
+                      className="text-decoration-none text-reset"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/terms-and-conditions"
+                      className="text-decoration-none text-reset"
+                    >
+                      Terms and conditions
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/contact"
+                      className="text-decoration-none text-reset"
+                    >
+                      Contact Us
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="col-12 col-md-6">
+                <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Extra Help</h6>
+                <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
+                  <li>
+                    <Link
+                      to="/returns-and-refunds"
+                      className="text-decoration-none text-reset"
+                    >
+                      Returns
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/faqs" className="text-decoration-none text-reset">
+                      FAQs
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/shipping"
+                      className="text-decoration-none text-reset"
+                    >
+                      Shipping + Delivery
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="#" className="text-decoration-none text-reset">
+                      Blog Posts
+                    </Link>
+                  </li>
+                  <li
+                    className="cookie cursor-pointer"
+                    onClick={handleResetConsent}
+                  >
+                    Change Cookie Preferences
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
-          <div className="col-12 col-md-4 col-lg-3">
-            <h6 className="text-uppercase fw-bold mb-3" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Extra Help</h6>
-            <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
-              <li>
-                <Link
-                  to="/returns-and-refunds"
-                  className="text-decoration-none text-reset"
-                >
-                  Returns
-                </Link>
-              </li>
-              <li>
-                <Link to="/faqs" className="text-decoration-none text-reset">
-                  FAQs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/shipping"
-                  className="text-decoration-none text-reset"
-                >
-                  Shipping + Delivery
-                </Link>
-              </li>
-              <li>
-                <Link to="#" className="text-decoration-none text-reset">
-                  Blog Posts
-                </Link>
-              </li>
-              <li
-                  className="cookie cursor-pointer"
-                  onClick={handleResetConsent}
-                >
-                  Change Cookie Preferences
-              </li>
-            </ul>
-          </div>
-
-          <div className="col-12 col-md-4 col-lg-6">
-            <h6 className="text-uppercase fw-bold mb-3" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Delivery Options</h6>
-            <p className="mb-1 small fw-semibold" style={{ fontSize: "13px" }}>
-              UK: Non Custom Made Orders:
-            </p>
+          {/* Right block: delivery options */}
+          <div className="col-12 col-lg-6">
+            <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Delivery Options</h6>
             <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
               <li>
                 Standard delivery (3–5 working days) -{" "}
