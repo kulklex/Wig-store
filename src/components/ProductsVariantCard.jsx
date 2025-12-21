@@ -13,7 +13,10 @@ const ProductVariantCard = ({ productId, variantId, quantity }) => {
         const { data } = await axios.get(`/api/products/${productId}`);
         setProduct(data);
 
-        const matchedVariant = data.variants.find(v => v._id === variantId);
+        // Match variant by ObjectId regardless of type (string/ObjectId)
+        const matchedVariant = data.variants.find(
+          (v) => v._id?.toString() === variantId?.toString()
+        );
         setVariant(matchedVariant);
       } catch (err) {
         console.error("Error fetching product or variant", err);
@@ -23,10 +26,22 @@ const ProductVariantCard = ({ productId, variantId, quantity }) => {
     fetchProduct();
   }, [productId, variantId]);
 
-  if (!product || !variant) {
+  if (!product) {
     return (
       <li className="list-group-item d-flex justify-content-between">
         <span>Loading product info...</span>
+        <span className="text-muted">Qty: {quantity}</span>
+      </li>
+    );
+  }
+
+  if (!variant) {
+    return (
+      <li className="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <div className="fw-semibold">{product.name}</div>
+          <small className="text-danger d-block">Variant details not available</small>
+        </div>
         <span className="text-muted">Qty: {quantity}</span>
       </li>
     );
