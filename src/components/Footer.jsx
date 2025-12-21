@@ -17,18 +17,10 @@ const Footer = () => {
       <div className="container">
         <div className="row gy-4">
           <div className="col-12 col-lg-6">
-            <div className="changer row gy-3 w-100">
+            <div className="d-flex flex row gy-3 w-100">
               <div className="col-12 col-md-6">
                 <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>More About Us</h6>
                 <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
-                  <li>
-                    <Link
-                      to="/about-us"
-                      className="text-decoration-none text-reset"
-                    >
-                      About Us
-                    </Link>
-                  </li>
                   <li>
                     <Link
                       to="mission-statement"
@@ -88,11 +80,6 @@ const Footer = () => {
                       Shipping + Delivery
                     </Link>
                   </li>
-                  <li>
-                    <Link to="#" className="text-decoration-none text-reset">
-                      Blog Posts
-                    </Link>
-                  </li>
                   <li
                     className="cookie cursor-pointer"
                     onClick={handleResetConsent}
@@ -114,13 +101,13 @@ const Footer = () => {
               </li>
               <li>
                 Next Day Delivery (before 4pm Mon–Thurs) -{" "}
-                <strong>£11.00</strong>
+                <strong>£10.99</strong>
               </li>
               <li>
-                Saturday Delivery (before 4pm Fri) - <strong>£20.00</strong>
+                Saturday Delivery (before 4pm Fri) - <strong>£12.99</strong>
               </li>
               <li>
-                Sat 10am Delivery (before 4pm Fri) - <strong>£30.00</strong>
+                Sat 10am Delivery (before 4pm Fri) - <strong>£14.99</strong>
               </li>
             </ul>
           </div>
@@ -139,7 +126,6 @@ const Footer = () => {
           </div>
 
           <div className="col-12 col-md-8 d-flex justify-content-center justify-content-md-end gap-2 flex-wrap">
-            <img src="https://img.icons8.com/color/36/amex.png" alt="Amex" />
             <img
               src="https://img.icons8.com/color/36/apple-pay.png"
               alt="Apple Pay"
@@ -157,7 +143,7 @@ const Footer = () => {
         </div>
 
         <div className="text-center py-4 small text-muted mt-4 border-top" style={{ fontSize: "13px" }}>
-          &copy; 2025 KarinaHairLuxe
+          &copy; 2026 KarinaHairLuxe
         </div>
       </div>
     </footer>

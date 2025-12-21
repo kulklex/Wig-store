@@ -235,60 +235,80 @@ const Navbar = () => {
             </div>
 
             {/* Center Section - Navigation Links and Logo */}
-            <div className="d-flex align-items-center justify-content-center flex-grow-1">
-              <div className="d-flex align-items-center justify-content-center" style={{ gap: "80px" }}>
-                {/* SHOP HAIR EXTENSIONS - Left of Logo */}
-                <div
-                  className="position-relative"
-                  onMouseEnter={handleDropdownEnter}
-                  onMouseLeave={handleDropdownLeave}
-                >
-                  <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
-                    <span className="extensions-dropdown" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>
-                      SHOP HAIR EXTENSIONS
-                    </span>
-                    <span className="ms-1 fs-6">
-                      <FiChevronDown />
-                    </span>
-                  </button>
+            <div
+              className="flex-grow-1"
+              style={{
+                minHeight: "48px",
+                position: "relative",
+                display: "grid",
+                gridTemplateColumns: "1fr auto 1fr",
+                alignItems: "center",
+                justifyItems: "center",
+                columnGap: "32px"
+              }}
+            >
+              {/* Left trigger snug to logo */}
+              <div
+                className="d-flex align-items-center justify-content-end"
+                onMouseEnter={handleDropdownEnter}
+                onMouseLeave={handleDropdownLeave}
+              >
+                <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light text-uppercase">
+                  <span className="extensions-dropdown" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>
+                    Shop Hair Extensions
+                  </span>
+                  <span className="ms-1 fs-6">
+                    <FiChevronDown />
+                  </span>
+                </button>
 
-                  {showShopDropdown && (
+                {showShopDropdown && (
+                  <div
+                    className="position-absolute bg-white shadow-sm mt-1 z-3 animated-dropdown small"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "clamp(320px, 95vw, 1180px)",
+                      padding: "22px 28px",
+                      borderRadius: "6px",
+                      boxShadow: "0 12px 36px rgba(0,0,0,0.12)",
+                      animation: "dropdownFadeSlide 0.2s ease-out",
+                    }}
+                  >
                     <div
-                      className="position-absolute start-0 end-0 bg-white shadow-sm mt-1 py-4 z-3 animated-dropdown small"
                       style={{
-                        top: "100%",
-                        minWidth: "800px",
-                        animation: "dropdownFadeSlide 0.2s ease-out",
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                        gap: "18px 28px",
                       }}
                     >
-                      <div className="container-fluid px-4">
-                        <div className="row g-4">
-                          {dropdownContent.map((section, index) => (
-                            <div key={index} className="col">
-                              <h3 className="fs-6 fw-bold text-uppercase mb-3 pb-2 border-bottom">
-                                {section.title}
-                              </h3>
-                              <div className="d-flex flex-column gap-2">
-                                {section.items.map((item) => (
-                                  <Link
-                                    key={item}
-                                    to={`/search?query=${item}`}
-                                    className="text-decoration-none fs-12 hover-text-dark"
-                                    onClick={() => setShowShopDropdown(false)}
-                                  >
-                                    {item}
-                                  </Link>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
+                      {dropdownContent.map((section, index) => (
+                        <div key={index}>
+                          <h3 className="fs-6 fw-bold text-uppercase mb-3 pb-2 border-bottom">
+                            {section.title}
+                          </h3>
+                          <div className="d-flex flex-column gap-2">
+                            {section.items.map((item) => (
+                              <Link
+                                key={item}
+                                to={`/search?query=${item}`}
+                                className="text-decoration-none fs-12 hover-text-dark"
+                                onClick={() => setShowShopDropdown(false)}
+                              >
+                                {item}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Logo - Center */}
+              {/* Centered Logo */}
+              <div className="text-center">
                 <Link
                   to="/"
                   className="text-dark text-decoration-none text-center"
@@ -300,52 +320,52 @@ const Navbar = () => {
                   }}
                 >
                   <div style={{ lineHeight: "1.1" }}>
-                    <div>KarinaHairLuxe</div>
+                    <div className="text-uppercase">KarinaHairLuxe</div>
                     <div style={{ fontSize: "11px", letterSpacing: "1.5px", fontWeight: "300", marginTop: "2px" }}>
                       RAW HAIR EXTENSIONS
                     </div>
                   </div>
                 </Link>
+              </div>
 
-                {/* INFO - Right of Logo */}
-                <div
-                  className="position-relative"
-                  onMouseEnter={handleInfoDropdownEnter}
-                  onMouseLeave={handleInfoDropdownLeave}
-                >
-                  <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light">
-                    <span className="extensions-dropdown" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>
-                      INFO
-                    </span>
-                    <span className="ms-1 fs-6">
-                      <FiChevronDown />
-                    </span>
-                  </button>
+              {/* Right trigger snug to logo */}
+              <div
+                className="d-flex align-items-center justify-content-start position-relative"
+                onMouseEnter={handleInfoDropdownEnter}
+                onMouseLeave={handleInfoDropdownLeave}
+              >
+                <button className="btn p-0 border-0 bg-transparent d-flex align-items-center fw-light text-uppercase">
+                  <span className="extensions-dropdown" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>
+                    Info
+                  </span>
+                  <span className="ms-1 fs-6">
+                    <FiChevronDown />
+                  </span>
+                </button>
 
-                  {showInfoDropdown && (
-                    <div
-                      className="position-absolute start-50 translate-middle-x bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown small"
-                      style={{
-                        top: "100%",
-                        minWidth: "150px",
-                        animation: "dropdownFadeSlide 0.2s ease-out",
-                      }}
-                    >
-                      <div className="d-flex flex-column gap-2 px-3">
-                        {infoLinks.map(({ label, to }) => (
-                          <Link
-                            key={label}
-                            to={to}
-                            className="text-decoration-none text-dark fs-12 hover-text-dark"
-                            onClick={() => setShowInfoDropdown(false)}
-                          >
-                            {label}
-                          </Link>
-                        ))}
-                      </div>
+                {showInfoDropdown && (
+                  <div
+                    className="position-absolute start-50 translate-middle-x bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown small"
+                    style={{
+                      top: "100%",
+                      minWidth: "200px",
+                      animation: "dropdownFadeSlide 0.2s ease-out",
+                    }}
+                  >
+                    <div className="d-flex flex-column gap-2 px-3">
+                      {infoLinks.map(({ label, to }) => (
+                        <Link
+                          key={label}
+                          to={to}
+                          className="text-decoration-none text-dark fs-12 hover-text-dark"
+                          onClick={() => setShowInfoDropdown(false)}
+                        >
+                          {label}
+                        </Link>
+                      ))}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -412,12 +432,23 @@ const Navbar = () => {
               </button>
             </div>
 
-            <div className="position-absolute start-50 translate-middle-x">
+            <div className="position-absolute start-50 translate-middle-x text-center">
               <Link
                 to="/"
-                className="text-dark text-decoration-none fs-5 extensions-dropdown"
+                className="text-dark text-decoration-none"
+                style={{
+                  letterSpacing: "1.5px",
+                  fontSize: "17px",
+                  fontWeight: "400",
+                  lineHeight: "1.05",
+                  display: "inline-block",
+                  minWidth: "160px"
+                }}
               >
-                KarinaHairLuxe
+                <div className="text-uppercase">KarinaHairLuxe</div>
+                <div style={{ fontSize: "10px", letterSpacing: "1.2px", fontWeight: "300", marginTop: "1px" }}>
+                  RAW HAIR EXTENSIONS
+                </div>
               </Link>
             </div>
 
