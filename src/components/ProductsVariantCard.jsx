@@ -60,6 +60,8 @@ const ProductVariantCard = ({ productId, variantId, quantity }) => {
           <div className="fw-semibold">{product.name}</div>
           <small className="text-muted d-block">
             {variant.length}" {variant.texture} - {variant.origin}
+            {variant.color ? ` | Color: ${variant.color}` : ""}
+            {variant.laceSize ? ` | Lace Size: ${variant.laceSize}` : ""}
           </small>
           <small className="text-muted">£{variant.price.toLocaleString()} {" "} each</small> 
         </div>
