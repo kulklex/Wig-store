@@ -15,6 +15,8 @@ const AdminEditProduct = () => {
     texture: "",
     length: "",
     origin: "",
+    color: "",
+    laceSize: "",
     price: "",
     stock: "",
     style: "",
@@ -206,7 +208,7 @@ const AdminEditProduct = () => {
                   <div className="col-12 col-md-8">
                     <p className="mb-2">
                       <strong>{variant.length}</strong> - {variant.texture} (
-                      {variant.origin}) - £{variant.price}
+                      {variant.origin || "N/A"} | {variant.color || "N/A"} | {variant.laceSize || "N/A"}) - £{variant.price}
                       {variant.promo?.isActive &&
                         variant.promo.discountPercent > 0 && (
                           <>
@@ -297,6 +299,30 @@ const AdminEditProduct = () => {
                           setProduct({ ...product, variants: updated });
                         }}
                         placeholder="Origin"
+                      />
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <input
+                        className="form-control"
+                        value={variant.color || ""}
+                        onChange={(e) => {
+                          const updated = [...product.variants];
+                          updated[index].color = e.target.value;
+                          setProduct({ ...product, variants: updated });
+                        }}
+                        placeholder="Color"
+                      />
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <input
+                        className="form-control"
+                        value={variant.laceSize || ""}
+                        onChange={(e) => {
+                          const updated = [...product.variants];
+                          updated[index].laceSize = e.target.value;
+                          setProduct({ ...product, variants: updated });
+                        }}
+                        placeholder="Lace Size"
                       />
                     </div>
                     <div className="col-6 col-md-2">
@@ -457,6 +483,26 @@ const AdminEditProduct = () => {
           </div>
           <div className="col-6 col-md-2">
             <input
+              className="form-control"
+              placeholder="Color"
+              value={newVariant.color}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, color: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
+              className="form-control"
+              placeholder="Lace Size"
+              value={newVariant.laceSize}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, laceSize: e.target.value })
+              }
+            />
+          </div>
+          <div className="col-6 col-md-2">
+            <input
               type="number"
               className="form-control"
               placeholder="Price"
@@ -566,6 +612,7 @@ const AdminEditProduct = () => {
                   !newVariant.texture ||
                   !newVariant.length ||
                   !newVariant.origin ||
+                  !newVariant.color ||
                   !newVariant.price ||
                   !newVariant.stock
                 ) {
@@ -583,6 +630,8 @@ const AdminEditProduct = () => {
                   texture: "",
                   length: "",
                   origin: "",
+                  color: "",
+                  laceSize: "",
                   price: "",
                   stock: "",
                   style: "",

@@ -48,6 +48,8 @@ const AdminCreateProduct = () => {
     length: "",
     texture: "",
     origin: "",
+    color: "",
+    laceSize: "",
     price: "",
     stock: "",
     style: "",
@@ -109,10 +111,11 @@ const AdminCreateProduct = () => {
     if (
       !variantInput.texture ||
       !variantInput.length ||
+      !variantInput.color ||
       !variantInput.price ||
       !variantInput.stock
     ) {
-      setModalMessage("Texture, length, price, and stock are required");
+      setModalMessage("Texture, length, color, price, and stock are required");
       setShowModal(true);
       return;
     }
@@ -139,6 +142,8 @@ const AdminCreateProduct = () => {
       length: "",
       texture: "",
       origin: "",
+      color: "",
+      laceSize: "",
       price: "",
       stock: "",
       style: "",
@@ -204,6 +209,8 @@ const AdminCreateProduct = () => {
 
       
       if (v.origin && v.origin.trim()) cleanVariant.origin = v.origin.trim();
+      if (v.color && v.color.trim()) cleanVariant.color = v.color.trim();
+      if (v.laceSize && v.laceSize.trim()) cleanVariant.laceSize = v.laceSize.trim();
       if (v.style && v.style.trim()) cleanVariant.style = v.style.trim();
       if (v.weight && v.weight.toString().trim()) cleanVariant.weight = Number(v.weight);
       if (v.lace && v.lace.trim()) cleanVariant.lace = v.lace.trim();
@@ -390,6 +397,36 @@ const AdminCreateProduct = () => {
                   </div>
 
                   <div className="col-md-2">
+                    <label className="form-label">Color *</label>
+                    <input
+                      className="form-control"
+                      value={variantInput.color}
+                      onChange={(e) =>
+                        setVariantInput({
+                          ...variantInput,
+                          color: e.target.value,
+                        })
+                      }
+                      placeholder="e.g. 1B"
+                    />
+                  </div>
+
+                  <div className="col-md-2">
+                    <label className="form-label">Lace Size</label>
+                    <input
+                      className="form-control"
+                      value={variantInput.laceSize}
+                      onChange={(e) =>
+                        setVariantInput({
+                          ...variantInput,
+                          laceSize: e.target.value,
+                        })
+                      }
+                      placeholder="e.g. 13x4"
+                    />
+                  </div>
+
+                  <div className="col-md-2">
                     <label className="form-label">Stock *</label>
                     <input
                       type="number"
@@ -555,6 +592,8 @@ const AdminCreateProduct = () => {
                           <th>Texture</th>
                           <th>Length</th>
                           <th>Origin</th>
+                          <th>Color</th>
+                          <th>Lace Size</th>
                           <th>Stock</th>
                           <th>Price (£)</th>
                           <th>Promo</th>
@@ -567,6 +606,8 @@ const AdminCreateProduct = () => {
                             <td>{v.texture}</td>
                             <td>{v.length}</td>
                             <td>{v.origin || '-'}</td>
+                              <td>{v.color || '-'}</td>
+                              <td>{v.laceSize || '-'}</td>
                             <td>{v.stock}</td>
                             <td>£{v.price}</td>
                             <td>

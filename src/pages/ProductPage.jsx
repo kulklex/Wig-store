@@ -29,6 +29,8 @@ const ProductPage = () => {
   const [selectedTexture, setSelectedTexture] = useState(null);
   const [selectedLength, setSelectedLength] = useState("");
   const [selectedOrigin, setSelectedOrigin] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedLaceSize, setSelectedLaceSize] = useState("");
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedLace, setSelectedLace] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("");
@@ -79,6 +81,8 @@ const ProductPage = () => {
           setSelectedTexture(firstVariant.texture);
           setSelectedLength(firstVariant.length);
           setSelectedOrigin(firstVariant.origin);
+          setSelectedColor(firstVariant.color || "");
+          setSelectedLaceSize(firstVariant.laceSize || "");
           setSelectedVariant(firstVariant);
           setSelectedLace(firstVariant.lace || "");
           setSelectedStyle(firstVariant.style || "");
@@ -197,6 +201,8 @@ const ProductPage = () => {
       setMainImage(defaultVariant.media);
       setSelectedLength(defaultVariant.length);
       setSelectedOrigin(defaultVariant.origin);
+      setSelectedColor(defaultVariant.color || "");
+      setSelectedLaceSize(defaultVariant.laceSize || "");
       setSelectedVariant(defaultVariant);
       setQuantity(1);
 
@@ -221,6 +227,12 @@ const ProductPage = () => {
     if (matched) {
       setSelectedLength(len);
       setSelectedOrigin(matched.origin);
+      setSelectedColor(matched.color || "");
+      setSelectedLaceSize(matched.laceSize || "");
+      setSelectedLace(matched.lace || "");
+      setSelectedStyle(matched.style || "");
+      setSelectedWeight(matched.weight || "");
+      setSelectedFullDescription(matched.fullDescription || "");
       setSelectedVariant(matched);
       setMainImage(matched.media);
       setQuantity(1);
@@ -256,6 +268,8 @@ const ProductPage = () => {
       texture: selectedVariant.texture,
       length: selectedVariant.length || "",
       origin: selectedVariant.origin || "",
+      color: selectedVariant.color || selectedColor || "",
+      laceSize: selectedVariant.laceSize || selectedLaceSize || "",
       lace: selectedVariant.lace || "",
       style: selectedVariant.style || "",
       weight: selectedVariant.weight || "",
@@ -277,10 +291,16 @@ const ProductPage = () => {
   ];
 
   const availableLengths =
-    textureVariantsMap[selectedTexture]?.map((v) => ({
-      length: v.length,
-      stock: v.stock,
-    })) || [];
+    textureVariantsMap[selectedTexture]
+      ?.filter(
+        (v) =>
+          (!selectedColor || v.color === selectedColor) &&
+          (!selectedLaceSize || v.laceSize === selectedLaceSize)
+      )
+      .map((v) => ({
+        length: v.length,
+        stock: v.stock,
+      })) || [];
 
   const textureVariantImages = [
     ...new Set((textureVariantsMap[selectedTexture] || []).map((v) => v.media)),
@@ -293,19 +313,29 @@ const ProductPage = () => {
   const getUniqueAttributeValues = (attribute) => {
     const values = product.variants
       .map((v) => v[attribute])
-      .filter((val) => val !== undefined && val !== null);
+      .filter((val) => val !== undefined && val !== null && val !== "");
     return [...new Set(values)];
   };
 
-  const findMatchingVariant = () => {
+  const findMatchingVariant = (overrides = {}) => {
+    const targetLength = overrides.length ?? selectedLength;
+    const targetColor = overrides.color ?? selectedColor;
+    const targetLaceSize = overrides.laceSize ?? selectedLaceSize;
+    const targetLace = overrides.lace ?? selectedLace;
+    const targetStyle = overrides.style ?? selectedStyle;
+    const targetWeight = overrides.weight ?? selectedWeight;
+    const targetFullDescription =
+      overrides.fullDescription ?? selectedFullDescription;
+
     return textureVariantsMap[selectedTexture]?.find(
       (v) =>
-        v.length === selectedLength &&
-        (!selectedLace || v.lace === selectedLace) &&
-        (!selectedStyle || v.style === selectedStyle) &&
-        (!selectedWeight || v.weight === selectedWeight) &&
-        (!selectedFullDescription ||
-          v.fullDescription === selectedFullDescription)
+        v.length === targetLength &&
+        (!targetColor || v.color === targetColor) &&
+        (!targetLaceSize || v.laceSize === targetLaceSize) &&
+        (!targetLace || v.lace === targetLace) &&
+        (!targetStyle || v.style === targetStyle) &&
+        (!targetWeight || v.weight === targetWeight) &&
+        (!targetFullDescription || v.fullDescription === targetFullDescription)
     );
   };
 
@@ -319,6 +349,8 @@ const ProductPage = () => {
       setSelectedTexture(normalized);
       setSelectedLength(matchedVariant.length);
       setSelectedOrigin(matchedVariant.origin);
+      setSelectedColor(matchedVariant.color || "");
+      setSelectedLaceSize(matchedVariant.laceSize || "");
       setSelectedVariant(matchedVariant);
       setSelectedLace(matchedVariant.lace || "");
       setSelectedStyle(matchedVariant.style || "");
@@ -488,6 +520,18 @@ const ProductPage = () => {
 
           {[
             {
+              key: "color",
+              label: "COLOR",
+              state: selectedColor,
+              setter: setSelectedColor,
+            },
+            {
+              key: "laceSize",
+              label: "LACE SIZE",
+              state: selectedLaceSize,
+              setter: setSelectedLaceSize,
+            },
+            {
               key: "lace",
               label: "LACE",
               state: selectedLace,
@@ -526,9 +570,16 @@ const ProductPage = () => {
                       className="option-button"
                       onClick={() => {
                         setter(val);
-                        const matched = findMatchingVariant();
+                        const matched = findMatchingVariant({ [key]: val });
                         if (matched) {
                           setSelectedOrigin(matched.origin);
+                          setSelectedLength(matched.length);
+                          setSelectedColor(matched.color || "");
+                          setSelectedLaceSize(matched.laceSize || "");
+                          setSelectedLace(matched.lace || "");
+                          setSelectedStyle(matched.style || "");
+                          setSelectedWeight(matched.weight || "");
+                          setSelectedFullDescription(matched.fullDescription || "");
                           setSelectedVariant(matched);
                           setMainImage(matched.media);
                           setQuantity(1);

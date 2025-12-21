@@ -52,6 +52,8 @@ const Checkout = () => {
           productId: item.productId,
           variantId: item.variantId,
           quantity: item.cartQty,
+          color: item.color || "",
+          laceSize: item.laceSize || "",
         })),
         total: totalAmount,
       });
@@ -219,18 +221,28 @@ const Checkout = () => {
             <div className="border rounded p-4 bg-light">
               <h5 className="fw-bold mb-3">Order Summary</h5>
               <ul className="list-group mb-3">
-                {items.map((item) => (
-                  <li
-                    key={item._id + item.variantId}
-                    className="list-group-item d-flex justify-content-between align-items-center"
-                  >
-                    <div>
-                      <h6 className="my-0">{item.title}</h6>
-                      <small className="text-muted">Qty: {item.cartQty}</small>
-                    </div>
-                    <span className="text-dark fw-bold">£{item.finalPrice}</span>
-                  </li>
-                ))}
+                {items.map((item) => {
+                  const price = item.finalPrice ?? item.price ?? 0;
+                  return (
+                    <li
+                      key={item._id + item.variantId}
+                      className="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <div>
+                        <h6 className="my-0">{item.title}</h6>
+                        <small className="text-muted">
+                          Qty: {item.cartQty}
+                          {item.length ? ` | ${item.length}` : ""}
+                          {item.texture ? ` | ${item.texture}` : ""}
+                          {item.origin ? ` | ${item.origin}` : ""}
+                          {item.color ? ` | Color: ${item.color}` : ""}
+                          {item.laceSize ? ` | Lace Size: ${item.laceSize}` : ""}
+                        </small>
+                      </div>
+                      <span className="text-dark fw-bold">£{price.toFixed(2)}</span>
+                    </li>
+                  );
+                })}
               </ul>
               <div className="d-flex justify-content-between">
                 <span className="fw-bold">Total:</span>

@@ -258,6 +258,9 @@ const OrderDetails = () => {
         <ul className="list-group list-group-flush">
           {order.items.map((item, idx) => {
             const variant = variantData[item.variantId];
+            const price = variant?.price || item.price || 0;
+            const color = variant?.color || item.color;
+            const laceSize = variant?.laceSize || item.laceSize;
             return (
               <li
                 key={idx}
@@ -279,14 +282,16 @@ const OrderDetails = () => {
                     <strong>{variant?.productName || "Product"}</strong>
                     <div className="text-muted small">
                       {variant?.length}" {variant?.texture} - {variant?.origin}
+                      {color ? ` | Color: ${color}` : ""}
+                      {laceSize ? ` | Lace Size: ${laceSize}` : ""}
                     </div>
                   </div>
                 </div>
                 <div className="text-end">
-                  {item.quantity} × £{variant?.price?.toLocaleString() || 0}{" "}
+                  {item.quantity} × £{price.toLocaleString()}{" "}
                   <br />
                   <strong>
-                    £{(item.quantity * (variant?.price || 0)).toLocaleString()}
+                    £{(item.quantity * price).toLocaleString()}
                   </strong>
                 </div>
               </li>
