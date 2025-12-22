@@ -67,9 +67,10 @@ export const fetchBestSellers = createAsyncThunk(
 
 export const fetchRelatedProducts = createAsyncThunk(
   "products/fetchRelatedProducts",
-  async (productId, thunkAPI) => {
+  async ({ productId, limit }, thunkAPI) => {
     try {
-      const res = await axios.get(`/api/products/${productId}/related`);
+      const query = limit ? `?limit=${limit}` : "";
+      const res = await axios.get(`/api/products/${productId}/related${query}`);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);

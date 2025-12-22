@@ -47,6 +47,22 @@ const ProductPage = () => {
 
   const [reviews, setReviews] = useState([]);
   const [reviewText, setReviewText] = useState("");
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 768;
+  });
+
+  // Soft option styling to keep UI light
+  const optionStyle = (isActive) => ({
+    backgroundColor: isActive ? "#fafafa" : "#f9f9f9",
+    color: "#111",
+    border: isActive ? "2px solid #222" : "1px solid #d9d9d9",
+    boxShadow: isActive ? "0 2px 6px rgba(0,0,0,0.08)" : "0 1px 3px rgba(0,0,0,0.06)",
+    borderRadius: "6px",
+    padding: "8px 12px",
+    minWidth: "56px",
+    fontWeight: isActive ? 600 : 400,
+  });
   const [rating, setRating] = useState(5);
   const [submittingReview, setSubmittingReview] = useState(false);
 
@@ -66,6 +82,17 @@ const ProductPage = () => {
     };
 
     fetchBestSellers();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window === "undefined") return;
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -90,8 +117,6 @@ const ProductPage = () => {
           setSelectedFullDescription(firstVariant.fullDescription || "");
           setMainImage(firstVariant.media || "");
         }
-
-        dispatch(fetchRelatedProducts(id));
       } catch (error) {
         console.error("Failed to fetch product:", error);
       } finally {
@@ -100,13 +125,19 @@ const ProductPage = () => {
     };
 
     fetchProduct();
-  }, [id, dispatch]);
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    const limit = isMobile ? 4 : 6;
+    dispatch(fetchRelatedProducts({ productId: id, limit }));
+  }, [dispatch, id, isMobile]);
 
   useEffect(() => {
     const checkCanReview = async () => {
       if (user) {
         try {
-          const res = await axios.get(`/api/products/${id}/can-review`);
+          const res = await axios.get(`/api/products/${id}/eligible-to-review`);
           setCanReview(res.data.canReview);
         } catch (error) {
           console.error("Failed to check review eligibility:", error);
@@ -182,6 +213,11 @@ const ProductPage = () => {
     });
     return map;
   }, [product]);
+
+  const displayedRelatedProducts = useMemo(
+    () => (isMobile ? relatedProducts.slice(0, 4) : relatedProducts.slice(0, 6)),
+    [isMobile, relatedProducts]
+  );
 
   useEffect(() => {
     if (product?.variants?.length) {
@@ -396,46 +432,52 @@ const ProductPage = () => {
     <Container className="my-4">
       <Row className="g-4">
         <Col lg={6}>
-          <div id="product-gallery" className="border rounded-4 p-3 bg-white shadow-sm h-100">
-            <div
-              className="ratio ratio-1x1 rounded-3 bg-light d-flex align-items-center justify-content-center overflow-hidden"
-              style={{ minHeight: "380px" }}
-            >
-              {mainImage && (
-                <img
-                  src={mainImage}
-                  alt="Product"
-                  className="img-fluid h-100"
-                  style={{ objectFit: "cover" }}
-                />
+          <div id="product-gallery" className="h-100">
+            <div className="row g-3 flex-column flex-md-row align-items-start">
+              {variantThumbs.length > 0 && (
+                <div className="col-md-3 d-flex flex-md-column flex-wrap gap-2 order-2 order-md-1">
+                  {variantThumbs.map((img, idx) => (
+                    <button
+                      key={`thumb-${idx}`}
+                      type="button"
+                      className="p-0 border-0 bg-transparent rounded-3"
+                      onClick={() => handleThumbClick(img)}
+                      style={{
+                        border: mainImage === img ? "2px solid #111" : "1px solid #e6e6e6",
+                        boxShadow: "none",
+                      }}
+                    >
+                      <img
+                        src={img}
+                        alt={`thumb-${idx}`}
+                        className="rounded-3"
+                        style={{
+                          width: "90px",
+                          height: "90px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </button>
+                  ))}
+                </div>
               )}
-            </div>
 
-            {variantThumbs.length > 0 && (
-              <div className="d-flex flex-wrap gap-2 mt-3">
-                {variantThumbs.map((img, idx) => (
-                  <button
-                    key={`thumb-${idx}`}
-                    type="button"
-                    className="p-0 border-0 bg-transparent rounded-3"
-                    onClick={() => handleThumbClick(img)}
-                    style={{
-                      boxShadow:
-                        mainImage === img
-                          ? "0 0 0 2px #111"
-                          : "0 1px 3px rgba(0,0,0,0.12)",
-                    }}
-                  >
+              <div className={`col-md-${variantThumbs.length > 0 ? "9" : "12"} order-1 order-md-2`}>
+                <div
+                  className="ratio ratio-1x1 d-flex align-items-center justify-content-center overflow-hidden"
+                  style={{ minHeight: "380px", background: "transparent" }}
+                >
+                  {mainImage && (
                     <img
-                      src={img}
-                      alt={`thumb-${idx}`}
-                      className="rounded-3"
-                      style={{ width: "90px", height: "90px", objectFit: "cover" }}
+                      src={mainImage}
+                      alt="Product"
+                      className="img-fluid h-100"
+                      style={{ objectFit: "cover", boxShadow: "none" }}
                     />
-                  </button>
-                ))}
+                  )}
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </Col>
 
@@ -479,9 +521,10 @@ const ProductPage = () => {
           <div className="d-flex flex-wrap mb-4 gap-2">
             {availableLengths.map(({ length, stock }) => (
               <Button
-                variant={selectedLength === length ? "dark" : "outline-dark"}
-                className="me-1 mb-2 px-2 rounded-none position-relative option-button"
                 key={length}
+                variant="light"
+                style={optionStyle(selectedLength === length)}
+                className="me-1 mb-2 position-relative option-button"
                 onClick={() => handleLengthClick(length)}
                 disabled={stock === 0}
               >
@@ -502,12 +545,13 @@ const ProductPage = () => {
           <h6>
             TEXTURE <span className="text-warning">?</span>
           </h6>
-          <div className="d-flex flex-wrap mb-3">
+          <div className="d-flex flex-wrap mb-3 gap-2">
             {uniqueTextures.map((texture) => (
               <Button
-                variant={selectedTexture === texture ? "dark" : "outline-dark"}
-                className="me-1 mb-2 option-button"
                 key={texture}
+                variant="light"
+                style={optionStyle(selectedTexture === texture)}
+                className="me-1 mb-2 option-button"
                 onClick={() => {
                   setSelectedTexture(texture);
                   scrollToGallery();
@@ -566,7 +610,8 @@ const ProductPage = () => {
                   {values.map((val) => (
                     <Button
                       key={val}
-                      variant={state === val ? "dark" : "outline-dark"}
+                      variant="light"
+                      style={optionStyle(state === val)}
                       className="option-button"
                       onClick={() => {
                         setter(val);
@@ -640,13 +685,6 @@ const ProductPage = () => {
               <Accordion.Body>{product.description}</Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1">
-              <Accordion.Header>Hair Textures + Origins</Accordion.Header>
-              <Accordion.Body>
-                Includes Peruvian, Brazilian, Indian textures in a variety of
-                curls and waves.
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
               <Accordion.Header>Delivery Info</Accordion.Header>
               <Accordion.Body>
                 Express worldwide shipping available. See checkout for rates.
@@ -655,7 +693,7 @@ const ProductPage = () => {
           </Accordion>
 
           <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-4">
-            <Accordion.Item eventKey="3">
+            <Accordion.Item eventKey="2">
               <Accordion.Header>Customer Reviews</Accordion.Header>
               <Accordion.Body>
                 {reviews.length === 0 && <p>No reviews yet.</p>}
@@ -738,9 +776,9 @@ const ProductPage = () => {
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
             </div>
-          ) : relatedProducts.length > 0 ? (
+          ) : displayedRelatedProducts.length > 0 ? (
             <Row>
-              {relatedProducts.map((relatedProduct) => (
+              {displayedRelatedProducts.map((relatedProduct) => (
                 <CollectionCard 
                   key={relatedProduct._id} 
                   data={relatedProduct} 
