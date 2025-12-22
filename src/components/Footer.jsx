@@ -93,7 +93,7 @@ const Footer = () => {
 
           {/* Right block: delivery options */}
           <div className="col-12 col-lg-6">
-            <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Delivery Options (FREE above £1000)</h6>
+            <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Delivery Options (FREE from £1000)</h6>
             <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
               <li>
                 Standard delivery (3–5 working days) -{" "}

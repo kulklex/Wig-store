@@ -4,10 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(
-  "pk_test_51KVF4VDXLQnXLH3ZAEXYAaaGjmt9pokCaUleoc1msPk3v7dtjNjyH8EmIznpDf4WNoh2JoXcRhsHKuzjGIJZIfmq00DerQTkK5"
-);
-
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, totalAmount } = useSelector((state) => state.cart);
