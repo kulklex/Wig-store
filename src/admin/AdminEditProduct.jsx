@@ -201,35 +201,44 @@ const AdminEditProduct = () => {
         <ul className="list-group mb-4">
           {product.variants?.map((variant, index) => {
             const isEditing = editingIndex === index;
+            const descriptionPreview =
+              variant.fullDescription?.length > 120
+                ? `${variant.fullDescription.slice(0, 120)}...`
+                : variant.fullDescription || "N/A";
+            const basePrice = typeof variant.price === "number" ? variant.price : Number(variant.price) || 0;
+            const promoPrice = variant.promo?.promoPrice;
+            const isPromoActive = Boolean(variant.promo?.isActive);
+            const displayPrice =
+              isPromoActive && promoPrice ? promoPrice : basePrice;
 
             return (
               <li key={index} className="list-group-item">
                 <div className="row">
                   <div className="col-12 col-md-8">
-                    <p className="mb-2">
-                      <strong>{variant.length}</strong> - {variant.texture} (
-                      {variant.origin || "N/A"} | {variant.color || "N/A"} | {variant.laceSize || "N/A"}) - £{variant.price}
-                      {variant.promo?.isActive &&
-                        variant.promo.discountPercent > 0 && (
-                          <>
-                            {" "}
-                            <br />
-                            <small>
-                              Promo: {variant.promo.discountPercent}% off
-                            </small>
-                            <br />
-                            <small>
-                              Promo Price: £
-                              {(
-                                variant.price *
-                                (1 - variant.promo.discountPercent / 100)
-                              ).toFixed(2)}
-                            </small>
-                          </>
-                        )}
-                      <br />
-                      <small>Stock: {variant.stock}</small>
+                    <p className="mb-2 fw-semibold">
+                      <strong>{variant.length || "N/A"}</strong> — {variant.texture || "N/A"}
                     </p>
+                    <div className="small text-muted">
+                      <div>Origin: {variant.origin || "N/A"}</div>
+                      <div>Color: {variant.color || "N/A"}</div>
+                      <div>
+                        Lace Size: {variant.laceSize || "N/A"} | Lace: {variant.lace || "N/A"}
+                      </div>
+                      <div>
+                        Style: {variant.style || "N/A"} | Weight: {variant.weight || "N/A"}
+                      </div>
+                      <div>
+                        Price: £{displayPrice.toFixed(2)} {isPromoActive && promoPrice ? `(base £${basePrice.toFixed(2)})` : ""}
+                      </div>
+                      <div>
+                        Promo:{" "}
+                        {isPromoActive
+                          ? `${variant.promo?.discountPercent || 0}% • Promo Price £${(promoPrice || 0).toFixed(2)}`
+                          : "Inactive"}
+                      </div>
+                      <div>Stock: {variant.stock}</div>
+                      <div>Description: {descriptionPreview}</div>
+                    </div>
 
                     {variant.media && (
                       <img

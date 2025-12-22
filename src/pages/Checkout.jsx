@@ -87,8 +87,99 @@ const Checkout = () => {
           </p>
         </div>
       ) : (
-        <div className="row">
-          <div className="col-md-7">
+        <div className="row g-4">
+          {/* Order summary first */}
+          <div className="col-lg-5 order-1">
+            <div className="border rounded-4 p-4 shadow-sm bg-white h-100">
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                  <h5 className="fw-bold mb-1">Order Summary</h5>
+                  <p className="text-muted small mb-0">
+                    Review items before placing your order.
+                  </p>
+                </div>
+                <span className="badge bg-secondary-subtle text-dark border">
+                  {items.length} item{items.length !== 1 && "s"}
+                </span>
+              </div>
+
+              <ul className="list-group list-group-flush mb-4">
+                {items.map((item) => {
+                  const price = item.finalPrice ?? item.price ?? 0;
+                  const attributes = [
+                    { label: "Texture", value: item.texture },
+                    { label: "Length", value: item.length },
+                    { label: "Origin", value: item.origin },
+                    { label: "Color", value: item.color },
+                    { label: "Lace Size", value: item.laceSize },
+                    { label: "Lace", value: item.lace },
+                    { label: "Style", value: item.style },
+                    { label: "Weight", value: item.weight },
+                    { label: "Notes", value: item.fullDescription },
+                  ].filter((a) => a.value);
+
+                  return (
+                    <li
+                      key={item._id + item.variantId}
+                      className="list-group-item px-0 py-3 border-0 border-bottom"
+                    >
+                      <div className="d-flex align-items-start gap-3 flex-wrap">
+                        <img
+                          src={item.media || "https://via.placeholder.com/72?text=Item"}
+                          alt={item.title}
+                          width={72}
+                          height={72}
+                          className="rounded border object-fit-cover"
+                          style={{ objectFit: "cover" }}
+                        />
+                        <div className="flex-grow-1 min-w-0">
+                          <div className="d-flex justify-content-between align-items-start">
+                            <div className="me-3">
+                              <h6 className="mb-1 text-wrap">{item.title}</h6>
+                              <div className="small text-muted">
+                                {attributes
+                                  .slice(0, 3)
+                                  .map((attr) => `${attr.label}: ${attr.value}`)
+                                  .join(" • ")}
+                              </div>
+                              {attributes.length > 3 && (
+                                <div className="small text-muted">
+                                  {attributes
+                                    .slice(3)
+                                    .map((attr) => `${attr.label}: ${attr.value}`)
+                                    .join(" • ")}
+                                </div>
+                              )}
+                              <div className="d-flex flex-wrap gap-2 mt-2">
+                                <span className="badge text-bg-light border">
+                                  Qty: {item.cartQty}
+                                </span>
+                              </div>
+                            </div>
+                            <span className="fw-semibold text-dark">
+                              £{price.toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="rounded-4 p-3 bg-dark text-white d-flex justify-content-between align-items-center">
+                <div>
+                  <span className="text-white-50 small d-block">Total</span>
+                  <span className="fw-bold fs-4">£{totalAmount.toFixed(2)}</span>
+                </div>
+                <span className="text-white-50 small text-end">
+                  VAT included where applicable
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-7 order-2">
             {!user && (
               <div className="mb-4 p-3 border rounded bg-light">
                 <p className="mb-2 fw-semibold">
@@ -193,7 +284,10 @@ const Checkout = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Delivery Instructions <span className="text-muted">(Optional)</span></label>
+                  <label className="form-label">
+                    Delivery Instructions{" "}
+                    <span className="text-muted">(Optional)</span>
+                  </label>
                   <textarea
                     name="deliveryInstructions"
                     value={form.deliveryInstructions}
@@ -215,40 +309,6 @@ const Checkout = () => {
                 {loading ? "Placing Order..." : "Place Order"}
               </button>
             </form>
-          </div>
-
-          <div className="col-md-5 mt-4 mt-md-0">
-            <div className="border rounded p-4 bg-light">
-              <h5 className="fw-bold mb-3">Order Summary</h5>
-              <ul className="list-group mb-3">
-                {items.map((item) => {
-                  const price = item.finalPrice ?? item.price ?? 0;
-                  return (
-                    <li
-                      key={item._id + item.variantId}
-                      className="list-group-item d-flex justify-content-between align-items-center"
-                    >
-                      <div>
-                        <h6 className="my-0">{item.title}</h6>
-                        <small className="text-muted">
-                          Qty: {item.cartQty}
-                          {item.length ? ` | ${item.length}` : ""}
-                          {item.texture ? ` | ${item.texture}` : ""}
-                          {item.origin ? ` | ${item.origin}` : ""}
-                          {item.color ? ` | Color: ${item.color}` : ""}
-                          {item.laceSize ? ` | Lace Size: ${item.laceSize}` : ""}
-                        </small>
-                      </div>
-                      <span className="text-dark fw-bold">£{price.toFixed(2)}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="d-flex justify-content-between">
-                <span className="fw-bold">Total:</span>
-                <span className="fw-bold">£{totalAmount.toFixed(2)}</span>
-              </div>
-            </div>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchProducts, fetchCategories } from '../redux/productSlice';
+import { searchProducts, fetchCategories, fetchProductAttributes } from '../redux/productSlice';
 import CollectionCard from '../components/CollectionCard';
 import { FiFilter, FiChevronLeft, FiChevronRight, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
@@ -9,7 +9,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 12;
 
 const SearchResults = () => {
   const query = useQuery();
@@ -18,10 +18,21 @@ const SearchResults = () => {
   const minPrice = query.get('minPrice') || '';
   const maxPrice = query.get('maxPrice') || '';
   const sort = query.get('sort') || '';
+  const laceSize = query.get('laceSize') || '';
+  const color = query.get('color') || '';
   const currentPage = parseInt(query.get('page')) || 1;
 
   const dispatch = useDispatch();
-  const { searchResults, searchLoading, searchError, categories, categoriesLoading, searchPagination } = useSelector(
+  const {
+    searchResults,
+    searchLoading,
+    searchError,
+    categories,
+    categoriesLoading,
+    attributes,
+    attributesLoading,
+    searchPagination
+  } = useSelector(
     (state) => state.products
   );
 
@@ -30,12 +41,15 @@ const SearchResults = () => {
     minPrice: minPrice,
     maxPrice: maxPrice,
     sort: sort,
+    laceSize: laceSize,
+    color: color,
   });
 
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCategories());
+    dispatch(fetchProductAttributes());
   }, [dispatch]);
 
   useEffect(() => {
@@ -45,6 +59,8 @@ const SearchResults = () => {
       minPrice,
       maxPrice,
       sort,
+      laceSize,
+      color,
       page: currentPage,
       limit: ITEMS_PER_PAGE,
     };
@@ -81,7 +97,7 @@ const SearchResults = () => {
   };
 
   const handleClearFilters = () => {
-    setFilterForm({ category: "", minPrice: "", maxPrice: "", sort: "" });
+    setFilterForm({ category: "", minPrice: "", maxPrice: "", sort: "", laceSize: "", color: "" });
     
     const params = new URLSearchParams();
     if (searchTerm) {
@@ -101,6 +117,8 @@ const SearchResults = () => {
     if (minPrice) params.append('minPrice', minPrice);
     if (maxPrice) params.append('maxPrice', maxPrice);
     if (sort) params.append('sort', sort);
+    if (laceSize) params.append('laceSize', laceSize);
+    if (color) params.append('color', color);
     params.append('page', newPage.toString());
     params.append('limit', ITEMS_PER_PAGE.toString());
     
@@ -236,6 +254,36 @@ const SearchResults = () => {
                 />
               </div>
               
+              <div className="col-6 col-md-3 col-lg-2">
+                <label className="form-label small">Lace Size</label>
+                <select
+                  className="form-select form-select-sm"
+                  value={filterForm.laceSize}
+                  onChange={(e) => handleFilterChange("laceSize", e.target.value)}
+                  disabled={attributesLoading}
+                >
+                  <option value="">All</option>
+                  {attributes.laceSizes.map((size) => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="col-6 col-md-3 col-lg-2">
+                <label className="form-label small">Color</label>
+                <select
+                  className="form-select form-select-sm"
+                  value={filterForm.color}
+                  onChange={(e) => handleFilterChange("color", e.target.value)}
+                  disabled={attributesLoading}
+                >
+                  <option value="">All</option>
+                  {attributes.colors.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
               <div className="col-12 col-md-6 col-lg-3">
                 <label className="form-label small">Sort By</label>
                 <select

@@ -326,8 +326,10 @@ const ProductPage = () => {
     ),
   ];
 
+  const variantsForCurrentTexture = textureVariantsMap[selectedTexture] || [];
+
   const availableLengths =
-    textureVariantsMap[selectedTexture]
+    variantsForCurrentTexture
       ?.filter(
         (v) =>
           (!selectedColor || v.color === selectedColor) &&
@@ -339,7 +341,7 @@ const ProductPage = () => {
       })) || [];
 
   const textureVariantImages = [
-    ...new Set((textureVariantsMap[selectedTexture] || []).map((v) => v.media)),
+    ...new Set(variantsForCurrentTexture.map((v) => v.media)),
   ];
 
   const allVariantImages = [
@@ -347,7 +349,19 @@ const ProductPage = () => {
   ];
 
   const getUniqueAttributeValues = (attribute) => {
-    const values = product.variants
+    const scopedVariants =
+      variantsForCurrentTexture.length > 0
+        ? variantsForCurrentTexture
+        : product.variants;
+
+    const filteredVariants =
+      attribute === "length"
+        ? scopedVariants
+        : scopedVariants.filter((v) =>
+            selectedLength ? v.length === selectedLength : true
+          );
+
+    const values = filteredVariants
       .map((v) => v[attribute])
       .filter((val) => val !== undefined && val !== null && val !== "");
     return [...new Set(values)];
@@ -363,9 +377,14 @@ const ProductPage = () => {
     const targetFullDescription =
       overrides.fullDescription ?? selectedFullDescription;
 
-    return textureVariantsMap[selectedTexture]?.find(
+    const baseVariants =
+      variantsForCurrentTexture.length > 0
+        ? variantsForCurrentTexture
+        : product.variants;
+
+    const strictMatch = baseVariants.find(
       (v) =>
-        v.length === targetLength &&
+        (!targetLength || v.length === targetLength) &&
         (!targetColor || v.color === targetColor) &&
         (!targetLaceSize || v.laceSize === targetLaceSize) &&
         (!targetLace || v.lace === targetLace) &&
@@ -373,6 +392,29 @@ const ProductPage = () => {
         (!targetWeight || v.weight === targetWeight) &&
         (!targetFullDescription || v.fullDescription === targetFullDescription)
     );
+
+    if (strictMatch) return strictMatch;
+
+    if (overrides.laceSize) {
+      const laceSizeMatch = baseVariants.find(
+        (v) =>
+          v.laceSize === overrides.laceSize &&
+          (!targetLength || v.length === targetLength)
+      );
+      if (laceSizeMatch) return laceSizeMatch;
+    }
+
+    if (overrides.length) {
+      const lengthMatch = baseVariants.find((v) => v.length === overrides.length);
+      if (lengthMatch) return lengthMatch;
+    }
+
+    if (overrides.color) {
+      const colorMatch = baseVariants.find((v) => v.color === overrides.color);
+      if (colorMatch) return colorMatch;
+    }
+
+    return baseVariants[0] || null;
   };
 
   const variantThumbs = allVariantImages.slice(0, 8);
