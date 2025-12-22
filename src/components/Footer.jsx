@@ -93,21 +93,21 @@ const Footer = () => {
 
           {/* Right block: delivery options */}
           <div className="col-12 col-lg-6">
-            <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Delivery Options</h6>
+            <h6 className="text-uppercase fw-bold mb-1" style={{ fontSize: "13px", letterSpacing: "0.5px", fontWeight: "400" }}>Delivery Options (FREE above £1000)</h6>
             <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
               <li>
                 Standard delivery (3–5 working days) -{" "}
-                <strong>FREE above £150.00 / £5.00 below</strong>
+                <strong>£5.99</strong>
               </li>
               <li>
-                Next Day Delivery (before 4pm Mon–Thurs) -{" "}
+                Next Day Delivery -{" "}
                 <strong>£10.99</strong>
               </li>
               <li>
-                Saturday Delivery (before 4pm Fri) - <strong>£12.99</strong>
+                Saturday Delivery - <strong>£12.99</strong>
               </li>
               <li>
-                Sat 10am Delivery (before 4pm Fri) - <strong>£14.99</strong>
+                Sat 10am Delivery - <strong>£14.99</strong>
               </li>
             </ul>
           </div>

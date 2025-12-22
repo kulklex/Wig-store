@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
@@ -13,6 +13,34 @@ const Checkout = () => {
   const { items, totalAmount } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
 
+  const FREE_THRESHOLD = 1000;
+
+  const baseDeliveryOptions = useMemo(
+    () => [
+      {
+        id: "standard",
+        label: "Standard delivery (3–5 working days)",
+        amount: 5.99,
+      },
+      {
+        id: "next_day",
+        label: "Next Day Delivery",
+        amount: 10.99,
+      },
+      {
+        id: "saturday",
+        label: "Saturday Delivery",
+        amount: 12.99,
+      },
+      {
+        id: "sat_10am",
+        label: "Sat 10am Delivery",
+        amount: 14.99,
+      },
+    ],
+    []
+  );
+
   const [form, setForm] = useState({
     name: "",
     user: "",
@@ -24,8 +52,45 @@ const Checkout = () => {
     deliveryInstructions: "",
   });
 
+  const [selectedDelivery, setSelectedDelivery] = useState(baseDeliveryOptions[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Build delivery options; inject free-auto only when threshold met
+  const deliveryOptions = useMemo(() => {
+    return totalAmount >= FREE_THRESHOLD
+      ? [
+          {
+            id: "free_auto",
+            label: `Free Delivery (orders £${FREE_THRESHOLD}+)`,
+            amount: 0,
+            auto: true,
+          },
+          ...baseDeliveryOptions,
+        ]
+      : baseDeliveryOptions;
+  }, [totalAmount, baseDeliveryOptions]);
+
+  // Keep selection valid and auto-select free when eligible
+  useEffect(() => {
+    const stillValid = deliveryOptions.find((o) => o.id === selectedDelivery?.id);
+    if (!stillValid) {
+      setSelectedDelivery(deliveryOptions[0]);
+      return;
+    }
+    const hasFree = deliveryOptions[0]?.auto;
+    if (hasFree && selectedDelivery.id !== deliveryOptions[0].id) {
+      setSelectedDelivery(deliveryOptions[0]);
+    }
+  }, [totalAmount, deliveryOptions, selectedDelivery]);
+
+  const getDeliveryFee = (option) => {
+    if (!option) return 0;
+    return option.amount || 0;
+  };
+
+  const deliveryFee = getDeliveryFee(selectedDelivery);
+  const grandTotal = totalAmount + deliveryFee;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -55,7 +120,7 @@ const Checkout = () => {
           color: item.color || "",
           laceSize: item.laceSize || "",
         })),
-        total: totalAmount,
+        total: grandTotal,
       });
 
       const stripe = await stripePromise;
@@ -86,10 +151,9 @@ const Checkout = () => {
             .
           </p>
         </div>
-      ) : (
+      ) : (<>
         <div className="row g-4">
-          {/* Order summary first */}
-          <div className="col-lg-5 order-1">
+          <div className="col-lg-5 order-1 order-lg-1">
             <div className="border rounded-4 p-4 shadow-sm bg-white h-100">
               <div className="d-flex align-items-center justify-content-between mb-3">
                 <div>
@@ -167,19 +231,71 @@ const Checkout = () => {
                 })}
               </ul>
 
-              <div className="rounded-4 p-3 bg-dark text-white d-flex justify-content-between align-items-center">
-                <div>
-                  <span className="text-white-50 small d-block">Total</span>
-                  <span className="fw-bold fs-4">£{totalAmount.toFixed(2)}</span>
+              <div className="rounded-4 p-3 bg-dark text-white d-flex flex-column gap-2">
+                <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <span className="text-white-50 small me-2">Subtotal</span>
+                  <span className="fw-semibold">£{totalAmount.toFixed(2)}</span>
                 </div>
-                <span className="text-white-50 small text-end">
-                  VAT included where applicable
-                </span>
+                <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <span className="text-white-50 small me-2">Delivery</span>
+                  <span className="fw-semibold">
+                    {selectedDelivery?.label} — £{deliveryFee.toFixed(2)}
+                  </span>
+                </div>
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top border-white-25">
+                  <div>
+                    <span className="text-white-50 small d-block">Total</span>
+                    <span className="fw-bold fs-4">£{grandTotal.toFixed(2)}</span>
+                  </div>
+                  <span className="text-white-50 small text-end">
+                    VAT included where applicable
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="col-lg-7 order-2">
+
+        <div className="my-3">
+                <div className="list-group">
+                  {deliveryOptions.map((opt) => {
+                    const fee = getDeliveryFee(opt);
+                    const isFree = fee === 0;
+                    const disabled = opt.auto && totalAmount < FREE_THRESHOLD;
+
+                    return (
+                      <label
+                        key={opt.id}
+                        className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                        style={{
+                          cursor: disabled ? "not-allowed" : "pointer",
+                          opacity: disabled ? 0.6 : 1,
+                          backgroundColor: selectedDelivery.id === opt.id ? "#111" : "#fff",
+                          color: selectedDelivery.id === opt.id ? "#fff" : "#212529",
+                          borderColor: "#111",
+                        }}
+                      >
+                        <div>
+                          <div className="fw-semibold">{opt.label}</div>
+                          <small className={selectedDelivery.id === opt.id ? "text-light" : "text-muted"}>
+                            {isFree ? "Free" : `£${fee.toFixed(2)}`}
+                          </small>
+                        </div>
+                        <input
+                          type="radio"
+                          name="delivery"
+                          checked={selectedDelivery.id === opt.id}
+                          onChange={() => !disabled && setSelectedDelivery(opt)}
+                          disabled={disabled}
+                          style={{ accentColor: "#111" }}
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+          <div className="col-lg-7 order-2 order-lg-2">
             {!user && (
               <div className="mb-4 p-3 border rounded bg-light">
                 <p className="mb-2 fw-semibold">
@@ -311,7 +427,7 @@ const Checkout = () => {
             </form>
           </div>
         </div>
-      )}
+      </>)}
     </div>
   );
 };
