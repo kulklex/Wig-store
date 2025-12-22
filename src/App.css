@@ -74,17 +74,25 @@
 @keyframes dropdownFadeSlide {
   0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translate(var(--dropdown-translate-x, 0), 10px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(var(--dropdown-translate-x, 0), 0);
   }
 }
 
 .animated-dropdown {
-  animation: dropdownFadeSlide 0.3s ease forwards;
+  --dropdown-translate-x: 0;
+  opacity: 0;
+  transform: translate(var(--dropdown-translate-x, 0), 8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.animated-dropdown.dropdown-open {
   opacity: 1;
+  transform: translate(var(--dropdown-translate-x, 0), 0);
   pointer-events: auto;
 }
 

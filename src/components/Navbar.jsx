@@ -264,16 +264,15 @@ const Navbar = () => {
 
                 {showShopDropdown && (
                   <div
-                    className="position-absolute bg-white shadow-sm mt-1 z-3 animated-dropdown small"
+                    className="position-absolute bg-white shadow-sm mt-1 z-3 animated-dropdown dropdown-open small"
                     style={{
                       top: "100%",
                       left: "50%",
-                      transform: "translateX(-50%)",
+                      "--dropdown-translate-x": "-50%",
                       width: "clamp(320px, 95vw, 1180px)",
                       padding: "22px 28px",
                       borderRadius: "6px",
                       boxShadow: "0 12px 36px rgba(0,0,0,0.12)",
-                      animation: "dropdownFadeSlide 0.2s ease-out",
                     }}
                   >
                     <div
@@ -345,11 +344,12 @@ const Navbar = () => {
 
                 {showInfoDropdown && (
                   <div
-                    className="position-absolute start-50 translate-middle-x bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown small"
+                    className="position-absolute bg-white shadow-sm mt-1 py-3 z-3 animated-dropdown dropdown-open small"
                     style={{
                       top: "100%",
+                      left: "50%",
+                      "--dropdown-translate-x": "-50%",
                       minWidth: "200px",
-                      animation: "dropdownFadeSlide 0.2s ease-out",
                     }}
                   >
                     <div className="d-flex flex-column gap-2 px-3">
