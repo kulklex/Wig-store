@@ -109,6 +109,7 @@ const Checkout = () => {
           zip: form.zip,
           phone: form.phone,
           deliveryInstructions: form.deliveryInstructions,
+          deliveryOption: selectedDelivery,
         },
         items: items.map((item) => ({
           productId: item.productId,
