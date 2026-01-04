@@ -33,6 +33,8 @@ const predefinedLengths = [
   '30',
 ];
 
+const predefinedColors = ["Black", "Brown", "Gold"];
+
 
 // For texture-only normalization (for unique texture grouping)
 const normalizeTexture = (texture) =>
@@ -249,7 +251,14 @@ const AdminCreateProduct = () => {
       }, 3000);
     } catch (err) {
       console.error(err);
-      setStatus("Failed to create product. Please try again.");
+      const apiMessage = err?.response?.data?.message;
+      if (apiMessage?.toLowerCase().includes("already exists")) {
+        setStatus("");
+        setModalMessage("A product with this name already exists. Please choose a unique name.");
+        setShowModal(true);
+      } else {
+        setStatus("Failed to create product. Please try again.");
+      }
     }
   };
 
@@ -398,6 +407,23 @@ const AdminCreateProduct = () => {
 
                   <div className="col-md-2">
                     <label className="form-label">Color *</label>
+                    <select
+                      className="form-select mb-1"
+                      value={variantInput.color}
+                      onChange={(e) =>
+                        setVariantInput({
+                          ...variantInput,
+                          color: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">-- Select --</option>
+                      {predefinedColors.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
                     <input
                       className="form-control"
                       value={variantInput.color}
@@ -407,7 +433,7 @@ const AdminCreateProduct = () => {
                           color: e.target.value,
                         })
                       }
-                      placeholder="e.g. 1B"
+                      placeholder="Or type custom"
                     />
                   </div>
 

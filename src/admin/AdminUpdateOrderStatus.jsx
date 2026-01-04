@@ -11,7 +11,7 @@ const statusOptions = [
   "Out for delivery",
   "Delivered",
   "Cancelled",
-  "Refunded",
+  "exchanged",
 ];
 
 const AdminUpdateOrderStatus = () => {
@@ -169,7 +169,7 @@ const AdminUpdateOrderStatus = () => {
         return "success";
       case "Cancelled":
         return "danger";
-      case "Refunded":
+      case "exchanged":
         return "dark";
       default:
         return "light";

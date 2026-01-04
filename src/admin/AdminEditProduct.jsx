@@ -5,6 +5,36 @@ import AlertModal from "../components/AlertModal";
 import ConfirmModal from "../components/ConfirmModal";
 import imageCompression from "browser-image-compression";
 
+const predefinedTextures = [
+  "Straight",
+  "Bodywave",
+  "Luxe Curl (Deep Wave)",
+  "Loose Wave",
+  "Loose Curls (Water Wave)",
+  "Kinky Curly",
+  "Yaki Straight",
+  "Kinky Straight",
+  "Vietnamese (DD) Straight",
+  "Cambodian (DD) Wavy",
+  "Burmese (DD) Curly",
+];
+
+const predefinedLengths = [
+  "10",
+  "12",
+  "14",
+  "16",
+  "18",
+  "20",
+  "22",
+  "24",
+  "26",
+  "28",
+  "30",
+];
+
+const predefinedColors = ["Black", "Brown", "Gold"];
+
 const AdminEditProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -25,7 +55,7 @@ const AdminEditProduct = () => {
     fullDescription: "",
     promo: {
       isActive: false,
-      discountPercent: 0,
+      discountPercent: "",
     },
   });
 
@@ -143,7 +173,14 @@ const AdminEditProduct = () => {
       }, 2000);
     } catch (err) {
       console.error("Update failed", err);
-      setStatus("Failed to update");
+      const apiMessage = err?.response?.data?.message;
+      if (apiMessage?.toLowerCase().includes("already exists")) {
+        setStatus("");
+        setModalMessage("A product with this name already exists. Please choose a unique name.");
+        setShowModal(true);
+      } else {
+        setStatus("Failed to update");
+      }
     }
   };
 
@@ -421,45 +458,48 @@ const AdminEditProduct = () => {
                         rows="2"
                       />
                     </div>
-                    <div className="col-6 col-md-2">
+                    <div className="col-md-3">
+                      <label className="form-label">Promotion</label>
                       <div className="form-check">
                         <input
                           className="form-check-input"
                           type="checkbox"
+                          id={`promoActive-${index}`}
                           checked={variant.promo?.isActive || false}
                           onChange={(e) => {
                             const updated = [...product.variants];
                             updated[index].promo = {
                               ...updated[index].promo,
                               isActive: e.target.checked,
+                              discountPercent: e.target.checked
+                                ? updated[index].promo?.discountPercent || ""
+                                : "",
                             };
                             setProduct({ ...product, variants: updated });
                           }}
                         />
-                        <label className="form-check-label">Promo Active</label>
+                        <label className="form-check-label" htmlFor={`promoActive-${index}`}>
+                          Active
+                        </label>
                       </div>
-                    </div>
-                    <div className="col-6 col-md-2">
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        step="1"
-                        className="form-control"
-                        placeholder="Discount %"
-                        value={variant.promo?.discountPercent || ""}
-                        onChange={(e) => {
-                          const updated = [...product.variants];
-                          updated[index].promo = {
-                            ...updated[index].promo,
-                            discountPercent: e.target.value
-                              ? parseFloat(e.target.value)
-                              : 0,
-                          };
-                          setProduct({ ...product, variants: updated });
-                        }}
-                        disabled={!variant.promo?.isActive}
-                      />
+                      {variant.promo?.isActive && (
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          className="form-control mt-1"
+                          placeholder="% Discount"
+                          value={variant.promo?.discountPercent ?? ""}
+                          onChange={(e) => {
+                            const updated = [...product.variants];
+                            updated[index].promo = {
+                              ...updated[index].promo,
+                              discountPercent: e.target.value,
+                            };
+                            setProduct({ ...product, variants: updated });
+                          }}
+                        />
+                      )}
                     </div>
                   </div>
                 )}
@@ -472,22 +512,52 @@ const AdminEditProduct = () => {
         <h5>Add New Variant</h5>
         <div className="row g-2 mb-4">
           <div className="col-6 col-md-2">
+            <label className="form-label">Texture *</label>
+            <select
+              className="form-select mb-1"
+              value={newVariant.texture}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, texture: e.target.value })
+              }
+            >
+              <option value="">-- Select --</option>
+              {predefinedTextures.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
             <input
               className="form-control"
-              placeholder="Length"
-              value={newVariant.length}
+              placeholder="Or type custom"
+              value={newVariant.texture}
               onChange={(e) =>
-                setNewVariant({ ...newVariant, length: e.target.value })
+                setNewVariant({ ...newVariant, texture: e.target.value })
               }
             />
           </div>
           <div className="col-6 col-md-3">
+            <label className="form-label">Length *</label>
+            <select
+              className="form-select mb-1"
+              value={newVariant.length}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, length: e.target.value })
+              }
+            >
+              <option value="">-- Select --</option>
+              {predefinedLengths.map((l) => (
+                <option key={l} value={l}>
+                  {l}
+                </option>
+              ))}
+            </select>
             <input
               className="form-control"
-              placeholder="Texture"
-              value={newVariant.texture}
+              placeholder="Or type"
+              value={newVariant.length}
               onChange={(e) =>
-                setNewVariant({ ...newVariant, texture: e.target.value })
+                setNewVariant({ ...newVariant, length: e.target.value })
               }
             />
           </div>
@@ -502,9 +572,24 @@ const AdminEditProduct = () => {
             />
           </div>
           <div className="col-6 col-md-2">
+            <label className="form-label">Color *</label>
+            <select
+              className="form-select mb-1"
+              value={newVariant.color}
+              onChange={(e) =>
+                setNewVariant({ ...newVariant, color: e.target.value })
+              }
+            >
+              <option value="">-- Select --</option>
+              {predefinedColors.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
             <input
               className="form-control"
-              placeholder="Color"
+              placeholder="Or type custom"
               value={newVariant.color}
               onChange={(e) =>
                 setNewVariant({ ...newVariant, color: e.target.value })
@@ -525,7 +610,7 @@ const AdminEditProduct = () => {
             <input
               type="number"
               className="form-control"
-              placeholder="Price"
+              placeholder="Price *"
               value={newVariant.price}
               onChange={(e) =>
                 setNewVariant({ ...newVariant, price: e.target.value })
@@ -566,7 +651,7 @@ const AdminEditProduct = () => {
             <input
               type="number"
               className="form-control"
-              placeholder="Stock"
+              placeholder="Stock *"
               value={newVariant.stock}
               onChange={(e) =>
                 setNewVariant({ ...newVariant, stock: e.target.value })
@@ -584,60 +669,68 @@ const AdminEditProduct = () => {
               rows="2"
             />
           </div>
-          <div className="col-6 col-md-2">
+          <div className="col-md-3">
+            <label className="form-label">Promotion</label>
             <div className="form-check">
               <input
                 className="form-check-input"
                 type="checkbox"
+                id="newPromoActive"
                 checked={newVariant.promo.isActive}
                 onChange={(e) =>
                   setNewVariant({
                     ...newVariant,
-                    promo: { ...newVariant.promo, isActive: e.target.checked },
+                    promo: {
+                      ...newVariant.promo,
+                      isActive: e.target.checked,
+                      discountPercent: e.target.checked
+                        ? newVariant.promo.discountPercent
+                        : "",
+                    },
                   })
                 }
               />
-              <label className="form-check-label">Promo Active</label>
+              <label className="form-check-label" htmlFor="newPromoActive">
+                Active
+              </label>
             </div>
-          </div>
-          <div className="col-6 col-md-2">
-            <input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              className="form-control"
-              placeholder="Discount %"
-              value={newVariant.promo.discountPercent}
-              onChange={(e) =>
-                setNewVariant({
-                  ...newVariant,
-                  promo: {
-                    ...newVariant.promo,
-                    discountPercent: e.target.value
-                      ? parseFloat(e.target.value)
-                      : 0,
-                  },
-                })
-              }
-              disabled={!newVariant.promo.isActive}
-            />
+            {newVariant.promo.isActive && (
+              <input
+                type="number"
+                min="0"
+                max="100"
+                className="form-control mt-1"
+                placeholder="% Discount"
+                value={newVariant.promo.discountPercent}
+                onChange={(e) =>
+                  setNewVariant({
+                    ...newVariant,
+                    promo: {
+                      ...newVariant.promo,
+                      discountPercent: e.target.value,
+                    },
+                  })
+                }
+              />
+            )}
           </div>
           <div className="col-12 mt-2">
             <button
               type="button"
               className="btn btn-dark"
               onClick={() => {
+                const requiredFilled =
+                  newVariant.texture?.trim() &&
+                  newVariant.length?.trim() &&
+                  newVariant.color?.trim() &&
+                  newVariant.price !== "" &&
+                  newVariant.stock !== "";
+
                 if (
-                  !newVariant.texture ||
-                  !newVariant.length ||
-                  !newVariant.origin ||
-                  !newVariant.color ||
-                  !newVariant.price ||
-                  !newVariant.stock
+                  !requiredFilled
                 ) {
                   setModalMessage(
-                    "Please fill in all required fields for the new variant."
+                    "Please fill in all required fields (Texture, Length, Color, Price, Stock) for the new variant."
                   );
                   setShowModal(true);
                   return;
@@ -660,7 +753,7 @@ const AdminEditProduct = () => {
                   fullDescription: "",
                   promo: {
                     isActive: false,
-                    discountPercent: 0,
+                    discountPercent: "",
                   },
                 });
               }}
@@ -708,7 +801,7 @@ const AdminEditProduct = () => {
         </div>
 
         <AlertModal
-          show={showModal}
+          isOpen={showModal}
           title="Validation Error"
           message={modalMessage}
           onClose={() => setShowModal(false)}

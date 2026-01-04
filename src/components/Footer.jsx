@@ -61,7 +61,7 @@ const Footer = () => {
                 <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
                   <li>
                     <Link
-                      to="/returns-and-refunds"
+                      to="/returns-and-exchanges"
                       className="text-decoration-none text-reset"
                     >
                       Returns

@@ -56,7 +56,7 @@ const AdminOrdersPage = () => {
                           ? "secondary"
                           : order.status === "Cancelled"
                           ? "danger"
-                          : order.status === "Refunded"
+                          : order.status === "exchanged"
                           ? "danger"
                           : "warning"
                       }`}

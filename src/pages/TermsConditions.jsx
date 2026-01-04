@@ -15,7 +15,7 @@ const TermsAndConditions = () => {
         In these terms:
         <br /><strong>"We", "us", "our"</strong> refers to Karina Hair Luxury.
         <br /><strong>"You", "user"</strong> refers to any individual or entity accessing this website.
-        <br /><strong>"Website"</strong> means <a href="https://www.KarinaHairLuxe.co.uk">www.KarinaHairLuxe.co.uk</a> and any sub-domains of this site.
+        <br /><strong>"Website"</strong> means <a href="https://www.karinaluxehairco.com/">www.KarinaHairLuxe.co.uk</a> and any sub-domains of this site.
       </p>
 
       <h5 className="fw-semibold mt-4">2. Use of the Website</h5>
@@ -38,9 +38,9 @@ const TermsAndConditions = () => {
         Shipping times vary depending on the delivery method selected. Please refer to our <a href="/shipping">Shipping & Delivery</a> page for full details. We are not responsible for delays caused by couriers or incorrect address information.
       </p>
 
-      <h5 className="fw-semibold mt-4">6. Returns & Refunds</h5>
+      <h5 className="fw-semibold mt-4">6. Returns & Exchanges</h5>
       <p className="text-muted small">
-        Due to hygiene reasons, we do not accept returns on wigs or hair products unless faulty. If you receive a defective item, contact us within 7 days of delivery. Refunds are subject to inspection and approval.
+        Due to hygiene reasons, we do not accept returns on wigs or hair products unless faulty. If you receive a defective item, contact us within 7 days of delivery. Exchanges are subject to inspection and approval.
       </p>
 
       <h5 className="fw-semibold mt-4">7. Cancellation</h5>

@@ -4,11 +4,11 @@ import { Container } from "react-bootstrap";
 const ReturnsPolicy = () => {
   return (
     <Container className="my-5">
-      <h1 className="mb-4 text-center">Return/Refund Policy</h1>
+      <h1 className="mb-4 text-center">Return/Exchange Policy</h1>
 
       <p style={{ fontSize: "13px" }}>
         We exercise a strict quality process to ensure that you receive the best
-        quality items. There are no refunds on items which have not been
+        quality items. There are no exchanges on items which have not been
         returned to our specified returns address (different from our mailing
         address) and not without an initial assessment.
       </p>
@@ -16,7 +16,7 @@ const ReturnsPolicy = () => {
       <div style={{ fontSize: "13px" }}>
         <li>Items must be returned within 14 days of delivery</li>
         <li>Unauthorised returns will be refused or disposed of</li>
-        <li>Custom/pre-order items are non-refundable</li>
+        <li>Custom/pre-order items are non-refundable but, exchangeable</li>
         <li>
           Item(s) must be unused in pristine condition with the curl pattern
           undisturbed / distressed. Ties/clips must not be untied or cut
@@ -34,7 +34,7 @@ const ReturnsPolicy = () => {
         <li>
           All orders must be received first before a return can be processed.
           Returns may take 7–10 working days including warehouse review and
-          refund processing
+          exchange processing
         </li>
       </div>
 
@@ -49,12 +49,12 @@ const ReturnsPolicy = () => {
         cost.
       </p>
 
-      <h4 className="mt-4">Refunds</h4>
+      <h4 className="mt-4">exchanges</h4>
       <p style={{ fontSize: "13px" }}>
-        Refunds are processed back to your original payment method, minus a
-        non-refundable payment processing fee of 4%–15% (as these are not
+        exchanges are processed back to your original payment method, minus a
+        non-exchangeable payment processing fee of 4%–15% (as these are not
         returned to us by the payment processor). Postage fees will also be
-        deducted before issuing a refund.
+        deducted before issuing a exchange.
       </p>
       <p style={{ fontSize: "13px" }}>
         On the rare occasion you are unhappy with your order, please reach out

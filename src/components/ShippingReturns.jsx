@@ -17,7 +17,7 @@ const ShippingReturns = () => {
     {
       icon: FiRefreshCw,
       title: "7-Day Returns",
-      description: "Not satisfied? Return within 7 days for a full refund"
+      description: "Not satisfied? Return within 7 days for a full exchange"
     },
     {
       icon: FiCheckCircle,

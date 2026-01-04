@@ -143,7 +143,7 @@ const App = () => {
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/mission-statement" element={<MissionStatement />} />
-          <Route path="/returns-and-refunds" element={<ReturnsPolicy />} />
+          <Route path="/returns-and-exchanges" element={<ReturnsPolicy />} />
           <Route path="/shipping" element={<ShippingDeliver />} />
           <Route path="/terms-and-conditions" element={<TermsConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

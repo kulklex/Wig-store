@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../utils/axiosConfig";
 import { Link, useNavigate } from "react-router-dom";
 import ConfirmModal from "../components/ConfirmModal";
+import AlertModal from "../components/AlertModal";
 import { FiTrash } from "react-icons/fi";
 
 const AdminProductsPage = () => {
@@ -14,6 +15,8 @@ const AdminProductsPage = () => {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [variantToRemove, setVariantToRemove] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,6 +56,9 @@ const AdminProductsPage = () => {
       setProducts(products.filter((p) => p._id !== id));
     } catch (err) {
       console.error("Failed to delete product", err);
+      const apiMessage = err?.response?.data?.message;
+      setModalMessage(apiMessage || "Failed to delete product. Please try again.");
+      setShowModal(true);
     }
   };
 
@@ -113,11 +119,13 @@ const AdminProductsPage = () => {
                     <Link
                       to={`/admin/edit-product/${p._id}`}
                       className="btn btn-sm btn-outline-primary"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       Edit
                     </Link>
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setVariantToRemove(p._id);
                         setShowConfirm(true);
                       }}
@@ -147,6 +155,15 @@ const AdminProductsPage = () => {
           confirmText="Remove"
           cancelText="Cancel"
           confirmVariant="danger"
+        />
+        <AlertModal
+          isOpen={showModal}
+          title="Action Required"
+          message={modalMessage}
+          onClose={() => setShowModal(false)}
+          onConfirm={() => setShowModal(false)}
+          confirmText="OK"
+          cancelText=""
         />
       </div>
     </div>

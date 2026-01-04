@@ -104,7 +104,7 @@ const ReturnSelectItems = () => {
       <div className="pt-1 pb-5 d-flex justify-content-center align-items-center text-center">
         <small>
           Make sure you read our{" "}
-          <Link to="/returns-and-refunds">Return Policy</Link> before you
+          <Link to="/returns-and-exchanges">Return Policy</Link> before you
           proceed.
         </small>
       </div>
