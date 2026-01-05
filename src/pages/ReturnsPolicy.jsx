@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 
 const ReturnsPolicy = () => {
   return (
-    <Container className="my-5">
+    <Container className="my-5 mx-2">
       <h1 className="mb-4 text-center">Return/Exchange Policy</h1>
 
       <p style={{ fontSize: "13px" }}>
@@ -14,8 +14,7 @@ const ReturnsPolicy = () => {
         <li>Items must be returned within 7 days of delivery</li>
         <li>Unauthorised returns will be refused or disposed of</li>
         <li>
-          Item(s) must be unused in pristine condition with the curl pattern
-          undisturbed / distressed. Ties/clips must not be untied or cut
+          Item(s) must be unused in pristine condition.
         </li>
         <li>
           All returns shipping and handling costs will be the customer’s
@@ -28,7 +27,7 @@ const ReturnsPolicy = () => {
           for any customs charges
         </li>
         <li>
-          All orders must be received first before a return can be processed.
+          All orders must be received first before a return/exchange can be processed.
           Returns may take 7–10 working days including warehouse review and
           exchange processing
         </li>

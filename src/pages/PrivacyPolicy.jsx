@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 
 const PrivacyPolicy = () => {
   return (
-    <Container className="py-5">
+    <Container className="py-5 px-2">
       <h3 className="fw-semibold mb-4">Privacy Policy</h3>
 
       <p className="text-muted small">

@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 
 const TermsAndConditions = () => {
   return (
-    <Container className="py-5">
+    <Container className="py-5 px-2">
       <h3 className="fw-semibold mb-4">Terms & Conditions</h3>
 
       <p className="text-muted small">

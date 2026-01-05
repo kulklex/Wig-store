@@ -119,7 +119,7 @@ const ReturnForm = () => {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 px-2">
       <h3 className="mb-3">Exchange Request Form</h3>
       <p className="text-muted">Order ID: {state.order._id}</p>
 

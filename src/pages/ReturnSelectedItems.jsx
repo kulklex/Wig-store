@@ -100,7 +100,7 @@ const ReturnSelectItems = () => {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 px-2">
       <div className="pt-1 pb-5 d-flex justify-content-center align-items-center text-center">
         <small>
           Make sure you read our{" "}
