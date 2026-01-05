@@ -38,31 +38,10 @@ const PrivacyPolicy = () => {
         Our website will not share any personal information with third parties.
       </p>
 
-      <h5 className="fw-semibold mt-4">Customer Data Sharing</h5>
-      <p className="text-muted small">
-        In order to be able to offer you Klarna’s payment options, we will pass to Klarna certain of your personal information, such as contact and order details, in order for Klarna to assess whether you qualify for their payment options and to tailor the payment options for you. 
-      </p>
-
-      <p className="text-muted small">
-        General information on Klarna you can find on their website. Your personal data is handled in accordance with applicable data protection law and in accordance with the information in Klarna’s privacy policy.
-      </p>
 
       <h5 className="fw-semibold mt-4">Access</h5>
       <p className="text-muted small">
         Access to the Site is permitted on a temporary basis, and we reserve the right to withdraw or amend the service we provide on the Site without notice. From time to time, we may restrict access to some parts of the Site, or the entire Site, to users who have registered with us.
-      </p>
-
-      <p className="text-muted small">
-        If you choose, or you are provided with, a user identification code, password or any other piece of information as part of our security procedures, you must treat such information as confidential, and you must not disclose it to any third party.
-      </p>
-
-      <p className="text-muted small">
-        We have the right to disable any user identification code or password at any time if in our opinion you have failed to comply with any of the provisions of these terms of use.
-      </p>
-
-      <h5 className="fw-semibold mt-4">Disclaimer</h5>
-      <p className="text-muted small">
-        The Site and its contents are for general information only and are provided “as is”. We make no warranties or guarantees about the accuracy or completeness of the Site's content. We strongly recommend checking for viruses before downloading anything from the Site.
       </p>
 
       <h5 className="fw-semibold mt-4">Copyright</h5>
