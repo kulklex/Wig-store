@@ -169,7 +169,7 @@ const Navbar = () => {
     { label: "About", to: "/about-us" },
     { label: "Contact", to: "/contact" },
     { label: "FAQs", to: "/faqs" },
-    { label: "Returns", to: "/returns-and-exchanges" },
+    { label: "Exchange", to: "/returns-and-exchanges" },
     { label: "Shipping", to: "/shipping" },
   ];
 

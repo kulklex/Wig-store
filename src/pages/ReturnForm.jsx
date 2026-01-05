@@ -120,7 +120,7 @@ const ReturnForm = () => {
 
   return (
     <div className="container py-5">
-      <h3 className="mb-3">Return Request Form</h3>
+      <h3 className="mb-3">Exchange Request Form</h3>
       <p className="text-muted">Order ID: {state.order._id}</p>
 
       <div className="mb-4">
@@ -214,7 +214,7 @@ const ReturnForm = () => {
         className="btn btn-dark"
         disabled={submitting}
       >
-        {submitting ? "Submitting..." : "Submit Return Request"}
+        {submitting ? "Submitting..." : "Submit Exchange Request"}
       </button>
 
       <AlertModal

@@ -73,7 +73,7 @@ const AdminReturnDetails = () => {
         <strong>Reason:</strong> {returnData.reason}
       </p>
 
-      <h4>Returned Items</h4>
+      <h4>Returned Items For Exchange</h4>
       <ul className="list-group">
         {returnData.items.map((item) => (
           <div key={item.variantId} className="card mb-3 p-3">

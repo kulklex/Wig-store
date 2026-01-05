@@ -40,12 +40,12 @@ const TermsAndConditions = () => {
 
       <h5 className="fw-semibold mt-4">6. Returns & Exchanges</h5>
       <p className="text-muted small">
-        Due to hygiene reasons, we do not accept returns on wigs or hair products unless faulty. If you receive a defective item, contact us within 7 days of delivery. Exchanges are subject to inspection and approval.
+        We do not accept returns on our hair products unless faulty. You may have the option to exchange for another product. Contact Us via <a href="/contact">Contact Us</a> to find out. If you receive a defective item, contact us within 7 days of delivery. Exchanges are subject to inspection and approval.
       </p>
 
       <h5 className="fw-semibold mt-4">7. Cancellation</h5>
       <p className="text-muted small">
-        Cancellations can only be done through directly contacting Us. Use any our available <a href="/contact">Contact Us</a> methods and you will get a response within 24hrs.
+        We do not offer refunds for any cancellation. Contact Us via <a href="/contact">Contact Us</a> for best solution.
       </p>
 
       <h5 className="fw-semibold mt-4">8. Privacy</h5>

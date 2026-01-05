@@ -104,12 +104,12 @@ const ReturnSelectItems = () => {
       <div className="pt-1 pb-5 d-flex justify-content-center align-items-center text-center">
         <small>
           Make sure you read our{" "}
-          <Link to="/returns-and-exchanges">Return Policy</Link> before you
+          <Link to="/returns-and-exchanges">Exchange Policy</Link> before you
           proceed.
         </small>
       </div>
       <h3 className="mb-4 d-flex justify-content-center align-items-center text-center">
-        Select Items to Return
+        Select Items to Exchange
       </h3>
       {order?.items.map((item, index) => {
         const details = variantDetails[item.variantId];
@@ -170,7 +170,7 @@ const ReturnSelectItems = () => {
         onClick={proceed}
         className="btn btn-dark mt-4 d-flex justify-content-center align-items-center text-center"
       >
-        Continue to Return Form
+        Continue to Exchange Form
       </button>
     </div>
   );

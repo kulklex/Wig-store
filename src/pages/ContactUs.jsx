@@ -95,7 +95,7 @@ const ContactUs = () => {
           <p className="small mb-1">Unit 11, The Orchard Shopping Center</p>
           <p className="small mb-1">Dartford, DA1 1DN, UK</p>
           <p className="small mb-1">
-            Email: <a href="mailto:hello@KarinaHairLuxe.co.uk">KarinaHairLuxeb@gmail.com</a>
+            Email: <a href="mailto:hello@KarinaHairLuxe.co.uk">Karinabeautyhubb@gmail.com</a>
           </p>
           <p className="small mb-4">
             Phone: <a href="tel:07984165342">07984 165342</a>

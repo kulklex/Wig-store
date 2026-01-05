@@ -7,16 +7,12 @@ const ReturnsPolicy = () => {
       <h1 className="mb-4 text-center">Return/Exchange Policy</h1>
 
       <p style={{ fontSize: "13px" }}>
-        We exercise a strict quality process to ensure that you receive the best
-        quality items. There are no exchanges on items which have not been
-        returned to our specified returns address (different from our mailing
-        address) and not without an initial assessment.
+        We do not offer refunds. Returns are accepted for exchange only and must be sent to our designated returns address (different from our mailing address). All returned items are subject to a thorough quality inspection, and exchanges will only be approved if the item meets our return standards.
       </p>
 
       <div style={{ fontSize: "13px" }}>
-        <li>Items must be returned within 14 days of delivery</li>
+        <li>Items must be returned within 7 days of delivery</li>
         <li>Unauthorised returns will be refused or disposed of</li>
-        <li>Custom/pre-order items are non-refundable but, exchangeable</li>
         <li>
           Item(s) must be unused in pristine condition with the curl pattern
           undisturbed / distressed. Ties/clips must not be untied or cut
@@ -47,14 +43,6 @@ const ReturnsPolicy = () => {
         Unauthorised returns or international return-to-sender actions will be
         refused or subject to a return fee of 15% plus the original shipping
         cost.
-      </p>
-
-      <h4 className="mt-4">exchanges</h4>
-      <p style={{ fontSize: "13px" }}>
-        exchanges are processed back to your original payment method, minus a
-        non-exchangeable payment processing fee of 4%–15% (as these are not
-        returned to us by the payment processor). Postage fees will also be
-        deducted before issuing a exchange.
       </p>
       <p style={{ fontSize: "13px" }}>
         On the rare occasion you are unhappy with your order, please reach out
