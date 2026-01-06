@@ -64,7 +64,7 @@ const Footer = () => {
                       to="/returns-and-exchanges"
                       className="text-decoration-none text-reset"
                     >
-                      Returns
+                      Returns/Exchange
                     </Link>
                   </li>
                   <li>

@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 
 const TermsAndConditions = () => {
   return (
-    <Container className="py-5 px-2">
+    <Container className="py-5 px-2 info-body">
       <h3 className="fw-semibold mb-4">Terms & Conditions</h3>
 
       <p className="text-muted small">
@@ -68,11 +68,11 @@ const TermsAndConditions = () => {
         We may revise these terms from time to time. Continued use of the website after changes are posted constitutes your agreement to the updated terms.
       </p>
 
-      <h5 className="fw-semibold mt-4">12. Governing Law</h5>
-      <p className="text-muted small">
-        These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the English courts.
-      </p>
-    </Container>
+       <h5 className="fw-semibold mt-4">12. Governing Law</h5>
+       <p className="text-muted small">
+         These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the English courts.
+       </p>
+     </Container>
   );
 };
 

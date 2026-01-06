@@ -34,10 +34,10 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="container py-5 px-2">
+    <div className="container py-5 px-2 info-body">
       <div className="row mb-5">
         <div className="col-md-6">
-          <h3 className="mb-3 fw-semibold">Contact Us</h3>
+          <h3 className="mb-1 fw-semibold">Contact Us</h3>
           <p style={{ fontSize: "13px" }} className="mb-4 fs-6 text-muted">
             Have questions about our wigs, an order, or our services? We’re here to help.
           </p>

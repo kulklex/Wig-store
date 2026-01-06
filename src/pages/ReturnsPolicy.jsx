@@ -3,14 +3,14 @@ import { Container } from "react-bootstrap";
 
 const ReturnsPolicy = () => {
   return (
-    <Container className="my-5 mx-2">
+    <Container className="my-5 mx-2 info-body">
       <h1 className="mb-4 text-center">Return/Exchange Policy</h1>
 
-      <p style={{ fontSize: "13px" }}>
+       <p style={{ fontSize: "13px" }}>
         We do not offer refunds. Returns are accepted for exchange only and must be sent to our designated returns address (different from our mailing address). All returned items are subject to a thorough quality inspection, and exchanges will only be approved if the item meets our return standards.
       </p>
 
-      <div style={{ fontSize: "13px" }}>
+      <ol type="i" className="text-muted small">
         <li>Items must be returned within 7 days of delivery</li>
         <li>Unauthorised returns will be refused or disposed of</li>
         <li>
@@ -31,9 +31,9 @@ const ReturnsPolicy = () => {
           Returns may take 7–10 working days including warehouse review and
           exchange processing
         </li>
-      </div>
+      </ol>
 
-      <h4 className="mt-4">Order Cancellations</h4>
+       <h4 className="mt-4">Order Cancellations</h4>
       <p style={{ fontSize: "13px" }}>
         Orders are processed immediately to ensure quick delivery. For this
         reason, orders cannot be cancelled or modified once placed.
@@ -48,7 +48,7 @@ const ReturnsPolicy = () => {
         via email and we will do our best to provide a fast and fair resolution.
       </p>
 
-      <h4 className="mt-4">How to Return</h4>
+       <h4 className="mt-4">How to Return</h4>
       <p style={{ fontSize: "13px" }}>
         Please use our streamlined returns portal to submit your return request.
         We’ll review and approve your return as quickly as possible.
@@ -65,7 +65,7 @@ const ReturnsPolicy = () => {
           </a>
         </strong>
       </p>
-    </Container>
+     </Container>
   );
 };
 

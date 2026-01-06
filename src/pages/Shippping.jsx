@@ -3,8 +3,8 @@ import { Container, Table } from "react-bootstrap";
 
 const ShippingDelivery = () => {
   return (
-    <Container className="py-5">
-      <h3 className="fw-semibold mb-4">Shipping & Delivery</h3>
+    <Container className="py-5 info-body">
+      <h3 className="fw-semibold mb-2">Shipping & Delivery</h3>
 
       <p className="text-muted small">
         We dispatch orders Monday to Saturday. Public holidays are not included in dispatch or delivery timelines. Once your order has been processed, your selected delivery option will be used. Processing time is usually 1–2 business days for standard items.
@@ -138,7 +138,7 @@ const ShippingDelivery = () => {
       <p className="text-muted small mt-4">
         For further details, refer to our <a href="/terms-and-conditions">Terms & Conditions</a>.
       </p>
-    </Container>
+     </Container>
   );
 };
 

@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 
 const PrivacyPolicy = () => {
   return (
-    <Container className="py-5 px-2">
+    <Container className="py-5 px-2 info-body">
       <h3 className="fw-semibold mb-4">Privacy Policy</h3>
 
       <p className="text-muted small">
@@ -27,12 +27,12 @@ const PrivacyPolicy = () => {
         Cookies are very small text files that are stored on your computer when you visit some websites. We use cookies to help identify your computer so we can tailor your user experience, track shopping basket contents and remember where you are in the order process. 
       </p>
 
-      <ul className="text-muted small">
+      <ol type="i" className="text-muted small">
         <li>Remember what is in your shopping basket</li>
         <li>Remember where you are in the order process</li>
         <li>Allow you to share pages with social networks such as Facebook (if available)</li>
         <li>Allow you to share pages via Add This (if available)</li>
-      </ul>
+      </ol>
 
       <p className="text-muted small">
         Our website will not share any personal information with third parties.

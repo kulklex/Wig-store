@@ -559,6 +559,48 @@
   }
 }
 
+/* Info page typography (no layout chrome) */
+.info-body h1,
+.info-body h2,
+.info-body h3,
+.info-body h4,
+.info-body h5 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+}
+
+.info-body p,
+.info-body li {
+  font-size: 13px;
+  line-height: 1.75;
+  color: #344054;
+}
+
+.info-body ul,
+.info-body ol {
+  padding-left: 18px;
+  margin-bottom: 1rem;
+}
+
+.info-body ol {
+  list-style-type: lower-roman;
+}
+
+.info-body li {
+  margin-bottom: 8px;
+}
+
+.info-body .form-label,
+.info-body .form-control,
+.info-body .form-select,
+.info-body .accordion-button,
+.info-body .accordion-body,
+.info-body textarea {
+  font-size: 14px;
+}
+
+
 /* Enhanced Loading States */
 .loading-overlay {
   position: relative;

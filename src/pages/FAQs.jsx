@@ -3,9 +3,9 @@ import React from 'react';
 import { Container, Accordion } from 'react-bootstrap';
 
 const FAQs = () => (
-  <Container className="py-5">
+  <Container className="py-5 info-body">
     <h1 className="mb-4 text-center">Frequently Asked Questions</h1>
-    <Accordion defaultActiveKey="0">
+    <Accordion defaultActiveKey="0" className="info-body">
       <Accordion.Item eventKey="0">
         <Accordion.Header>What types of hair do you sell?</Accordion.Header>
         <Accordion.Body>
