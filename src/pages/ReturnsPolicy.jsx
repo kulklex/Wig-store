@@ -4,7 +4,7 @@ import { Container } from "react-bootstrap";
 const ReturnsPolicy = () => {
   return (
     <Container className="my-5 mx-2 info-body">
-      <h1 className="mb-4 text-center">Return/Exchange Policy</h1>
+      <h1 className="mb-2">Return/Exchange Policy</h1>
 
        <p style={{ fontSize: "13px" }}>
         We do not offer refunds. Returns are accepted for exchange only and must be sent to our designated returns address (different from our mailing address). All returned items are subject to a thorough quality inspection, and exchanges will only be approved if the item meets our return standards.
