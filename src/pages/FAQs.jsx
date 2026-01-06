@@ -23,7 +23,7 @@ const FAQs = () => (
       <Accordion.Item eventKey="2">
         <Accordion.Header>Do you accept returns?</Accordion.Header>
         <Accordion.Body>
-          Yes. Please see our Returns page for eligibility and process details.
+          No, we do not. Only exchanges are accepted. Please see our <a href='/returns-and-exchanges'>Returns/Exchange</a> page for eligibility and process details.
         </Accordion.Body>
       </Accordion.Item>
     </Accordion>
