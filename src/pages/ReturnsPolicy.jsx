@@ -3,8 +3,8 @@ import { Container } from "react-bootstrap";
 
 const ReturnsPolicy = () => {
   return (
-    <Container className="my-5 mx-2 info-body">
-      <h1 className="mb-2">Return/Exchange Policy</h1>
+    <Container className="my-5 px-2 info-body">
+      <h1 className="mb-3">Return/Exchange Policy</h1>
 
        <p style={{ fontSize: "13px" }}>
         We do not offer refunds. Returns are accepted for exchange only and must be sent to our designated returns address (different from our mailing address). All returned items are subject to a thorough quality inspection, and exchanges will only be approved if the item meets our return standards.
@@ -21,11 +21,11 @@ const ReturnsPolicy = () => {
           responsibility; we suggest using a courier that provides full tracking
           and delivery confirmation
         </li>
-        <li>
+        {/* <li>
           If returning from outside of the UK, classify your parcel as a
           <strong> "return"</strong> to avoid import fees – we are not liable
           for any customs charges
-        </li>
+        </li> */}
         <li>
           All orders must be received first before a return/exchange can be processed.
           Returns may take 7–10 working days including warehouse review and
