@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { FiTruck, FiShield, FiRefreshCw, FiCheckCircle } from "react-icons/fi";
+import { FiTruck, FiShield, FiCheckCircle } from "react-icons/fi";
 
 const ShippingReturns = () => {
   const services = [
@@ -13,11 +13,6 @@ const ShippingReturns = () => {
       icon: FiShield,
       title: "Premium Quality Guarantee",
       description: "All our hair extensions have high quality assurance."
-    },
-    {
-      icon: FiRefreshCw,
-      title: "7-Day Returns",
-      description: "Not satisfied? Return within 7 days for a full exchange"
     },
     {
       icon: FiCheckCircle,
