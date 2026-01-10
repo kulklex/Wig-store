@@ -29,7 +29,7 @@ const ShippingReturns = () => {
           <p className="lead text-muted">Quality service and support you can count on</p>
         </div>
         
-        <Row className="g-4">
+        <Row className="d-flex justify-content-center align-items-center text-center g-4">
           {services.map((service, index) => (
             <Col lg={3} md={6} className="text-center">
               <div className="bg-dark bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 icon-wrapper" 
