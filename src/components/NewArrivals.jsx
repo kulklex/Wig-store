@@ -30,6 +30,9 @@ export default function NewArrivals() {
       <main className="row gx-3">
         {newArrivalsLoading && <p>Loading...</p>}
         {newArrivalsError && <p>Error: {newArrivalsError}</p>}
+        {!newArrivalsLoading && !newArrivalsError && newArrivals.length === 0 && (
+          <p className="text-muted">No new arrivals are available right now.</p>
+        )}
         {newArrivals.length > 0 &&
           newArrivals.slice(0, 4).map((product) => (
             <CollectionCard key={product._id} data={product} compact={false} />

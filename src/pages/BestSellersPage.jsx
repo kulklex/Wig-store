@@ -270,6 +270,37 @@ const BestSellersPage = () => {
 
   const hasActiveFilters = selectedCategories.length > 0 || priceRange.min || priceRange.max;
 
+  if (!bestSellersLoading && bestSellersError && bestSellers.length === 0) {
+    return (
+      <section className="container py-5 text-center">
+        <Header
+          head1="BEST"
+          head2="SELLERS"
+          paragraph="Shop the most loved and top-rated products in our store"
+        />
+        <div className="alert alert-danger mt-3" role="alert">
+          {bestSellersError}
+        </div>
+      </section>
+    );
+  }
+
+  if (!bestSellersLoading && bestSellers.length === 0) {
+    return (
+      <section className="container py-5 text-center">
+        <Header
+          head1="BEST"
+          head2="SELLERS"
+          paragraph="Shop the most loved and top-rated products in our store"
+        />
+        <div className="py-4">
+          <h5 className="text-muted">No products are available right now.</h5>
+          <p className="text-muted mb-0">Please check back soon for fresh picks.</p>
+        </div>
+      </section>
+    );
+  }
+
   if (bestSellersLoading && bestSellers.length === 0) {
     return (
       <div className="container py-5 text-center">

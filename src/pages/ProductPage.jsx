@@ -1,6 +1,6 @@
 import axios from "../utils/axiosConfig";
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Row,
@@ -25,6 +25,7 @@ const ProductPage = () => {
   const user = useSelector((state) => state.user.user);
   const { relatedProducts, relatedProductsLoading } = useSelector((state) => state.products);
 
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [selectedTexture, setSelectedTexture] = useState(null);
   const [selectedLength, setSelectedLength] = useState("");
@@ -45,6 +46,7 @@ const ProductPage = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalTitle, setModalTitle] = useState("");
 
+  const [loadError, setLoadError] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewText, setReviewText] = useState("");
   const [isMobile, setIsMobile] = useState(() => {
@@ -99,6 +101,7 @@ const ProductPage = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
+        setLoadError(null);
         const res = await axios.get(`/api/products/${id}`);
         setProduct(res.data);
         setReviews(res.data.reviews || []);
@@ -119,6 +122,12 @@ const ProductPage = () => {
         }
       } catch (error) {
         console.error("Failed to fetch product:", error);
+        setLoadError(
+          error?.response?.data?.message ||
+          (error?.response?.status === 404 ? "This product is no longer available." : "We couldn't load this product right now.")
+        );
+        setProduct(null);
+        setReviews([]);
       } finally {
         setLoading(false);
       }
@@ -317,8 +326,35 @@ const ProductPage = () => {
     setQuantity(1);
   };
 
-  if (loading || !product)
-    return <Spinner animation="border" className="d-block mx-auto my-5" />;
+  if (loading) {
+    return (
+      <Container className="py-5 text-center">
+        <Spinner animation="border" className="d-block mx-auto my-4" />
+        <p className="text-muted mb-0">Loading product details...</p>
+      </Container>
+    );
+  }
+
+  if (loadError || !product?._id) {
+    return (
+      <Container className="py-5 text-center">
+        <div className="mb-3">
+          <h3 className="fw-bold">Product unavailable</h3>
+          <p className="text-muted mb-0">
+            {loadError || "This product may have been removed or is temporarily unavailable."}
+          </p>
+        </div>
+        <div className="d-flex justify-content-center gap-2 flex-wrap">
+          <Button variant="dark" onClick={() => navigate("/new-arrivals")}>
+            Browse products
+          </Button>
+          <Button variant="outline-dark" onClick={() => navigate("/")}>
+            Go to homepage
+          </Button>
+        </div>
+      </Container>
+    );
+  }
 
   const uniqueTextures = [
     ...new Set(

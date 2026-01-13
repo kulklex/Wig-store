@@ -292,6 +292,22 @@ const NewArrivalsPage = () => {
     );
   }
 
+  if (!newArrivalsLoading && newArrivals.length === 0) {
+    return (
+      <section className="container py-5 text-center">
+        <Header
+          head1="NEW"
+          head2="ARRIVALS"
+          paragraph="Discover the latest additions to our luxury hair collection."
+        />
+        <div className="py-4">
+          <h5 className="text-muted">No products are available right now.</h5>
+          <p className="text-muted mb-0">Please check back soon for new drops.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="container-fluid py-4">
         <Header

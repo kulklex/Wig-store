@@ -13,7 +13,7 @@ import ShippingReturns from '../components/ShippingReturns';
 import { useHomepageData } from '../hooks/useHomepageData';
 
 export default function Home() {
-  const { loading, error, hasData } = useHomepageData();
+  const { loading, error, hasData, newArrivals, bestSellers } = useHomepageData();
 
 
   if (loading && !hasData) {
@@ -42,8 +42,8 @@ export default function Home() {
     <>
       <Banner />
       <ModelShowcase />
-      <NewArrivals />
-      <BestSellers />
+      {newArrivals.length > 0 && <NewArrivals />}
+      {bestSellers.length > 0 && <BestSellers />}
       <TrustIndicators />
       <SpecialOffers />
       <ShippingReturns />

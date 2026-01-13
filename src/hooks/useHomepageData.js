@@ -13,6 +13,7 @@ export const useHomepageData = () => {
   } = useSelector((state) => state.products);
 
   const hasData = categories.length > 0 && newArrivals.length > 0 && bestSellers.length > 0;
+  const isEmpty = !homepageDataLoading && !hasData;
   
   const fetchAttempted = useRef(false);
 
@@ -32,6 +33,7 @@ export const useHomepageData = () => {
     bestSellers,
     loading: homepageDataLoading,
     error: homepageDataError,
-    hasData
+    hasData,
+    isEmpty,
   };
 };
