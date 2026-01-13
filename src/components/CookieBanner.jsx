@@ -25,8 +25,21 @@ const CookieBanner = () => {
   };
 
   return (
-    <ToastContainer position="bottom-end" className="p-3" style={{ zIndex: 9999 }}>
-      <Toast show={show} bg="light" onClose={() => setShow(false)}>
+    <ToastContainer
+      position="bottom-end"
+      className="p-3"
+      style={{
+        zIndex: 2147483647, // keep above any overlays
+        pointerEvents: "auto",
+        position: "fixed",
+      }}
+    >
+      <Toast
+        show={show}
+        bg="light"
+        onClose={() => setShow(false)}
+        style={{ pointerEvents: "auto" }}
+      >
         <Toast.Header closeButton={false}>
           <strong className="me-auto">We Use Cookies</strong>
         </Toast.Header>

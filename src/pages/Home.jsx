@@ -14,6 +14,7 @@ import { useHomepageData } from '../hooks/useHomepageData';
 
 export default function Home() {
   const { loading, error, newArrivals, bestSellers } = useHomepageData();
+  const hasProductHighlights = (newArrivals?.length || 0) > 0 || (bestSellers?.length || 0) > 0;
 
   return (
     <>
@@ -25,7 +26,7 @@ export default function Home() {
         </Container>
       )}
 
-      <Banner />
+      {hasProductHighlights && <Banner />}
       <ModelShowcase />
       {newArrivals.length > 0 && <NewArrivals />}
       {bestSellers.length > 0 && <BestSellers />}
