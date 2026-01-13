@@ -26,7 +26,7 @@ export default function Home() {
         </Container>
       )}
 
-      {hasProductHighlights && <Banner />}
+      <Banner />
       <ModelShowcase />
       {newArrivals.length > 0 && <NewArrivals />}
       {bestSellers.length > 0 && <BestSellers />}
