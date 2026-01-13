@@ -13,33 +13,18 @@ import ShippingReturns from '../components/ShippingReturns';
 import { useHomepageData } from '../hooks/useHomepageData';
 
 export default function Home() {
-  const { loading, error, hasData, newArrivals, bestSellers } = useHomepageData();
-
-
-  if (loading && !hasData) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-        <div className="text-center">
-          <Spinner animation="border" variant="dark" size="lg" />
-          <p className="mt-3 text-muted">Loading your personalized experience...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error && !hasData) {
-    return (
-      <Container className="py-5 text-center">
-        <div className="alert alert-warning" role="alert">
-          <h4>Oops! Something went wrong</h4>
-          <p className="mb-0">We're having trouble loading the page. Please refresh and try again.</p>
-        </div>
-      </Container>
-    );
-  }
+  const { loading, error, newArrivals, bestSellers } = useHomepageData();
 
   return (
     <>
+      {error && (
+        <Container className="pt-3">
+          <div className="alert alert-warning small mb-3" role="alert">
+            We’re having trouble loading products right now. The rest of the site is still available.
+          </div>
+        </Container>
+      )}
+
       <Banner />
       <ModelShowcase />
       {newArrivals.length > 0 && <NewArrivals />}
