@@ -165,7 +165,7 @@ const CollectionCard = ({ data, compact = false }) => {
 
     <div className="card-body d-flex flex-column p-3">
       <h6 
-        className="card-title fw-semibold text-dark mb-2 flex-grow-0"
+        className="card-title fw-semibold text-dark flex-grow-0"
         style={{ 
           fontSize: compact ? "0.875rem" : "1rem",
           lineHeight: "1.3",
