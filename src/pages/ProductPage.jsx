@@ -711,20 +711,9 @@ const ProductPage = () => {
 
         <Col lg={6} className="">
           <div className="mb-3">
-            <h2 className="product-title mb-2 d-flex align-items-center gap-2">
+            <h2 className="product-title mb-2 d-flex align-items-baseline flex-wrap gap-2">
               {product.name}{" "}
-              {isBestSeller && (
-                <span
-                  className="top-0"
-                  style={{
-                    fontSize: "0.6rem",
-                    color: "#ff4500",
-                    marginLeft: "5px",
-                  }}
-                >
-                  🔥 Best Seller
-                </span>
-              )}
+              {isBestSeller && <span className="best-seller-badge">🔥 Best Seller</span>}
             </h2>
 
             <div className="d-flex align-items-center gap-2 mt-2 mb-4">

@@ -444,6 +444,16 @@
   letter-spacing: 2px;
 }
 
+.best-seller-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #ff4500;
+  line-height: 1.1;
+  align-self: flex-start;
+}
+
 .product-price {
   font-size: 13px;
   font-weight: 400;
