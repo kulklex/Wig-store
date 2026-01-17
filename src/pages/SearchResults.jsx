@@ -68,7 +68,7 @@ const SearchResults = () => {
     if (searchTerm || category || minPrice || maxPrice || sort) {
       dispatch(searchProducts(params));
     }
-  }, [searchTerm, category, minPrice, maxPrice, sort, currentPage, dispatch]);
+  }, [searchTerm, category, minPrice, maxPrice, sort, laceSize, color, currentPage, dispatch]);
 
   const handleFilterChange = (field, value) => {
     setFilterForm(prev => ({

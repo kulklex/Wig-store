@@ -8,12 +8,11 @@ import TrustIndicators from '../components/TrustIndicators';
 import SpecialOffers from '../components/SpecialOffers';
 import CustomerReviews from '../components/CustomerReviews';
 import EducationalContent from '../components/EducationalContent';
-import InstagramFeed from '../components/InstagramFeed';
 import ShippingReturns from '../components/ShippingReturns';
 import { useHomepageData } from '../hooks/useHomepageData';
 
 export default function Home() {
-  const { loading, error, newArrivals, bestSellers } = useHomepageData();
+  const { error, newArrivals, bestSellers } = useHomepageData();
 
   return (
     <>

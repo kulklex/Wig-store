@@ -51,7 +51,6 @@ const Navbar = () => {
   const showCartDrawer = useSelector((state) => state.cart.showDrawer);
   const { categories, categoriesLoading, attributes } = useSelector((state) => state.products);
   const { wishlistCount } = useSelector((state) => state.wishlist);
-  const productsData = useSelector((state) => state.products.products);
 
   const dropdownTimeoutRef = useRef(null);
   const infoDropdownTimeoutRef = useRef(null);
