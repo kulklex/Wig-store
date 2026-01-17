@@ -164,7 +164,7 @@ export const fetchHomepageData = createAsyncThunk(
     try {
       const [categoriesRes, newArrivalsRes, bestSellersRes] = await Promise.all([
         axios.get("/api/products/categories"),
-        axios.get("/api/products/new-arrivals?days=90"),
+        axios.get("/api/products/new-arrivals?days=365"),
         axios.get("/api/products/best-sellers")
       ]);
       

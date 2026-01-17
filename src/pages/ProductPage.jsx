@@ -54,7 +54,7 @@ const ProductPage = () => {
     return window.innerWidth < 768;
   });
 
-  // Soft option styling to keep UI light
+  
   const optionStyle = (isActive) => ({
     backgroundColor: isActive ? "#fafafa" : "#f9f9f9",
     color: "#111",
@@ -72,6 +72,16 @@ const ProductPage = () => {
   const alreadyReviewed = reviews.some((r) => r.user === user?.email);
 
   const [bestSellers, setBestSellers] = useState([]);
+
+  const sortVariantsByLength = (variants = []) =>
+    [...variants].sort((a, b) => {
+      const aNum = parseFloat(a.length);
+      const bNum = parseFloat(b.length);
+      if (!Number.isNaN(aNum) && !Number.isNaN(bNum) && aNum !== bNum) {
+        return aNum - bNum;
+      }
+      return String(a.length).localeCompare(String(b.length));
+    });
 
   useEffect(() => {
     const fetchBestSellers = async () => {
@@ -103,11 +113,14 @@ const ProductPage = () => {
         setLoading(true);
         setLoadError(null);
         const res = await axios.get(`/api/products/${id}`);
-        setProduct(res.data);
-        setReviews(res.data.reviews || []);
+        const sortedVariants = sortVariantsByLength(res.data.variants || []);
+        const productWithSorted = { ...res.data, variants: sortedVariants };
+
+        setProduct(productWithSorted);
+        setReviews(productWithSorted.reviews || []);
         
-        if (res.data.variants && res.data.variants.length > 0) {
-          const firstVariant = res.data.variants[0];
+        if (productWithSorted.variants && productWithSorted.variants.length > 0) {
+          const firstVariant = productWithSorted.variants[0];
           setSelectedTexture(firstVariant.texture);
           setSelectedLength(firstVariant.length);
           setSelectedOrigin(firstVariant.origin);
@@ -230,9 +243,10 @@ const ProductPage = () => {
 
   useEffect(() => {
     if (product?.variants?.length) {
+      const sorted = sortVariantsByLength(product.variants);
       const defaultVariant =
-        product.variants.find((v) => v.texture.toLowerCase() === "straight") ||
-        product.variants[0];
+        sorted.find((v) => v.texture.toLowerCase() === "straight") ||
+        sorted[0];
       const normalized = defaultVariant.texture
         .toLowerCase()
         .replace(/\s+/g, "_");
@@ -365,7 +379,7 @@ const ProductPage = () => {
   const variantsForCurrentTexture = textureVariantsMap[selectedTexture] || [];
 
   const availableLengths =
-    variantsForCurrentTexture
+    (variantsForCurrentTexture
       ?.filter(
         (v) =>
           (!selectedColor || v.color === selectedColor) &&
@@ -374,11 +388,16 @@ const ProductPage = () => {
       .map((v) => ({
         length: v.length,
         stock: v.stock,
-      })) || [];
+      })) || []
+    ).sort((a, b) => {
+      const aNum = parseFloat(a.length);
+      const bNum = parseFloat(b.length);
+      if (!Number.isNaN(aNum) && !Number.isNaN(bNum) && aNum !== bNum) {
+        return aNum - bNum;
+      }
+      return String(a.length).localeCompare(String(b.length));
+    });
 
-  const textureVariantImages = [
-    ...new Set(variantsForCurrentTexture.map((v) => v.media)),
-  ];
 
   const allVariantImages = [
     ...new Set(product.variants.map((v) => v.media).filter(Boolean)),

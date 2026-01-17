@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Spinner } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import Banner from '../components/Banner';
 import NewArrivals from '../components/NewArrivals';
 import BestSellers from '../components/BestSellers';
@@ -14,7 +14,6 @@ import { useHomepageData } from '../hooks/useHomepageData';
 
 export default function Home() {
   const { loading, error, newArrivals, bestSellers } = useHomepageData();
-  const hasProductHighlights = (newArrivals?.length || 0) > 0 || (bestSellers?.length || 0) > 0;
 
   return (
     <>

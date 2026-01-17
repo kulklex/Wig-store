@@ -44,9 +44,16 @@ const CollectionCard = ({ data, compact = false }) => {
   }, [user, _id, dispatch]);
 
 
-  const variantToShow =
-    variants.find((v) => v.texture?.toLowerCase() === "straight") ||
-    variants[0];
+  const sortedVariants = [...variants].sort((a, b) => {
+    const aNum = parseFloat(a.length);
+    const bNum = parseFloat(b.length);
+    if (!Number.isNaN(aNum) && !Number.isNaN(bNum) && aNum !== bNum) {
+      return aNum - bNum;
+    }
+    return String(a.length).localeCompare(String(b.length));
+  });
+
+  const variantToShow = sortedVariants[0];
 
   let displayPrice;
   if (
