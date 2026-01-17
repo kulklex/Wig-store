@@ -17,6 +17,16 @@ import { addToCart, closeCartDrawer } from "../redux/cartSlice";
 import { fetchRelatedProducts } from "../redux/productSlice";
 import AlertModal from "../components/AlertModal";
 import CollectionCard from "../components/CollectionCard";
+import Seo from "../components/Seo";
+
+const buildAbsoluteUrl = (input, origin) => {
+  if (!input || !origin) return input || "";
+  try {
+    return new URL(input, origin).href;
+  } catch (err) {
+    return input;
+  }
+};
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -72,6 +82,12 @@ const ProductPage = () => {
   const alreadyReviewed = reviews.some((r) => r.user === user?.email);
 
   const [bestSellers, setBestSellers] = useState([]);
+  const siteOrigin = useMemo(
+    () =>
+      process.env.REACT_APP_SITE_URL ||
+      (typeof window !== "undefined" ? window.location.origin : ""),
+    []
+  );
 
   const sortVariantsByLength = (variants = []) =>
     [...variants].sort((a, b) => {
@@ -306,6 +322,102 @@ const ProductPage = () => {
     ? selectedVariant.stock - currentCartQty
     : 0;
 
+  const priceValue =
+    selectedVariant?.promo?.isActive && selectedVariant?.promo?.promoPrice
+      ? selectedVariant.promo.promoPrice
+      : selectedVariant?.price;
+
+  const allVariantImages = useMemo(
+    () =>
+      [
+        ...new Set(
+          (product?.variants || []).map((v) => v.media).filter(Boolean)
+        ),
+      ],
+    [product]
+  );
+
+  const imageCandidates = useMemo(() => {
+    const combined = [mainImage, ...allVariantImages].filter(Boolean);
+    return [...new Set(combined)];
+  }, [mainImage, allVariantImages]);
+
+  const averageRating = useMemo(() => {
+    if (!reviews.length) return null;
+    const total = reviews.reduce(
+      (sum, review) => sum + (Number(review.rating) || 0),
+      0
+    );
+    return {
+      ratingValue: total / reviews.length,
+      reviewCount: reviews.length,
+    };
+  }, [reviews]);
+
+  const canonicalPath = product?._id ? `/product/${product._id}` : `/product/${id}`;
+
+  const productStructuredData = useMemo(() => {
+    if (!product || !selectedVariant || !siteOrigin) return null;
+    const canonicalUrl = buildAbsoluteUrl(canonicalPath, siteOrigin);
+    const images = imageCandidates
+      .map((img) => buildAbsoluteUrl(img, siteOrigin))
+      .filter(Boolean);
+    const availability =
+      maxAvailableQty > 0
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock";
+    const offerPrice =
+      priceValue && !Number.isNaN(Number(priceValue))
+        ? Number(priceValue).toFixed(2)
+        : priceValue;
+    const payload = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description:
+        product.description ||
+        `${product.name} premium hair from Karina Hair.`,
+      sku: selectedVariant._id,
+      brand: {
+        "@type": "Brand",
+        name: "Karina Hair",
+      },
+      url: canonicalUrl,
+      image: images.length ? images : undefined,
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "GBP",
+        price: offerPrice,
+        availability,
+        url: canonicalUrl,
+        itemCondition: "https://schema.org/NewCondition",
+      },
+    };
+    if (averageRating) {
+      payload.aggregateRating = {
+        "@type": "AggregateRating",
+        ratingValue: Number(averageRating.ratingValue.toFixed(2)),
+        reviewCount: averageRating.reviewCount,
+      };
+    }
+    return payload;
+  }, [
+    product,
+    selectedVariant,
+    siteOrigin,
+    canonicalPath,
+    imageCandidates,
+    maxAvailableQty,
+    priceValue,
+    averageRating,
+  ]);
+
+  const pageTitle = product ? `${product.name} | Karina Hair` : "Product | Karina Hair";
+  const pageDescription = product?.description
+    ? product.description.slice(0, 280)
+    : "Explore premium wigs and extensions from Karina Hair.";
+  const seoImage = imageCandidates[0] || "/android-chrome-512x512.png";
+
   const handleAddToCart = () => {
     if (!selectedVariant) return;
 
@@ -342,31 +454,47 @@ const ProductPage = () => {
 
   if (loading) {
     return (
-      <Container className="py-5 text-center">
-        <Spinner animation="border" className="d-block mx-auto my-4" />
-        <p className="text-muted mb-0">Loading product details...</p>
-      </Container>
+      <>
+        <Seo
+          title="Loading product | Karina Hair"
+          description="Browse luxury wigs, lace frontals, and extensions from Karina Hair."
+          canonicalPath={canonicalPath}
+          noIndex
+        />
+        <Container className="py-5 text-center">
+          <Spinner animation="border" className="d-block mx-auto my-4" />
+          <p className="text-muted mb-0">Loading product details...</p>
+        </Container>
+      </>
     );
   }
 
   if (loadError || !product?._id) {
     return (
-      <Container className="py-5 text-center">
-        <div className="mb-3">
-          <h3 className="fw-bold">Product unavailable</h3>
-          <p className="text-muted mb-0">
-            {loadError || "This product may have been removed or is temporarily unavailable."}
-          </p>
-        </div>
-        <div className="d-flex justify-content-center gap-2 flex-wrap">
-          <Button variant="dark" onClick={() => navigate("/new-arrivals")}>
-            Browse products
-          </Button>
-          <Button variant="outline-dark" onClick={() => navigate("/")}>
-            Go to homepage
-          </Button>
-        </div>
-      </Container>
+      <>
+        <Seo
+          title="Product unavailable | Karina Hair"
+          description="This product may have been removed or is temporarily unavailable."
+          canonicalPath={canonicalPath}
+          noIndex
+        />
+        <Container className="py-5 text-center">
+          <div className="mb-3">
+            <h3 className="fw-bold">Product unavailable</h3>
+            <p className="text-muted mb-0">
+              {loadError || "This product may have been removed or is temporarily unavailable."}
+            </p>
+          </div>
+          <div className="d-flex justify-content-center gap-2 flex-wrap">
+            <Button variant="dark" onClick={() => navigate("/new-arrivals")}>
+              Browse products
+            </Button>
+            <Button variant="outline-dark" onClick={() => navigate("/")}>
+              Go to homepage
+            </Button>
+          </div>
+        </Container>
+      </>
     );
   }
 
@@ -397,12 +525,6 @@ const ProductPage = () => {
       }
       return String(a.length).localeCompare(String(b.length));
     });
-
-
-  const allVariantImages = [
-    ...new Set(product.variants.map((v) => v.media).filter(Boolean)),
-  ];
-
   const getUniqueAttributeValues = (attribute) => {
     const scopedVariants =
       variantsForCurrentTexture.length > 0
@@ -526,7 +648,16 @@ const ProductPage = () => {
   };
 
   return (
-    <Container className="my-4">
+    <>
+      <Seo
+        title={pageTitle}
+        description={pageDescription}
+        canonicalPath={canonicalPath}
+        image={seoImage}
+        ogType="product"
+        structuredData={productStructuredData}
+      />
+      <Container className="my-4">
       <Row className="g-4">
         <Col lg={6}>
           <div id="product-gallery" className="h-100">
@@ -900,7 +1031,8 @@ const ProductPage = () => {
         confirmText="OK"
         cancelText=""
       />
-    </Container>
+      </Container>
+    </>
   );
 };
 
