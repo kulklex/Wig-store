@@ -3,8 +3,6 @@ import model7 from "../assets/side2.jpg"
 import model2 from "../assets/side9.jpg"
 import model3 from "../assets/side5.jpg"
 import model4 from "../assets/side8.jpg"
-import model5 from "../assets/side6.jpg"
-import model6 from "../assets/side3.jpg"
 
 const models = [
   {
@@ -27,16 +25,16 @@ const models = [
     image: model4,
     alt: "Dark wavy wig",
   },
-  {
-    id: 5,
-    image: model5,
-    alt: "Copper waves wig",
-  },
-  {
-    id: 6,
-    image: model6,
-    alt: "Headband straight wig",
-  },
+  // {
+  //   id: 5,
+  //   image: model5,
+  //   alt: "Copper waves wig",
+  // },
+  // {
+  //   id: 6,
+  //   image: model6,
+  //   alt: "Headband straight wig",
+  // },
 ];
 
 export default function ModelShowcase() {

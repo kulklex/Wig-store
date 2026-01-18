@@ -22,24 +22,24 @@ const EducationalContent = () => {
       category: "Care",
       link: "https://www.curlsqueen.com/blog/tips-tricks/what-are-the-different-types-of-hair-extensions-how-to-maintain-them.html"
     },
-    {
-      id: 3,
-      title: "Installing Tape-In Extensions",
-      description: "Step-by-step visual walkthrough of installing tape-ins on natural hair by a Nigerian creator.",
-      image: "https://m.supernovahair.com/media/catalog/product/cache/6/image/9df78eab33525d08d6e5fb8d27136e95/1/_/1_tape_in_human_hair_extensions.jpg",
-      readTime: "8 min watch",
-      category: "Tutorial",
-      link: "https://www.youtube.com/watch?v=DE3EqFrdo-k&ab_channel=SimplySubrena"
-    },
-    {
-      id: 4,
-      title: "Styling Your Extensions",
-      description: "Practical ways to style clip-ins on natural hair: sleek, curly, and voluminous looks that blend seamlessly.",
-      image: "https://i.ytimg.com/vi/zkPApBV9DHA/maxresdefault.jpg",
-      readTime: "13 min watch",
-      category: "Styling",
-      link: "https://www.youtube.com/watch?v=LXkWPQYb9lo&ab_channel=StephanieVoltaire"
-    },
+    // {
+    //   id: 3,
+    //   title: "Installing Tape-In Extensions",
+    //   description: "Step-by-step visual walkthrough of installing tape-ins on natural hair by a Nigerian creator.",
+    //   image: "https://m.supernovahair.com/media/catalog/product/cache/6/image/9df78eab33525d08d6e5fb8d27136e95/1/_/1_tape_in_human_hair_extensions.jpg",
+    //   readTime: "8 min watch",
+    //   category: "Tutorial",
+    //   link: "https://www.youtube.com/watch?v=DE3EqFrdo-k&ab_channel=SimplySubrena"
+    // },
+    // {
+    //   id: 4,
+    //   title: "Styling Your Extensions",
+    //   description: "Practical ways to style clip-ins on natural hair: sleek, curly, and voluminous looks that blend seamlessly.",
+    //   image: "https://i.ytimg.com/vi/zkPApBV9DHA/maxresdefault.jpg",
+    //   readTime: "13 min watch",
+    //   category: "Styling",
+    //   link: "https://www.youtube.com/watch?v=LXkWPQYb9lo&ab_channel=StephanieVoltaire"
+    // },
     {
       id: 5,
       title: "Choosing the Perfect Color Match",
