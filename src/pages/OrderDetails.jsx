@@ -111,7 +111,7 @@ const OrderDetails = () => {
   if (error) return <div className="alert alert-danger mt-4">{error}</div>;
 
   return (
-    <div className="container mt-4">
+    <div className="container py-4 px-2">
       <h3>Order #{order._id}</h3>
 
       <div className="row mt-4">

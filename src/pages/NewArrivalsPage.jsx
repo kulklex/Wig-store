@@ -309,7 +309,7 @@ const NewArrivalsPage = () => {
   }
 
   return (
-    <section className="container-fluid py-4">
+    <section className="container-fluid py-4 px-2">
         <Header
             head1="NEW"
             head2="ARRIVALS"

@@ -132,7 +132,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 px-2">
       <h2 className="text-center fw-bold mb-4">Checkout</h2>
 
       {items.length === 0 ? (

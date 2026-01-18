@@ -324,7 +324,7 @@ const BestSellersPage = () => {
   }
 
   return (
-    <section className="container-fluid py-4">
+    <section className="container-fluid py-4 px-2">
         <Header
             head1="BEST"
             head2="SELLERS"

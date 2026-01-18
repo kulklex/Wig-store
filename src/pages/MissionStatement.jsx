@@ -3,7 +3,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 
 const MissionStatement = () => {
   return (
-    <Container className="py-5">
+    <Container className="py-4 px-2">
       <Row className="justify-content-center">
         <Col lg={10}>
           <Card className="p-4 shadow-sm border-0">

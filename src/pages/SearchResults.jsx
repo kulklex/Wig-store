@@ -142,7 +142,7 @@ const SearchResults = () => {
     }
 
     return (
-      <div className="mt-4">
+      <div className="py-4 px-2">
         <div className="text-center my-3">
           <span className="text-muted small">
             Page {currentPage} of {searchPagination.pages}

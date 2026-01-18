@@ -34,7 +34,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="container py-5 px-2 info-body">
+    <div className="container py-4 px-2 info-body">
       <div className="row mb-5">
         <div className="col-md-6">
           <h3 className="mb-1 fw-semibold">Contact Us</h3>

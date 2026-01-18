@@ -305,7 +305,7 @@ const SpecialOffersPage = () => {
 
   if (discountedProducts.length === 0) {
     return (
-      <div className="container py-5 text-center">
+      <div className="container py-5 px-2 text-center">
         <div className="alert alert-info" role="alert">
           <h4>No Special Offers Available</h4>
           <p className="mb-0">Check back soon for amazing deals on our premium hair extensions!</p>

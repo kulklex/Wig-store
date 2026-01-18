@@ -3,7 +3,7 @@ import { Container, Table } from "react-bootstrap";
 
 const ShippingDelivery = () => {
   return (
-    <Container className="py-5 info-body">
+    <Container className="py-5 px-2 info-body">
       <h3 className="fw-semibold mb-3">Shipping & Delivery</h3>
 
       <p className="text-muted small">

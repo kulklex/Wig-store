@@ -19,7 +19,7 @@ const OrderConfirmation = () => {
   }, [sessionId, dispatch]);
 
   return (
-    <div className="container py-5 text-center">
+    <div className="container py-4 px-2 text-center">
       <div className="p-4 border rounded bg-light">
         <h2 className="fw-bold text-success mb-3">Thank You for Your Order!</h2>
 

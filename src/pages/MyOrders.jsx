@@ -49,7 +49,7 @@ const MyOrders = () => {
   }
 
   return (
-    <div className="container py-5 position-relative">
+    <div className="container py-4 px-2 position-relative">
 
 <div className="mb-4 d-flex justify-content-between p-2">
       <h2>My Orders</h2>

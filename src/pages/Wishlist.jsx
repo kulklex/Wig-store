@@ -339,7 +339,7 @@ const Wishlist = () => {
     }
 
     return (
-      <div className="d-flex justify-content-center align-items-center gap-2 mt-4">
+      <div className="d-flex justify-content-center align-items-center gap-2 px-2 mt-4">
         <Button
           variant="outline-dark"
           size="sm"
