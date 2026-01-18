@@ -17,7 +17,7 @@ const Checkout = () => {
       {
         id: "test_penny",
         label: "Test Delivery (for live tests)",
-        amount: 1.00,
+        amount: 0.49,
       },
       {
         id: "standard",
