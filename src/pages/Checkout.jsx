@@ -15,11 +15,6 @@ const Checkout = () => {
   const baseDeliveryOptions = useMemo(
     () => [
       {
-        id: "test_penny",
-        label: "Test Delivery (for live tests)",
-        amount: 0.49,
-      },
-      {
         id: "standard",
         label: "Standard delivery (3–5 working days)",
         amount: 5.99,
