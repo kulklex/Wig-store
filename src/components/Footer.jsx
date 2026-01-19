@@ -97,17 +97,11 @@ const Footer = () => {
             <ul className="list-unstyled small text-muted" style={{ fontSize: "13px" }}>
               <li>
                 Standard delivery (3–5 working days) -{" "}
-                <strong>£5.99</strong>
+                <strong>£4.99</strong>
               </li>
               <li>
                 Next Day Delivery -{" "}
-                <strong>£10.99</strong>
-              </li>
-              <li>
-                Saturday Delivery - <strong>£12.99</strong>
-              </li>
-              <li>
-                Sat 10am Delivery - <strong>£14.99</strong>
+                <strong>£9.99</strong>
               </li>
             </ul>
           </div>

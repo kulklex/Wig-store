@@ -28,33 +28,15 @@ const ShippingDelivery = () => {
         <tbody>
           <tr>
             <td>Standard Delivery</td>
-            <td>2–4 working days (DPD Tracked)</td>
+            <td>3–5 working days</td>
             <td>11:59 PM</td>
-            <td>£5.00 <br /><em>Free over £150</em></td>
+            <td>£4.99 <br /><em>Free over £1000</em></td>
           </tr>
           <tr>
             <td>Next Working Day Delivery</td>
-            <td>Next working day (DPD Next Day)</td>
-            <td>4 PM (Weekdays) / 10 AM (Saturday)</td>
-            <td>£11.00 <br /><em>Free over £500</em></td>
-          </tr>
-          <tr>
-            <td>Next Day by 10:30 AM</td>
-            <td>Next working day by 10:30 AM (DPD Express)</td>
-            <td>4 PM (Weekdays) / 10 AM (Saturday)</td>
-            <td>£30.00</td>
-          </tr>
-          <tr>
-            <td>Saturday Delivery</td>
-            <td>Saturday by 6 PM</td>
-            <td>4 PM Friday</td>
-            <td>£20.00</td>
-          </tr>
-          <tr>
-            <td>Sunday Delivery</td>
-            <td>Sunday by 6 PM</td>
-            <td>10 AM Saturday</td>
-            <td>£20.00</td>
+            <td>Next working day (Next Day)</td>
+            <td>4 PM (Weekdays)</td>
+            <td>£9.99</td>
           </tr>
         </tbody>
       </Table>
@@ -102,26 +84,8 @@ const ShippingDelivery = () => {
           <tr>
             <td>Next Working Day Delivery</td>
             <td>Next working day</td>
-            <td>4 PM (Weekdays) / 10 AM (Saturday)</td>
-            <td>£11.00 <br /><em>Free over £500</em></td>
-          </tr>
-          <tr>
-            <td>Next Working Day by 10:30 AM</td>
-            <td>Next day by 10:30 AM</td>
-            <td>4 PM (Weekdays) / 10 AM (Saturday)</td>
-            <td>£30.00</td>
-          </tr>
-          <tr>
-            <td>Saturday Delivery</td>
-            <td>Saturday by 6 PM</td>
-            <td>4 PM Friday</td>
-            <td>£20.00</td>
-          </tr>
-          <tr>
-            <td>Sunday Delivery</td>
-            <td>Sunday by 6 PM</td>
-            <td>10 AM Saturday</td>
-            <td>£20.00</td>
+            <td>4 PM (Weekdays)</td>
+            <td>£9.99</td>
           </tr>
         </tbody>
       </Table>

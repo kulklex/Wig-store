@@ -17,22 +17,12 @@ const Checkout = () => {
       {
         id: "standard",
         label: "Standard delivery (3–5 working days)",
-        amount: 5.99,
+        amount: 4.99,
       },
       {
         id: "next_day",
         label: "Next Day Delivery",
-        amount: 10.99,
-      },
-      {
-        id: "saturday",
-        label: "Saturday Delivery",
-        amount: 12.99,
-      },
-      {
-        id: "sat_10am",
-        label: "Sat 10am Delivery",
-        amount: 14.99,
+        amount: 9.99,
       },
     ],
     []
