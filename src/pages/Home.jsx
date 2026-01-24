@@ -66,8 +66,8 @@ export default function Home() {
 
       <Banner />
       <ModelShowcase />
-      {newArrivals.length > 0 && <NewArrivals />}
       {bestSellers.length > 0 && <BestSellers />}
+      {newArrivals.length > 0 && <NewArrivals />}
       <TrustIndicators />
       <SpecialOffers />
       <ShippingReturns />
