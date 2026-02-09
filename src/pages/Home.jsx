@@ -6,7 +6,6 @@ import BestSellers from '../components/BestSellers';
 import ModelShowcase from '../components/ModelShowcase';
 import TrustIndicators from '../components/TrustIndicators';
 import SpecialOffers from '../components/SpecialOffers';
-import CustomerReviews from '../components/CustomerReviews';
 import EducationalContent from '../components/EducationalContent';
 import ShippingReturns from '../components/ShippingReturns';
 import Seo from '../components/Seo';
@@ -71,7 +70,7 @@ export default function Home() {
       <TrustIndicators />
       <SpecialOffers />
       <ShippingReturns />
-      <CustomerReviews />
+      {/* <CustomerReviews /> */}
       {/* <InstagramFeed /> */}
       <EducationalContent />
     </>
