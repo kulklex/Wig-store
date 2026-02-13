@@ -5,29 +5,24 @@ import { FiArrowRight } from "react-icons/fi";
 import { fetchCategories } from "../redux/productSlice";
 import { sanitizeText } from "../utils/sanitize";
 import Header from "./Header";
+import wigsImage from "../assets/mercie-pixie-wig.jpeg"
+import bulkHairImage from "../assets/bulk-hair.jpeg"
+import weavesHairImage from "../assets/side4.jpg"
 
 
 const CATEGORY_IMAGES = {
-  wigs:
-    "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1755460955/main5-copy-min_vysooi.jpg",
-  closures:
-    "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1755460796/main3-min_2_jdwuze.jpg",
-  frontals:
-    "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1755428279/main3-copy_zluofp.jpg",
-  bundles:
-    "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1755460956/main5-min_qtvgyr.jpg",
-  accessories:
-    "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1690987654/karina-accessories_uqzvvm.jpg",
-};
+  weaves: weavesHairImage,
+  bulkHair: bulkHairImage,
+  wigs: wigsImage,
+}
 
 const getCategoryImage = (name) => {
   if (!name) return CATEGORY_IMAGES.wigs;
   const key = name.toLowerCase();
   if (CATEGORY_IMAGES[key]) return CATEGORY_IMAGES[key];
-  if (key.includes("wig")) return CATEGORY_IMAGES.wigs;
-  if (key.includes("frontal")) return CATEGORY_IMAGES.frontals;
-  if (key.includes("closure")) return CATEGORY_IMAGES.closures;
-  if (key.includes("bundle")) return CATEGORY_IMAGES.bundles;
+  if (key.includes("wigs")) return CATEGORY_IMAGES.wigs;
+  if (key.includes("bulk hair")) return CATEGORY_IMAGES.bulkHair;
+  if (key.includes("weaves")) return CATEGORY_IMAGES.weaves;
   return CATEGORY_IMAGES.wigs;
 };
 
@@ -80,15 +75,15 @@ const SectionsPage = () => {
             <div key={cat} className="col-12 col-sm-6 col-lg-3">
               <button
                 type="button"
-                className="btn p-0 border-0 bg-transparent w-100 text-start"
+                className="btn p-0 border-0 bg-transparent w-200 text-start"
                 onClick={() => handleClickCategory(cat)}
               >
-                <div className="sections-card h-100 d-flex flex-column">
+                <div className="sections-card d-flex flex-column">
                   <div className="sections-card-image-wrapper mb-3">
                     <img
                       src={img}
                       alt={cat}
-                      className="sections-card-image"
+                      className="card-img-top rounded model-img"
                       loading="lazy"
                     />
                   </div>
@@ -99,7 +94,7 @@ const SectionsPage = () => {
                       {cat.toLowerCase()} collection.
                     </p>
                     <div className="mt-auto d-flex align-items-center gap-2 sections-card-cta">
-                      <span>View {cat}</span>
+                      <span>View</span>
                       <FiArrowRight size={16} />
                     </div>
                   </div>

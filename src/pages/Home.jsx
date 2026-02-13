@@ -4,7 +4,6 @@ import Banner from '../components/Banner';
 import SectionsPage from '../components/SectionsPage';
 import NewArrivals from '../components/NewArrivals';
 import BestSellers from '../components/BestSellers';
-import ModelShowcase from '../components/ModelShowcase';
 import TrustIndicators from '../components/TrustIndicators';
 import SpecialOffers from '../components/SpecialOffers';
 import EducationalContent from '../components/EducationalContent';
@@ -66,7 +65,7 @@ export default function Home() {
 
       <Banner />
       <SectionsPage />
-      <ModelShowcase />
+      {/* <ModelShowcase /> */}
       {bestSellers.length > 0 && <BestSellers />}
       {newArrivals.length > 0 && <NewArrivals />}
       <TrustIndicators />

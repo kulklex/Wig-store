@@ -1,20 +1,18 @@
 import React from "react";
-import model7 from "../assets/side2.jpg"
-import model2 from "../assets/side9.jpg"
 import model3 from "../assets/side5.jpg"
 import model4 from "../assets/side8.jpg"
 
 const models = [
-  {
-    id: 1,
-    image: model7,
-    alt: "Straight black wig",
-  },
-  {
-    id: 2,
-    image: model2,
-    alt: "Platinum blonde wig",
-  },
+  // {
+  //   id: 1,
+  //   image: model7,
+  //   alt: "Straight black wig",
+  // },
+  // {
+  //   id: 2,
+  //   image: model2,
+  //   alt: "Platinum blonde wig",
+  // },
   {
     id: 3,
     image: model3,
