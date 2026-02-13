@@ -8,7 +8,6 @@ const slide_3_img_mobile = "https://res.cloudinary.com/dlhgfwgs6/image/upload/v1
 
 const Banner = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
   const timeoutRef = useRef(null);
 
   const slides = useMemo(() => [
@@ -60,27 +59,6 @@ const Banner = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const preloadImages = () => {
-      const imagePromises = slides.map((slide) => {
-        const img = new Image();
-        const src = isMobile ? slide.imageMobile : slide.imageDesktop;
-        
-        return new Promise((resolve) => {
-          img.onload = resolve;
-          img.onerror = resolve;
-          img.src = src;
-        });
-      });
-
-      Promise.all(imagePromises).then(() => {
-        setImagesLoaded(true);
-      });
-    };
-
-    preloadImages();
-  }, [isMobile, slides]);
-
   const resetTimer = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
@@ -89,13 +67,12 @@ const Banner = () => {
   }, [slides.length]);
 
   useEffect(() => {
-    if (imagesLoaded) {
-      resetTimer();
-    }
+    resetTimer();
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [currentIndex, imagesLoaded, resetTimer]);
+  }, [currentIndex, resetTimer]);
+  
 
   const getAlignmentStyles = (align) => {
     const baseStyles = {
@@ -137,37 +114,6 @@ const Banner = () => {
   const handleNavigate = (link) => {
     window.location.href = link;
   };
-
-  if (!imagesLoaded) {
-    return (
-      <div className="banner-loading" style={{
-        width: "100%",
-        height: isMobile ? "50vh" : "100vh",
-        minHeight: isMobile ? "400px" : "600px",
-        background: "linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)",
-        backgroundSize: "20px 20px",
-        backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        animation: "shimmer 1.5s infinite linear",
-      }}>
-        <div style={{
-          color: "#666",
-          fontSize: "1.2rem",
-          fontWeight: "500"
-        }}>
-          Loading...
-        </div>
-        <style>{`
-          @keyframes shimmer {
-            0% { background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
-            100% { background-position: 20px 20px, 20px 30px, 30px 10px, 10px 20px; }
-          }
-        `}</style>
-      </div>
-    );
-  }
 
   return (
     <motion.section

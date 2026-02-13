@@ -239,7 +239,7 @@ const Navbar = () => {
             style={{
               gridTemplateColumns: "1fr auto 1fr"
             }}>
-            {/* Left Section - Search Icon */}
+            {/* Ultimate Left Section - Search Icon */}
             <div className="d-flex align-items-center justify-content-start">
               <div className="position-relative d-flex align-items-center gap-4">
                 {!searchOpen ? (
@@ -423,7 +423,7 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Right Section - User and Cart Icons */}
+            {/* Ultimate Right Section - User and Cart Icons */}
             <div className="d-flex align-items-center justify-content-end gap-4">
               {user == null ? (
                 <Link to={"/sign-in"} className="text-dark">
@@ -479,10 +479,10 @@ const Navbar = () => {
                 {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
               </button>
               <button
-                className="btn p-0 border-0 bg-transparent px-2"
+                className="btn p-0 border-0 bg-transparent px-1"
                 onClick={() => setSearchOpen(!searchOpen)}
               >
-                <FiSearch size={20} />
+                <FiSearch size={18} />
               </button>
             </div>
 
