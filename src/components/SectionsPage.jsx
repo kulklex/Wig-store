@@ -5,7 +5,7 @@ import { FiArrowRight } from "react-icons/fi";
 import { fetchCategories } from "../redux/productSlice";
 import { sanitizeText } from "../utils/sanitize";
 import Header from "./Header";
-import wigsImage from "../assets/mercie-pixie-wig.jpeg"
+import wigsImage from "../assets/mercie-pixie-wig1.jpeg"
 import bulkHairImage from "../assets/bulk-hair1.jpeg"
 import weavesHairImage from "../assets/side11.jpeg"
 
