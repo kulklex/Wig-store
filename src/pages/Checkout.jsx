@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
 import { loadStripe } from "@stripe/stripe-js";
+import { sanitizeEmail, sanitizePhone, sanitizeText } from "../utils/sanitize";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 const Checkout = () => {
@@ -88,17 +89,30 @@ const Checkout = () => {
     setLoading(true);
     setError(null);
 
+    const cleanForm = {
+      name: sanitizeText(form.name, { maxLength: 120 }),
+      email: sanitizeEmail(form.email),
+      address: sanitizeText(form.address, { maxLength: 200 }),
+      city: sanitizeText(form.city, { maxLength: 120 }),
+      zip: sanitizeText(form.zip, { maxLength: 20 }),
+      phone: sanitizePhone(form.phone),
+      deliveryInstructions: sanitizeText(form.deliveryInstructions, {
+        maxLength: 500,
+        allowNewlines: true,
+      }),
+    };
+
     try {
       const res = await axios.post("/api/create-checkout-session", {
-        email: user ? user.email : form.email,
-        user: user ? user.email : form.email,
+        email: user ? user.email : cleanForm.email,
+        user: user ? user.email : cleanForm.email,
         shippingInfo: {
-          name: form.name,
-          address: form.address,
-          city: form.city,
-          zip: form.zip,
-          phone: form.phone,
-          deliveryInstructions: form.deliveryInstructions,
+          name: cleanForm.name,
+          address: cleanForm.address,
+          city: cleanForm.city,
+          zip: cleanForm.zip,
+          phone: cleanForm.phone,
+          deliveryInstructions: cleanForm.deliveryInstructions,
           deliveryOption: selectedDelivery,
         },
         items: items.map((item) => ({

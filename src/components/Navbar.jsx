@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { closeCartDrawer, getTotals, openCartDrawer } from "../redux/cartSlice";
 import { fetchCategories, fetchProductAttributes } from "../redux/productSlice";
 import { getWishlistCount } from "../redux/wishlistSlice";
+import { sanitizeText } from "../utils/sanitize";
 import {
   FiSearch,
   FiShoppingCart,
@@ -40,7 +41,9 @@ const Navbar = () => {
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
-      navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+      const safeTerm = sanitizeText(searchTerm, { maxLength: 80 });
+      if (!safeTerm) return;
+      navigate(`/search?query=${encodeURIComponent(safeTerm)}`);
       setSearchOpen(false);
       setSearchTerm("");
     }
@@ -132,15 +135,64 @@ const Navbar = () => {
     setFilterForm({ category: "", minPrice: "", maxPrice: "", sort: "" });
   };
 
+  const normalizeTextureForDropdown = (value) => {
+    if (!value) return "";
+    const lower = String(value).toLowerCase().trim();
+
+    // Keep leading letters/spaces; cut at the first number or symbol (e.g. brackets, /, -, x)
+    // Then limit to at most TWO words.
+    // Examples:
+    // "bodywave 4"             -> "bodywave"
+    // "bodywave 1b"            -> "bodywave"
+    // "bodywave (4 bundles)"   -> "bodywave"
+    // "water wave dd"          -> "water wave"
+    // "bone straight"          -> "bone straight"
+    let cutIndex = lower.length;
+    for (let i = 0; i < lower.length; i++) {
+      const ch = lower[i];
+      if (!/[a-z\s]/.test(ch)) {
+        cutIndex = i;
+        break;
+      }
+    }
+
+    let base = lower.slice(0, cutIndex).trim() || lower;
+    const words = base.split(/\s+/).filter(Boolean);
+    if (words.length > 2) {
+      base = words.slice(0, 2).join(" ");
+    }
+    return base;
+  };
+
   const dropdownContent = useMemo(() => {
+    const rawTextures = attributes?.textures || [];
+    const canonicalTextureMap = new Map();
+
+    rawTextures.forEach((t) => {
+      const original = String(t || "").trim();
+      if (!original) return;
+      const key = normalizeTextureForDropdown(original);
+      if (!key) return;
+      if (!canonicalTextureMap.has(key)) {
+        const display = key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+        canonicalTextureMap.set(key, {
+          display,
+        });
+      }
+    });
+
+    const cleanedTextures = Array.from(canonicalTextureMap.values()).map(
+      (entry) => entry.display
+    );
+
     const sections = [
       {
-        title: "PRODUCTS",
+        title: "CATEGORY",
         items: attributes?.categories?.length ? attributes.categories : categories,
       },
       {
         title: "TEXTURE",
-        items: attributes?.textures || [],
+        items: cleanedTextures,
       },
       {
         title: "LACE SIZE",
@@ -306,7 +358,7 @@ const Navbar = () => {
               </div>
 
               {/* Centered Logo */}
-              <div className="text-center">
+              <div className="d-flex text-center">
                 <Link
                   to="/"
                   className="text-dark text-decoration-none text-center"

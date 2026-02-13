@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import Banner from '../components/Banner';
+import SectionsPage from '../components/SectionsPage';
 import NewArrivals from '../components/NewArrivals';
 import BestSellers from '../components/BestSellers';
 import ModelShowcase from '../components/ModelShowcase';
@@ -64,6 +65,7 @@ export default function Home() {
       )}
 
       <Banner />
+      <SectionsPage />
       <ModelShowcase />
       {bestSellers.length > 0 && <BestSellers />}
       {newArrivals.length > 0 && <NewArrivals />}

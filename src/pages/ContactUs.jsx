@@ -2,6 +2,7 @@ import axios from "../utils/axiosConfig";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
+import { sanitizeEmail, sanitizePhone, sanitizeText } from "../utils/sanitize";
 
 const ContactUs = () => {
   const [form, setForm] = useState({
@@ -22,8 +23,16 @@ const ContactUs = () => {
     setSending(true);
     setFeedback(null);
 
+    const cleanPayload = {
+      name: sanitizeText(form.name, { maxLength: 120 }),
+      email: sanitizeEmail(form.email),
+      phone: sanitizePhone(form.phone),
+      subject: sanitizeText(form.subject, { maxLength: 160 }),
+      message: sanitizeText(form.message, { maxLength: 2000, allowNewlines: true }),
+    };
+
     try {
-      const res = await axios.post("/api/orders/contact", form);
+      const res = await axios.post("/api/orders/contact", cleanPayload);
       setFeedback({ success: true, message: res.data.message });
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err) {

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { searchProducts, fetchCategories, fetchProductAttributes } from '../redux/productSlice';
 import CollectionCard from '../components/CollectionCard';
 import { FiFilter, FiChevronLeft, FiChevronRight, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { sanitizeText } from '../utils/sanitize';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -13,13 +14,15 @@ const ITEMS_PER_PAGE = 12;
 
 const SearchResults = () => {
   const query = useQuery();
-  const searchTerm = query.get('query') || '';
+  const rawSearchTerm = query.get('query') || '';
+  const searchTerm = sanitizeText(rawSearchTerm, { maxLength: 80 });
   const category = query.get('category') || '';
   const minPrice = query.get('minPrice') || '';
   const maxPrice = query.get('maxPrice') || '';
   const sort = query.get('sort') || '';
   const laceSize = query.get('laceSize') || '';
   const color = query.get('color') || '';
+  const rawTexture = query.get('texture') || '';
   const currentPage = parseInt(query.get('page')) || 1;
 
   const dispatch = useDispatch();
@@ -36,13 +39,45 @@ const SearchResults = () => {
     (state) => state.products
   );
 
+  const normalizeTextureForDropdown = (value) => {
+    if (!value) return "";
+    const lower = String(value).toLowerCase().trim();
+
+    // Keep leading letters/spaces; cut at the first number or symbol (e.g. brackets, /, -, x)
+    // Then limit to at most TWO words.
+    // Examples:
+    // "bodywave 4"             -> "bodywave"
+    // "bodywave 1b"            -> "bodywave"
+    // "bodywave (4 bundles)"   -> "bodywave"
+    // "water wave dd"          -> "water wave"
+    // "bone straight"          -> "bone straight"
+    let cutIndex = lower.length;
+    for (let i = 0; i < lower.length; i++) {
+      const ch = lower[i];
+      if (!/[a-z\s]/.test(ch)) {
+        cutIndex = i;
+        break;
+      }
+    }
+
+    let base = lower.slice(0, cutIndex).trim() || lower;
+    const words = base.split(/\s+/).filter(Boolean);
+    if (words.length > 2) {
+      base = words.slice(0, 2).join(" ");
+    }
+    return base;
+  };
+
+  const texture = normalizeTextureForDropdown(rawTexture);
+
   const [filterForm, setFilterForm] = useState({
-    category: category,
-    minPrice: minPrice,
-    maxPrice: maxPrice,
-    sort: sort,
-    laceSize: laceSize,
-    color: color,
+    category,
+    minPrice,
+    maxPrice,
+    sort,
+    laceSize,
+    color,
+    texture,
   });
 
   const [showFilters, setShowFilters] = useState(false);
@@ -61,6 +96,7 @@ const SearchResults = () => {
       sort,
       laceSize,
       color,
+      texture,
       page: currentPage,
       limit: ITEMS_PER_PAGE,
     };
@@ -68,7 +104,7 @@ const SearchResults = () => {
     if (searchTerm || category || minPrice || maxPrice || sort) {
       dispatch(searchProducts(params));
     }
-  }, [searchTerm, category, minPrice, maxPrice, sort, laceSize, color, currentPage, dispatch]);
+  }, [searchTerm, category, minPrice, maxPrice, sort, laceSize, color, texture, currentPage, dispatch]);
 
   const handleFilterChange = (field, value) => {
     setFilterForm(prev => ({
@@ -119,6 +155,7 @@ const SearchResults = () => {
     if (sort) params.append('sort', sort);
     if (laceSize) params.append('laceSize', laceSize);
     if (color) params.append('color', color);
+    if (texture) params.append('texture', texture);
     params.append('page', newPage.toString());
     params.append('limit', ITEMS_PER_PAGE.toString());
     
@@ -191,6 +228,22 @@ const SearchResults = () => {
       </div>
     );
   };
+
+  const textureOptions = (() => {
+    const raw = attributes?.textures || [];
+    const map = new Map();
+    raw.forEach((t) => {
+      const original = String(t || "").trim();
+      if (!original) return;
+      const key = normalizeTextureForDropdown(original);
+      if (!key) return;
+      if (!map.has(key)) {
+        const display = key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+        map.set(key, { key, display });
+      }
+    });
+    return Array.from(map.values());
+  })();
 
   return (
     <div className="container py-4">
@@ -280,6 +333,21 @@ const SearchResults = () => {
                   <option value="">All</option>
                   {attributes.colors.map((c) => (
                     <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="col-6 col-md-3 col-lg-2">
+                <label className="form-label small">Texture</label>
+                <select
+                  className="form-select form-select-sm"
+                  value={filterForm.texture || ""}
+                  onChange={(e) => handleFilterChange("texture", e.target.value)}
+                  disabled={attributesLoading}
+                >
+                  <option value="">All</option>
+                  {textureOptions.map((t) => (
+                    <option key={t.key} value={t.key}>{t.display}</option>
                   ))}
                 </select>
               </div>
