@@ -200,7 +200,7 @@ code {
   transform: scale(1.1);
 }
 
-/* Responsive adjustments */
+/* Responsiveness */
 @media (max-width: 768px) {
   .hero-section {
     min-height: 60vh !important;

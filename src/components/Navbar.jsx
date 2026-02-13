@@ -235,9 +235,12 @@ const Navbar = () => {
     <>
       <nav className="bg-white d-flex py-3 position-relative d-none d-lg-block">
         <div className="container-fluid px-4">
-          <div className="d-flex align-items-center justify-content-between">
+          <div className="d-grid align-items-center"
+            style={{
+              gridTemplateColumns: "1fr auto 1fr"
+            }}>
             {/* Left Section - Search Icon */}
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center justify-content-start">
               <div className="position-relative d-flex align-items-center gap-4">
                 {!searchOpen ? (
                   <button
@@ -285,7 +288,7 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Center Section - Navigation Links and Logo */}
+            {/* Navigation Links and Logo */}
             <div
               className="flex-grow-1"
               style={{
@@ -295,12 +298,12 @@ const Navbar = () => {
                 gridTemplateColumns: "1fr auto 1fr",
                 alignItems: "center",
                 justifyItems: "center",
-                columnGap: "32px"
+                columnGap: "100px"
               }}
             >
               {/* Left trigger snug to logo */}
               <div
-                className="d-flex align-items-center justify-content-end"
+                className="d-flex align-items-center justify-content-end gap-4"
                 onMouseEnter={handleDropdownEnter}
                 onMouseLeave={handleDropdownLeave}
               >
@@ -358,7 +361,7 @@ const Navbar = () => {
               </div>
 
               {/* Centered Logo */}
-              <div className="d-flex text-center">
+              <div className="text-center">
                 <Link
                   to="/"
                   className="text-dark text-decoration-none text-center"
@@ -380,7 +383,7 @@ const Navbar = () => {
 
               {/* Right trigger snug to logo */}
               <div
-                className="d-flex align-items-center justify-content-start position-relative"
+                className="d-flex align-items-center justify-content-end gap-4 position-relative"
                 onMouseEnter={handleInfoDropdownEnter}
                 onMouseLeave={handleInfoDropdownLeave}
               >
@@ -421,7 +424,7 @@ const Navbar = () => {
             </div>
 
             {/* Right Section - User and Cart Icons */}
-            <div className="d-flex align-items-center gap-4">
+            <div className="d-flex align-items-center justify-content-end gap-4">
               {user == null ? (
                 <Link to={"/sign-in"} className="text-dark">
                   <FiUser size={20} />

@@ -3,7 +3,7 @@ export const sanitizeText = (value, options = {}) => {
 
   if (typeof value !== "string") return "";
 
-  let result = value.replace(/[^\x09\x0A\x0D\x20-\x7E]/g, "");
+  let result = value.replace(/[^\x20-\x7E]/g, "");
 
   if (!allowNewlines) {
     result = result.replace(/\s+/g, " ");
@@ -28,4 +28,3 @@ export const sanitizePhone = (value, maxLength = 20) => {
   const cleaned = value.replace(/[^\d+]/g, "").trim();
   return cleaned.slice(0, maxLength);
 };
-

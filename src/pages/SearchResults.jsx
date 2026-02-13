@@ -276,7 +276,7 @@ const SearchResults = () => {
                   onChange={(e) => handleFilterChange("category", e.target.value)}
                   disabled={categoriesLoading}
                 >
-                  <option value="">All Categories</option>
+                  <option value="" disabled>All Categories</option>
                   {categories.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
