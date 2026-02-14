@@ -7,7 +7,7 @@ import { sanitizeText } from "../utils/sanitize";
 import Header from "./Header";
 import wigsImage from "../assets/mercie-pixie-wig1.jpeg"
 import bulkHairImage from "../assets/bulk-hair1.jpeg"
-import weavesHairImage from "../assets/side11.jpeg"
+import weavesHairImage from "../assets/weave1.jpeg"
 
 
 const CATEGORY_IMAGES = {
@@ -26,7 +26,7 @@ const getCategoryImage = (name) => {
   return CATEGORY_IMAGES.wigs;
 };
 
-const SectionsPage = () => {
+const Sections = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -108,5 +108,5 @@ const SectionsPage = () => {
   );
 };
 
-export default SectionsPage;
+export default Sections;
 
