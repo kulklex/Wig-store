@@ -10,6 +10,7 @@ import {
 import { PiHairDryer } from "react-icons/pi";
 import { MdCreateNewFolder } from "react-icons/md";
 import { MdAssignmentReturn } from "react-icons/md";
+import { FaBarcode } from "react-icons/fa";
 
 const SIDEBAR_WIDTH = 250;
 
@@ -107,6 +108,16 @@ const AdminSidebar = () => {
             >
               <MdAssignmentReturn className="me-2" />
               Returns
+            </NavLink>
+          </li>
+          <li className="nav-item mb-2">
+            <NavLink
+              to="/admin/promo-codes"
+              className="nav-link text-white d-flex align-items-center"
+              onClick={handleLinkClick}
+            >
+              <FaBarcode className="me-2" />
+              Promo Code
             </NavLink>
           </li>
           <li className="nav-item mb-2">

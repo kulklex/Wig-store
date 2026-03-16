@@ -43,6 +43,7 @@ import Wishlist from "./pages/Wishlist";
 import NewArrivalsPage from "./pages/NewArrivalsPage";
 import BestSellersPage from "./pages/BestSellersPage";
 import SpecialOffersPage from "./pages/SpecialOffersPage";
+import AdminPromoCode from "./admin/AdminPromoCode";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -89,6 +90,7 @@ const App = () => {
     "/admin/users",
     "/admin/orders/:id",
     "/admin/analytics",
+    "/admin/promo-codes"
   ];
 
   const isAdminRoute = adminRoutes.some((route) =>
@@ -257,6 +259,16 @@ const App = () => {
               <RequireAdmin>
                 <AdminLayout>
                   <AdminReturnDetails/>
+                </AdminLayout>
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/promo-codes"
+            element={
+              <RequireAdmin>
+                <AdminLayout>
+                  <AdminPromoCode/>
                 </AdminLayout>
               </RequireAdmin>
             }
