@@ -3,7 +3,12 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
 import { loadStripe } from "@stripe/stripe-js";
-import { sanitizeEmail, sanitizePhone, sanitizeText } from "../utils/sanitize";
+import {
+  sanitizeEmail,
+  sanitizePhone,
+  sanitizeText,
+  sanitizePromoCode,
+} from "../utils/sanitize";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
@@ -89,15 +94,19 @@ const Checkout = () => {
   };
 
   const handleApplyPromo = async () => {
-    if (!promoInput.trim()) return;
+    const cleanCode = sanitizePromoCode(promoInput);
+    if (!cleanCode) return;
+    if (!user) return;
+
     setPromoLoading(true);
     setPromoError(null);
     setAppliedPromo(null);
 
     try {
       const res = await axios.post("/api/promo/validate", {
-        code: promoInput.trim(),
+        code: cleanCode,
         orderTotal: totalAmount,
+        email: user.email,
       });
       setAppliedPromo(res.data);
     } catch (err) {
@@ -482,8 +491,38 @@ const Checkout = () => {
                     Promo Code <span className="text-muted">(Optional)</span>
                   </label>
 
-                  {appliedPromo ? (
-                    // Applied state
+                  {!user ? (
+                    // ── Not logged in — gate the field ──────────────────────────────
+                    <div
+                      className="p-3 rounded border"
+                      style={{
+                        backgroundColor: "#f8f6f2",
+                        borderColor: "#e0d8cc",
+                      }}
+                    >
+                      <div className="d-flex align-items-center gap-2 mb-2">
+                        <span style={{ fontSize: "15px" }}>🔒</span>
+                        <span className="fw-semibold small text-dark">
+                          Sign in to use a promo code
+                        </span>
+                      </div>
+                      <p
+                        className="text-muted small mb-2"
+                        style={{ lineHeight: 1.5 }}
+                      >
+                        Promo codes are available to registered customers only.
+                        Sign in with Google to unlock discounts on your order.
+                      </p>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-dark"
+                        onClick={() => navigate("/sign-in")}
+                      >
+                        Sign in to apply a code
+                      </button>
+                    </div>
+                  ) : appliedPromo ? (
+                    // ── Logged in + promo applied ────────────────────────────────────
                     <div className="d-flex align-items-center gap-2 p-2 border border-success rounded bg-success-subtle">
                       <span className="fw-semibold text-success flex-grow-1 small">
                         ✓ {appliedPromo.code} — {appliedPromo.message} (−£
@@ -498,7 +537,7 @@ const Checkout = () => {
                       </button>
                     </div>
                   ) : (
-                    // Input state
+                    // ── Logged in + no promo yet ─────────────────────────────────────
                     <div className="input-group">
                       <input
                         type="text"
@@ -506,8 +545,8 @@ const Checkout = () => {
                         placeholder="Enter promo code"
                         value={promoInput}
                         onChange={(e) => {
-                          setPromoInput(e.target.value.toUpperCase());
-                          setPromoError(null); // clear error on new input
+                          setPromoInput(sanitizePromoCode(e.target.value));
+                          setPromoError(null);
                         }}
                         disabled={promoLoading}
                       />

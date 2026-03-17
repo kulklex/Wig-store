@@ -44,6 +44,7 @@ import NewArrivalsPage from "./pages/NewArrivalsPage";
 import BestSellersPage from "./pages/BestSellersPage";
 import SpecialOffersPage from "./pages/SpecialOffersPage";
 import AdminPromoCode from "./admin/AdminPromoCode";
+import AdminPromoCodeDetails from "./admin/AdminPromoCodeDetails";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -90,19 +91,23 @@ const App = () => {
     "/admin/users",
     "/admin/orders/:id",
     "/admin/analytics",
-    "/admin/promo-codes"
+    "/admin/promo-codes",
+    "/admin/promo-codes/:id",
   ];
 
   const isAdminRoute = adminRoutes.some((route) =>
-    location.pathname.startsWith(route.replace(/:.*$/, ""))
+    location.pathname.startsWith(route.replace(/:.*$/, "")),
   );
 
   const hasHomeData =
     categories.length > 0 && newArrivals.length > 0 && bestSellers.length > 0;
   const hasNewArrivalsPageData = newArrivals.length > 0;
   const hasBestSellersPageData = bestSellers.length > 0;
-  const productsArray = Array.isArray(productsData?.products) ? productsData.products : productsData;
-  const hasSpecialOffersData = Array.isArray(productsArray) && productsArray.length > 0;
+  const productsArray = Array.isArray(productsData?.products)
+    ? productsData.products
+    : productsData;
+  const hasSpecialOffersData =
+    Array.isArray(productsArray) && productsArray.length > 0;
 
   const isHome = location.pathname === "/";
   const isNewArrivalsPage = location.pathname.startsWith("/new-arrivals");
@@ -132,152 +137,169 @@ const App = () => {
     isProductDetailPage ||
     (isUserRoute && anyDataLoading);
 
+  return (
+    <>
+      <div className="d-flex flex-col min-vh-100">
+        {!hideNavbar && <Navbar />}
+        <ScrollToTop />
+        <main className="flex-grow">
+          <Routes>
+            {/* User routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<SearchResults />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/mission-statement" element={<MissionStatement />} />
+            <Route path="/returns-and-exchanges" element={<ReturnsPolicy />} />
+            <Route path="/shipping" element={<ShippingDeliver />} />
+            <Route path="/terms-and-conditions" element={<TermsConditions />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/faqs" element={<FAQs />} />
+            <Route
+              path="/contact"
+              element={
+                <h1>
+                  <ContactUs />
+                </h1>
+              }
+            />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="*" element={<ErrorPage />} />
+            <Route path="/my-orders" element={<MyOrders />} />
+            <Route path="/orders/:id" element={<OrderDetails />} />
+            <Route path="/sign-in" element={<GoogleLogin />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            <Route path="/order/:id/return" element={<ReturnSelectItems />} />
+            <Route path="/order/:id/return/form" element={<ReturnForm />} />
+            <Route path="/new-arrivals" element={<NewArrivalsPage />} />
+            <Route path="/best-sellers" element={<BestSellersPage />} />
+            <Route path="/special-offers" element={<SpecialOffersPage />} />
+            <Route path="/wishlist" element={<Wishlist />} />
 
-  return (<>
-    <div className="d-flex flex-col min-vh-100">
-      {!hideNavbar && <Navbar />}
-      <ScrollToTop />
-      <main className="flex-grow">
-        <Routes>
-          {/* User routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchResults />} />
-          <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/mission-statement" element={<MissionStatement />} />
-          <Route path="/returns-and-exchanges" element={<ReturnsPolicy />} />
-          <Route path="/shipping" element={<ShippingDeliver />} />
-          <Route path="/terms-and-conditions" element={<TermsConditions />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/faqs" element={<FAQs />} />
-          <Route path="/contact" element={<h1><ContactUs /></h1>} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="*" element={<ErrorPage />} />
-          <Route path="/my-orders" element={<MyOrders />} />
-          <Route path="/orders/:id" element={<OrderDetails />} />
-          <Route path="/sign-in" element={<GoogleLogin />} />
-          <Route path="/order-confirmation" element={<OrderConfirmation />} />
-          <Route path="/order/:id/return" element={<ReturnSelectItems />} />
-          <Route path="/order/:id/return/form" element={<ReturnForm />} />
-          <Route path="/new-arrivals" element={<NewArrivalsPage />} />
-          <Route path="/best-sellers" element={<BestSellersPage />} />
-          <Route path="/special-offers" element={<SpecialOffersPage />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-
-          {/* Admin routes */}
-          <Route
-            path="/admin"
-            element={
-              <RequireAdmin>
-               <Navigate to="/admin/analytics" replace />
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/products"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminProductsPage />
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/create-products"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminCreateProduct />
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/edit-product/:id"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminEditProduct />
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/orders"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminOrdersPage />
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/orders/:id"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminUpdateOrderStatus />
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminUsersPage />
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/analytics"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminAnalytics />
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/returns"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminReturnsList/>
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/returns/:id"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminReturnDetails/>
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/admin/promo-codes"
-            element={
-              <RequireAdmin>
-                <AdminLayout>
-                  <AdminPromoCode/>
-                </AdminLayout>
-              </RequireAdmin>
-            }
-          />
-        </Routes>
-      </main>
-      {!hideFooter && <Footer />}
-      <TrackingScripts />
-    </div>
+            {/* Admin routes */}
+            <Route
+              path="/admin"
+              element={
+                <RequireAdmin>
+                  <Navigate to="/admin/analytics" replace />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/products"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminProductsPage />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/create-products"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminCreateProduct />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/edit-product/:id"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminEditProduct />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/orders"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminOrdersPage />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/orders/:id"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminUpdateOrderStatus />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminUsersPage />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminAnalytics />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/returns"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminReturnsList />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/returns/:id"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminReturnDetails />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/promo-codes"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminPromoCode />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/admin/promo-codes/:id"
+              element={
+                <RequireAdmin>
+                  <AdminLayout>
+                    <AdminPromoCodeDetails />
+                  </AdminLayout>
+                </RequireAdmin>
+              }
+            />
+          </Routes>
+        </main>
+        {!hideFooter && <Footer />}
+        <TrackingScripts />
+      </div>
       <CookieBanner />
     </>
   );

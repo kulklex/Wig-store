@@ -28,3 +28,12 @@ export const sanitizePhone = (value, maxLength = 20) => {
   const cleaned = value.replace(/[^\d+]/g, "").trim();
   return cleaned.slice(0, maxLength);
 };
+
+
+// Strips anything that isn't A-Z, 0-9, or a hyphen
+export const sanitizePromoCode = (value) => {
+  return value
+    .toUpperCase()
+    .replace(/[^A-Z0-9-]/g, "")
+    .slice(0, 17);                
+};
