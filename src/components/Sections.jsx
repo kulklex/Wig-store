@@ -7,7 +7,7 @@ import { sanitizeText } from "../utils/sanitize";
 import Header from "./Header";
 import wigsImage from "../assets/mercie-pixie-wig1.jpeg"
 import bulkHairImage from "../assets/bulk-hair1.jpeg"
-import weavesHairImage from "../assets/weave1.jpeg"
+import weavesHairImage from "../assets/weave2.png"
 
 
 const CATEGORY_IMAGES = {

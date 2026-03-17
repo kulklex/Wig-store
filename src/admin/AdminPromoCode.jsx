@@ -101,6 +101,41 @@ const AdminPromoCode = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const handleFeature = async (id) => {
+  try {
+    const res = await axios.patch(`/api/promo/admin/${id}/feature`);
+    // Unflag all others client-side, set new featured
+    setCodes((prev) =>
+      prev.map((c) => ({
+        ...c,
+        isFeatured: c._id === id ? res.data.isFeatured : false,
+      }))
+    );
+  } catch {
+    setError("Failed to update featured promo.");
+  }
+};
+
+const handleMessageSave = async (id, message) => {
+  try {
+    await axios.patch(`/api/promo/admin/${id}/message`, { featuredMessage: message });
+    setCodes((prev) =>
+      prev.map((c) => (c._id === id ? { ...c, featuredMessage: message } : c))
+    );
+  } catch {
+    setError("Failed to save message.");
+  }
+};
+
+const [messages, setMessages] = useState({});
+
+// Seed messages when codes load
+useEffect(() => {
+  const init = {};
+  codes.forEach((c) => { init[c._id] = c.featuredMessage || ""; });
+  setMessages(init);
+}, [codes]);
+
   return (
     <div className="container py-4">
       <h4 className="fw-bold mb-1">Promo Codes</h4>
@@ -221,6 +256,8 @@ const AdminPromoCode = () => {
                   <th>Uses</th>
                   <th>Expires</th>
                   <th>Status</th>
+                  <th>Featured</th>
+                  <th>Homepage message</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -301,6 +338,38 @@ const AdminPromoCode = () => {
                           {style.label}
                         </span>
                       </td>
+
+                      {/* Featured toggle */}
+                    <td className="align-middle">
+                      <button
+                        className={`btn btn-sm ${code.isFeatured ? "btn-dark" : "btn-outline-secondary"}`}
+                        onClick={() => handleFeature(code._id)}
+                        title={code.isFeatured ? "Currently featured — click to unfeature" : "Set as homepage promo"}
+                      >
+                        {code.isFeatured ? "★ Featured" : "☆ Feature"}
+                      </button>
+                    </td>
+
+                    {/* Custom homepage message */}
+                    <td className="align-middle" style={{ minWidth: 220 }}>
+                      <div className="d-flex gap-2">
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          placeholder="e.g. Limited time only!"
+                          value={messages[code._id] ?? ""}
+                          onChange={(e) =>
+                            setMessages((prev) => ({ ...prev, [code._id]: e.target.value }))
+                          }
+                        />
+                        <button
+                          className="btn btn-sm btn-outline-dark"
+                          onClick={() => handleMessageSave(code._id, messages[code._id])}
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </td>
 
                       {/* Actions */}
                       <td className="align-middle">

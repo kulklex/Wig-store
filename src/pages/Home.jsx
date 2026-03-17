@@ -10,6 +10,7 @@ import EducationalContent from '../components/EducationalContent';
 import ShippingReturns from '../components/ShippingReturns';
 import Seo from '../components/Seo';
 import { useHomepageData } from '../hooks/useHomepageData';
+import PromoBanner from '../components/PromoBanner';
 
 export default function Home() {
   const { error, newArrivals, bestSellers } = useHomepageData();
@@ -63,6 +64,7 @@ export default function Home() {
         </Container>
       )}
 
+      <PromoBanner />
       <Banner />
       <Sections />
       {/* <ModelShowcase /> */}
